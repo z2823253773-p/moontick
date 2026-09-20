@@ -1,0 +1,93 @@
+[
+  {
+    "id": "archive_synthetic",
+    "provenance": "synthetic contract example, not upstream data or product output",
+    "grid": {
+      "start_ms": "1723456800000",
+      "end_ms": "1723457100000",
+      "step_ms": "60000"
+    },
+    "times_ms": [
+      "1723456800000",
+      "1723456860000",
+      "1723457040000"
+    ],
+    "expected": {
+      "expected_points": "5",
+      "covered_points": "3",
+      "missing_points": "2",
+      "missing_ranges": [
+        [
+          "2",
+          "4"
+        ]
+      ],
+      "longest_missing_run": "2",
+      "duplicate_extra_records": "0",
+      "out_of_order_records": "0",
+      "off_grid_records": "0",
+      "out_of_range_records": "0",
+      "status": "fail",
+      "exit_code": 1
+    }
+  },
+  {
+    "id": "buckets_synthetic",
+    "provenance": "synthetic contract example, not upstream data or product output",
+    "grid": {
+      "start_ms": "0",
+      "end_ms": "60000",
+      "step_ms": "20000"
+    },
+    "times_ms": [
+      "0",
+      "40000"
+    ],
+    "expected": {
+      "expected_points": "3",
+      "covered_points": "2",
+      "missing_points": "1",
+      "missing_ranges": [
+        [
+          "1",
+          "2"
+        ]
+      ],
+      "longest_missing_run": "1",
+      "duplicate_extra_records": "0",
+      "out_of_order_records": "0",
+      "off_grid_records": "0",
+      "out_of_range_records": "0",
+      "status": "fail",
+      "exit_code": 1
+    }
+  },
+  {
+    "id": "buckets_empty_synthetic",
+    "provenance": "synthetic contract example, not upstream data or product output",
+    "grid": {
+      "start_ms": "0",
+      "end_ms": "60000",
+      "step_ms": "20000"
+    },
+    "times_ms": [],
+    "expected": {
+      "expected_points": "3",
+      "covered_points": "0",
+      "missing_points": "3",
+      "missing_ranges": [
+        [
+          "0",
+          "3"
+        ]
+      ],
+      "longest_missing_run": "3",
+      "duplicate_extra_records": "0",
+      "out_of_order_records": "0",
+      "off_grid_records": "0",
+      "out_of_range_records": "0",
+      "status": "fail",
+      "exit_code": 1
+    }
+  }
+]

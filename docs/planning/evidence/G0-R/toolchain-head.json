@@ -1,0 +1,18 @@
+[
+  {
+    "url": "https://cli.moonbitlang.com/binaries/0.10.4%2B2cc641edf/moonbit-darwin-aarch64.tar.gz",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "url": "https://cli.moonbitlang.com/binaries/0.10.4%2B2cc641edf/moonbit-linux-x86_64.tar.gz",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "url": "https://cli.moonbitlang.com/binaries/0.10.4%2B2cc641edf/moonbit-linux-aarch64.tar.gz",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "url": "https://cli.moonbitlang.com/cores/core-0.10.4%2B2cc641edf.tar.gz",
+    "error": "HTTP Error 403: Forbidden"
+  }
+]
