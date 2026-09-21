@@ -1,0 +1,22 @@
+test_a_bad_token_fails_the_whole_input (__main__.CliContract.test_a_bad_token_fails_the_whole_input) ... ok
+test_big_integers_keep_every_digit (__main__.CliContract.test_big_integers_keep_every_digit) ... ok
+test_blank_line_is_an_input_error_with_a_line_number (__main__.CliContract.test_blank_line_is_an_input_error_with_a_line_number) ... ok
+test_duplicate_does_not_fill_the_missing_slot (__main__.CliContract.test_duplicate_does_not_fill_the_missing_slot) ... ok
+test_empty_file_is_entirely_missing (__main__.CliContract.test_empty_file_is_entirely_missing) ... ok
+test_full_coverage_passes_with_exit_zero (__main__.CliContract.test_full_coverage_passes_with_exit_zero) ... ok
+test_help_and_version_need_no_input_file (__main__.CliContract.test_help_and_version_need_no_input_file) ... ok
+test_invalid_step_is_a_config_error (__main__.CliContract.test_invalid_step_is_a_config_error) ... ok
+test_isolated_carriage_return_is_rejected (__main__.CliContract.test_isolated_carriage_return_is_rejected) ... ok
+test_missing_file_is_an_io_error (__main__.CliContract.test_missing_file_is_an_io_error) ... ok
+test_non_whole_period_window_is_a_config_error (__main__.CliContract.test_non_whole_period_window_is_a_config_error) ... ok
+test_one_missing_point_is_located (__main__.CliContract.test_one_missing_point_is_located) ... ok
+test_out_of_range_and_off_grid_are_separate (__main__.CliContract.test_out_of_range_and_off_grid_are_separate) ... ok
+test_raw_bytes_are_rejected_verbatim_with_a_line_number (__main__.CliContract.test_raw_bytes_are_rejected_verbatim_with_a_line_number) ... ok
+test_the_same_input_renders_identical_bytes (__main__.CliContract.test_the_same_input_renders_identical_bytes) ... ok
+test_unknown_option_is_rejected (__main__.CliContract.test_unknown_option_is_rejected) ... ok
+test_usage_errors_go_to_stderr_only (__main__.CliContract.test_usage_errors_go_to_stderr_only) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.048s
+
+OK

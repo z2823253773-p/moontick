@@ -1,0 +1,100 @@
+Warning: Main package `z2823253773-p/moontick/cmd/moontick` uses blackbox-only test inputs (`_test.mbt` files) in package directory "/Users/henryz/Desktop/比赛/moontick/cmd/moontick". Main packages will stop generating blackbox tests in a future release. Move public behavior into a non-main package and keep the main package as an entrypoint.
+Warning: [0025]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/cmd/moontick/args_test.mbt:18:31 ]
+    │
+ 18 │ fn check_of(text : String) -> CheckArgs {
+    │                               ────┬────  
+    │                                   ╰────── Warning (test_unqualified_package): `CheckArgs` is implicitly imported in test. Use `@moontick.CheckArgs` instead.
+────╯
+Warning: [0025]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/cmd/moontick/args_test.mbt:19:9 ]
+    │
+ 19 │   match parse_args(args_of(text)) {
+    │         ─────┬────  
+    │              ╰────── Warning (test_unqualified_package): `parse_args` is implicitly imported in test. Use `@moontick.parse_args` instead.
+────╯
+Warning: [0025]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/cmd/moontick/args_test.mbt:28:9 ]
+    │
+ 28 │   match parse_args(args_of(text)) {
+    │         ─────┬────  
+    │              ╰────── Warning (test_unqualified_package): `parse_args` is implicitly imported in test. Use `@moontick.parse_args` instead.
+────╯
+Warning: [0025]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/cmd/moontick/args_test.mbt:76:13 ]
+    │
+ 76 │   assert_eq(parse_args(args_of("--help")), Ok(ShowHelp))
+    │             ─────┬────  
+    │                  ╰────── Warning (test_unqualified_package): `parse_args` is implicitly imported in test. Use `@moontick.parse_args` instead.
+────╯
+Warning: [0025]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/cmd/moontick/args_test.mbt:77:13 ]
+    │
+ 77 │   assert_eq(parse_args(args_of("--version")), Ok(ShowVersion))
+    │             ─────┬────  
+    │                  ╰────── Warning (test_unqualified_package): `parse_args` is implicitly imported in test. Use `@moontick.parse_args` instead.
+────╯
+Warning: [0025]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/cmd/moontick/args_test.mbt:78:13 ]
+    │
+ 78 │   assert_eq(parse_args(args_of("check --help")), Ok(ShowHelp))
+    │             ─────┬────  
+    │                  ╰────── Warning (test_unqualified_package): `parse_args` is implicitly imported in test. Use `@moontick.parse_args` instead.
+────╯
+Warning: [0025]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/cmd/moontick/args_test.mbt:79:13 ]
+    │
+ 79 │   assert_eq(parse_args(args_of("nonsense --version")), Ok(ShowVersion))
+    │             ─────┬────  
+    │                  ╰────── Warning (test_unqualified_package): `parse_args` is implicitly imported in test. Use `@moontick.parse_args` instead.
+────╯
+Warning: [0025]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/cmd/moontick/args_test.mbt:80:13 ]
+    │
+ 80 │   assert_eq(parse_args(args_of("--help junk")), Ok(ShowHelp))
+    │             ─────┬────  
+    │                  ╰────── Warning (test_unqualified_package): `parse_args` is implicitly imported in test. Use `@moontick.parse_args` instead.
+────╯
+Warning: [0071]
+     ╭─[ /Users/henryz/Desktop/比赛/moontick/cmd/moontick/main.mbt:131:19 ]
+     │
+ 131 │   let arguments = @env.args()
+     │                   ────┬────  
+     │                       ╰────── Warning (core_package_not_imported): Package `env` from `moonbitlang/core/` is used without import. This is deprecated. Please add it to the imports in the moon.pkg file.
+─────╯
+Warning: [0001]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/report/json.mbt:11:4 ]
+    │
+ 11 │ fn escape_text(text : String) -> String {
+    │    ─────┬─────  
+    │         ╰─────── Warning (unused_value): Unused function 'escape_text'
+────╯
+Warning: [0079]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/ticks_input/parse.mbt:28:10 ]
+    │
+ 28 │ } derive(Eq, Debug)
+    │          ─┬  
+    │           ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for InputErrorKind` are implicit promoted as regular method for `InputErrorKind`. This behavior is deprecated and will be removed in the future. Add a `pub extend InputErrorKind with Eq::{not_equal, equal}` declaration or manually define regular methods for type `InputErrorKind` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/ticks_input/parse.mbt:28:14 ]
+    │
+ 28 │ } derive(Eq, Debug)
+    │              ──┬──  
+    │                ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for InputErrorKind` are implicit promoted as regular method for `InputErrorKind`. This behavior is deprecated and will be removed in the future. Add a `pub extend InputErrorKind with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `InputErrorKind` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/ticks_input/read.mbt:12:10 ]
+    │
+ 12 │ } derive(Eq, Debug)
+    │          ─┬  
+    │           ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for ReadErrorKind` are implicit promoted as regular method for `ReadErrorKind`. This behavior is deprecated and will be removed in the future. Add a `pub extend ReadErrorKind with Eq::{not_equal, equal}` declaration or manually define regular methods for type `ReadErrorKind` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/ticks_input/read.mbt:12:14 ]
+    │
+ 12 │ } derive(Eq, Debug)
+    │              ──┬──  
+    │                ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for ReadErrorKind` are implicit promoted as regular method for `ReadErrorKind`. This behavior is deprecated and will be removed in the future. Add a `pub extend ReadErrorKind with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `ReadErrorKind` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Finished. moon: ran 4 tasks, now up to date (14 warnings, 0 errors)

@@ -1,0 +1,2 @@
+Warning: Main package `z2823253773-p/moontick/cmd/moontick` uses blackbox-only test inputs (`_test.mbt` files) in package directory "/Users/henryz/Desktop/比赛/moontick/cmd/moontick". Main packages will stop generating blackbox tests in a future release. Move public behavior into a non-main package and keep the main package as an entrypoint.
+Total tests: 62, passed: 62, failed: 0.

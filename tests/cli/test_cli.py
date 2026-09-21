@@ -163,6 +163,40 @@ class CliContract(unittest.TestCase):
         self.assertEqual(result.returncode, 2, result.stderr)
         self.assertEqual(json.loads(result.stdout)["code"], "INPUT_INVALID")
 
+    def check_raw_ticks(self, data):
+        """Run `check` over bytes that are deliberately not valid UTF-8.
+
+        `check_ticks` encodes text as UTF-8, which cannot express a BOM or a
+        malformed sequence. Writing the bytes directly is the only way to test
+        what the file-reading path does with them, and that path is where a
+        byte-preserving bug would hide: if the file were decoded to a `String`
+        first, these inputs would be rejected or mangled before the parser ever
+        saw them.
+        """
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "input.ticks"
+            path.write_bytes(data)
+            return run(["check", str(path)] + WINDOW + ["--format", "json"])
+
+    def test_raw_bytes_are_rejected_verbatim_with_a_line_number(self):
+        cases = [
+            ("BOM on line 1", b"\xef\xbb\xbf0\n", 1),
+            ("BOM on line 2", b"0\n\xef\xbb\xbf1\n", 2),
+            ("invalid UTF-8 byte", b"0\n\xff\n", 2),
+            ("non-ASCII UTF-8", b"0\n\xe4\xb8\xad\n", 2),
+        ]
+        for name, data, expected_line in cases:
+            with self.subTest(case=name):
+                result = self.check_raw_ticks(data)
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertEqual(result.stderr, "")
+                error = json.loads(result.stdout)
+                self.assertEqual(error["schema"], "moontick.error.v1")
+                self.assertEqual(error["code"], "INPUT_INVALID")
+                # The physical line of the offending bytes, not the count of
+                # records accepted so far.
+                self.assertEqual(error["line"], expected_line)
+
     # -- configuration errors ---------------------------------------------
 
     def test_invalid_step_is_a_config_error(self):

@@ -1,0 +1,24 @@
+./_build/native/debug/test/ticks_input/ticks_input.blackbox_test.exe parse_test.mbt:0-12/parse_scope_test.mbt:0-10
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:32 ("empty file is a valid empty sequence") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:39 ("single line without a trailing newline is one record") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:45 ("LF and CRLF both terminate a record") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:52 ("start lines are 1-based physical line numbers") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:58 ("an isolated CR is not a terminator") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:65 ("a blank line is rejected with its line number") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:73 ("a trailing newline does not create a phantom blank line") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:79 ("non-canonical spellings are rejected") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:88 ("the Int64 endpoints are accepted") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:98 ("values outside the Int64 range are rejected") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:108 ("a token of exactly 20 bytes is checked, 21 bytes is over-long") ok
+[z2823253773-p/moontick] test ticks_input/parse_test.mbt:118 ("the first bad record fails the whole input") ok
+[z2823253773-p/moontick] test ticks_input/parse_scope_test.mbt:120 ("LF and CRLF report the same times on the same physical lines") ok
+[z2823253773-p/moontick] test ticks_input/parse_scope_test.mbt:132 ("a lone LF and a lone CRLF are each an empty line 1") ok
+[z2823253773-p/moontick] test ticks_input/parse_scope_test.mbt:152 ("0\\\\n\\\\n is rejected at line 2 with no partial success") ok
+[z2823253773-p/moontick] test ticks_input/parse_scope_test.mbt:167 ("every accepted input reports equally long time and line arrays") ok
+[z2823253773-p/moontick] test ticks_input/parse_scope_test.mbt:183 ("BOM, non-ASCII, invalid UTF-8, header, quotes, commas and isolated CR") ok
+[z2823253773-p/moontick] test ticks_input/parse_scope_test.mbt:236 ("a rejected byte keeps the physical line it appeared on") ok
+[z2823253773-p/moontick] test ticks_input/parse_scope_test.mbt:264 ("20 bytes is judged on content, 21 bytes is rejected on length alone") ok
+[z2823253773-p/moontick] test ticks_input/parse_scope_test.mbt:304 ("a 21 byte token containing illegal characters is still RESOURCE_LIMIT") ok
+[z2823253773-p/moontick] test ticks_input/parse_scope_test.mbt:340 ("the library accepts 250000 records and rejects the 250001st") ok
+[z2823253773-p/moontick] test ticks_input/parse_scope_test.mbt:360 ("the library rejects 32 MiB + 1 bytes and admits exactly 32 MiB") ok
+Total tests: 22, passed: 22, failed: 0.

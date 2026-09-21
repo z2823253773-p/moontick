@@ -1,23 +1,44 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1 与 T2 均已在明确实现 SHA 上完成本机技术验收；按用户指示准备 T3 差量验证，Claude Code 尚未启动。
+日期：2026-09-21。T1 与 T2 均已在明确实现 SHA 上完成本机技术验收；T3（严格 ticks 输入的
+原始字节、库层限额与物理行号证据）已由 Claude Code 实施完毕，等待 Codex 在固定 SHA 上独立复核。
 
 - task_id: T3
-- status: READY
-- active_owner: Claude Code（用户手动在北京时间闲时启动）
+- status: REVIEW
+- active_owner: Codex（在固定 T3 SHA 的独立 worktree 复核）
 - implementation_authorized: YES（2026-09-21，用户要求按计划推进；范围仅 T3）
 - objective: 补齐严格 ticks 输入的原始字节语法、库层限额与物理行号证据；Codex 在明确 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
-  T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；T3 尚无被测 SHA
+  T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；
+  T3 被测 SHA 见本文件所在提交本身（提交信息列出被测工件与新增测试文件）
 
-## 当前任务：T3（准备完毕，等待用户手动启动 Claude Code）
+## 当前任务：T3（实施完毕，等待 Codex 独立复核）
 
 任务卡：`docs/handoffs/T3_CLAUDE.md`。T1 已实现解析和 CLI，T3 仅补尚缺的原始字节、
 库层资源边界和位置证据；若新增测试发现真实不一致，再做最小修复。不重写已通过行为，
 不开展 T4+。用户控制 Claude Code 启动时间，仅在北京时间闲时运行；Codex 不代为启动
 或设置自动续跑。完成后 Claude 提供固定 T3 SHA，再由 Codex 独立复核。
+
+### T3 实施结果（2026-09-21，Claude Code）
+
+- 起点基线：`41faf7fceaa5394cf45d7bb59cb6eed52a6f497d`（T3 任务卡提交），工作树干净，
+  与任务卡一致。未把该文档 SHA 当作新产品被测 SHA。
+- 隔离工具链 `/private/tmp/moontick-moon-0.10.14-OS4LNz` 可用，`moonc v0.10.14+7d59c7ec9`
+  现场复核；未使用全局 `~/.moon`，未读凭据。
+- **没有 RED，产品实现零改动。** 新增 10 个 MoonBit 测试与 1 个进程级测试全部一次通过，
+  按任务卡如实记录"新增覆盖通过，无产品实现变更"。**未修改任何产品代码**。
+- `moon build` 报 `no work to do`；真实二进制 SHA-256
+  `b9e3e189602b3849d06a69555be6e16a548214ff1094059715f0094d37711975` 与 T1 已验收
+  产物逐字节一致。
+- 门槛：`moon check` 退出 0（14 warnings / 0 errors，与 T1/T2 同数、未新增 warning）、
+  `moon test` 退出 0（62/62，T2 为 52）、ticks_input 包 22/22、`moon build` 退出 0、
+  `python3 tests/cli/test_cli.py` 退出 0（17 passed，T2 为 16）。
+- 变异抽查（只改测试期望、不改产品代码）：四处变异各自精确命中对应用例，随后全部还原，
+  还原后门槛重新跑绿。
+- 证据：`docs/evidence/T3/precise-input-evidence.md`、`docs/evidence/T3/gates.md`、
+  原始输出 `docs/evidence/T3/raw/`。
 
 参赛关键路径并行：官网当前展示 9 月 30 日截止本期报名与验收，但规划快照中的
 9 月 24 日章程口径仍未复核；公开仓库、正式报名回执、CI、许可证、三场景、Mooncakes
@@ -212,13 +233,46 @@
 `ticks_input/probe_wbtest.mbt`；删除前核实其内容仅为“Temporary diagnostic probe”。
 完整命令、范围与未测项见 `docs/evidence/T1/codex-independent-review-754ff0e.md`。
 
+## T3 本轮交接（Claude Code → Codex）
+
+- 起点基线：`41faf7fceaa5394cf45d7bb59cb6eed52a6f497d`
+- T3 提交 SHA：见本文件所在提交本身（提交信息列出被测工件与新增测试文件）。
+  相对 `a88af81`（T2）**只新增测试与证据**，未改产品代码。
+- 改动文件：
+  - 新增 `ticks_input/parse_scope_test.mbt`（10 个测试）
+  - 修改 `tests/cli/test_cli.py`（新增 1 个真实二进制用例 + `check_raw_ticks` 辅助）
+  - 新增 `docs/evidence/T3/precise-input-evidence.md`、`docs/evidence/T3/gates.md`、
+    `docs/evidence/T3/raw/{check,test,ticks-input-verbose,build,cli,toolchain,binary-sha256}.txt`
+  - 修改 `.ai/TASK_STATE.md`（状态 → REVIEW，owner → Codex）
+- 验证命令（同一隔离工具链，逐字照抄任务卡）：
+  ```bash
+  export MOON_HOME=/private/tmp/moontick-moon-0.10.14-OS4LNz
+  export PATH="$MOON_HOME/bin:$PATH"
+  moon check --target native && moon test --target native && moon build --target native
+  export MOONTICK_BIN=$PWD/_build/native/debug/build/cmd/moontick/moontick.exe
+  python3 tests/cli/test_cli.py
+  ```
+- 证据：`docs/evidence/T3/`
+- Codex 的最小复核面：
+  1. `parse_scope_test.mbt:304` 的**决胜用例**——21 字节且含逗号仍报 `OverlongToken`，
+     对比 20 字节同形报 `InvalidToken`；这两条共同证明"先查长度、再查格式"。
+  2. `parse_scope_test.mbt:360` 的"恰好 32 MiB 不是 `TooManyBytes`"，钉死字节闸门为
+     `>` 而非 `>=`。
+  3. `parse_scope_test.mbt:340` 的 250001 条 / line 250001，钉死私有常量 `max_records`
+     的边界（`max_records`/`max_input_bytes` 为包内私有，本轮**未**为测试改成 `pub`）。
+  4. `parse_scope_test.mbt:183/236` 的原始字节用例是直接构造 `Bytes`、不经 `String`；
+     建议 Codex 用独立字节级 oracle 复核，不要调用产品函数当真值。
+  5. `test_cli.py` 新增用例用 `write_bytes` 落盘，复核 reader 路径的字节保真。
+- 未完成/未授权：Linux native、CI、完整 text 格式、发布、报名均未运行；T1 已独立
+  验证的 reader 入口字节上限与昂贵输入本轮按任务卡未重复制造。无待修复的最小反例。
+
 ## 接下来
 
-1. Codex 在下方 T2 commit SHA 的独立 worktree 复核：跑同一隔离工具链的
-   `moon check/test/build` 与真实二进制 CLI，读 `docs/evidence/T2/raw/` 的原始输出，
-   并用独立小网格 oracle 覆盖 T2 表格七例与截断/负时间/库层拒绝四项。
+1. Codex 在下方 T3 commit SHA 的独立 worktree 复核：跑同一隔离工具链的
+   `moon check/test/build` 与真实二进制 CLI，读 `docs/evidence/T3/raw/` 的原始输出，
+   并用**原始字节 oracle**（不导入产品代码）复核五类差量证据，重点见上节"最小复核面"。
    注意：启动复核前需用户手动授权；本会话不自行安排定时任务或后台续跑。
-2. 复核通过后由用户决定 T3（严格 ticks 输入与来源定位）是否展开。
+2. 复核通过后由用户决定 T4（CLI、报告、错误与确定性）是否展开。
 
-T1 与 T2 均只在 macOS native 范围内成立。Linux native、CI、发布、报名、完整 text
-格式与 T3+ 范围仍未授权/未运行；等待用户决定下一任务，不自动展开。
+T1、T2、T3 均只在 macOS native 范围内成立。Linux native、CI、发布、报名、完整 text
+格式与 T4+ 范围仍未授权/未运行；等待用户决定下一任务，不自动展开。
