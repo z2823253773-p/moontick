@@ -2,11 +2,13 @@
 
 日期：2026-09-22。T1–T4 均已在明确实现 SHA 上完成 macOS native 范围内验收。
 T5 固定工具链 CI 候选已实施：本机格式门槛由 255 转绿，macOS arm64 全部门槛通过；
-Linux 与远程 GitHub Actions 因无远程仓库而均为 NOT_RUN。
+Codex 独立复核发现工作流矩阵上下文 P1，CI 候选待单点返修。Linux 与远程 GitHub
+Actions 因无远程仓库而均为 NOT_RUN。
+用户于 2026-09-22 确认本期 9 月 30 日截止；这不等于报名或验收已提交。
 
 - task_id: T5
-- status: REVIEW / Codex（CI 候选已提交，等待在该 SHA 上独立复核）
-- active_owner: Codex（独立复核）；Claude Code 上一轮已交付固定 SHA
+- status: REVISE / Claude Code（T5 CI 单点返修待用户闲时手动启动）
+- active_owner: Claude Code（Codex 已交最小反例，用户控制启动时间）
 - implementation_authorized: YES（2026-09-21 用户要求推进下一步；仅 T5 本地验证和 CI 候选，不含对外发布/报名）
 - objective: 在独立 oracle 基线上建立 macOS arm64 / Linux x86_64 固定版本 CI 候选并复核真实结果
 - repo_root: /Users/henryz/Desktop/比赛/moontick
@@ -18,9 +20,23 @@ Linux 与远程 GitHub Actions 因无远程仓库而均为 NOT_RUN。
   T4 修复被测 SHA `e35fbb2c44ca3c9b4bec69ed528cabb2e944b06c` 已接受；
   T5 oracle 提交 `4de792d86a3848d2f387d4dc774033edaa9b0f07` 仅新增 Python 独立测试；
   后续文档提交不改变上述产品被测 SHA；
-  **T5 CI 候选被测 SHA `89b4e01fcece1ba8264e6109254571253c45b063`（待 Codex 独立复核）**
+  **T5 CI 候选被测 SHA `89b4e01fcece1ba8264e6109254571253c45b063`（本机门槛通过；CI 矩阵 P1 待返修）**
 
-## 当前任务：T5（CI 候选已交付，待 Codex 独立复核）
+## 当前任务：T5（CI 候选返修）
+
+Codex 在固定 `89b4e01` 的独立 worktree 复现本机门槛：fmt 0、check 0
+（14 warnings）、build 0、test 77/77、CLI 42/42、独立 oracle 全通过；
+`moon info` 后 `.mbti` 无差异。静态审查发现 `.github/workflows/ci.yml:52–57`
+的矩阵属性使用 `${{ env.* }}`，但 GitHub 官方上下文表不允许 `env` 用于
+`jobs.<job_id>.strategy`。这是依据官方规则确认的配置阻断，远程尚无运行错误日志。
+复核记录：`docs/evidence/T5/codex-independent-review-89b4e01.md`。
+返修卡：`docs/handoffs/T5_CI_REPAIR_CLAUDE.md`。两个 runner 标签已从 GitHub
+官方文档核实：`macos-15` 为 arm64，`ubuntu-24.04` 为 x64，无须改标签。
+本机 `gh auth status` 显示当前 GitHub CLI 登录凭据无效；仓库仍无 remote。
+用户需创建空的公开 GitHub 仓库并重新通过浏览器授权 GitHub CLI，之后再连接和
+推送经复核的提交。不得在修复前把工作流静态检查写成远程 CI 通过。
+
+## T5 首轮交接（历史记录；CI 矩阵待修）
 
 Codex 使用固定 T4 产品 SHA 的真实二进制完成独立 oracle：8 个手算样例、
 `seed=20260920` 的 1000 个小网格、30 组三类变形检查、一个 `N=10^12` 解析案例；
@@ -466,10 +482,12 @@ Codex 不代为启动或设置自动续跑。首个固定 T4 SHA 已交 Codex �
 
 ## 接下来
 
-1. 用户在北京时间闲时把 `docs/handoffs/T5_CLAUDE_CI.md` 交给 Claude Code，
-   先修 `moon fmt --check` 起点红灯，再完成固定工具链 CI 候选并提交 SHA。
-2. Codex 在固定 SHA 上独立复核格式、macOS native、真实 CLI、oracle 与工作流。
-   远程仓库和实际 CI run 缺席时保持 NOT_RUN，之后准备公开仓库与 T6 材料。
+1. 用户在北京时间闲时把 `docs/handoffs/T5_CI_REPAIR_CLAUDE.md` 交给 Claude Code，
+   只修工作流矩阵上下文并提交新固定 SHA；Codex 随后复核。
+2. 用户在 GitHub 账号 `z2823253773-p` 下创建**空的公开** `moontick` 仓库，
+   不勾选 README、许可证或 `.gitignore` 初始化；通过浏览器重新授权本机 `gh`。
+   这些是用户身份操作。取得仓库 URL 与有效登录后再连接、推送、取得两平台实际
+   Actions run URL。没有对应 SHA 的真实 run 前，macOS/Linux 远程 CI 仍为 NOT_RUN。
 
 T1–T4 验收和 T5 oracle 均只在 macOS native 范围内成立。Linux native、远程 CI、
-发布和报名尚未运行；T5 CI 候选待实施，不自动展开 T6。
+发布和报名尚未运行；T5 CI 候选待返修，不自动展开 T6。
