@@ -1,24 +1,32 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1、T2 与 T3 均已在明确实现 SHA 上完成 macOS native 范围内验收。
+日期：2026-09-21。T1、T2 与 T3 均已在明确实现 SHA 上完成 macOS native 范围内验收；T4 差量任务卡已备，Claude Code 尚未启动。
 
-- task_id: T3
-- status: ACCEPTED
-- active_owner: user
-- implementation_authorized: YES（2026-09-21，用户要求按计划推进；范围仅 T3）
-- objective: 补齐严格 ticks 输入的原始字节语法、库层限额与物理行号证据；Codex 在明确 SHA 上独立复核
+- task_id: T4
+- status: READY
+- active_owner: Claude Code（用户手动在北京时间闲时启动）
+- implementation_authorized: YES（2026-09-21，用户要求按既定计划推进；范围仅 T4）
+- objective: 完成默认 text 报告、文本错误通道和真实 CLI 截断证据；Codex 在固定 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
   T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；
-  T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；本提交仅记录验收
+  T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；T4 尚无被测 SHA
 
-## 当前任务：T3（实施完毕，等待 Codex 独立复核）
+## 当前任务：T4（准备完毕，等待用户手动启动 Claude Code）
+
+任务卡：`docs/handoffs/T4_CLAUDE.md`。T1–T3 已有 JSON、真实 CLI 与严格 ticks 输入；
+本轮只补默认 text 报告、非 JSON 错误输出通道、定位字段和五类截断的进程级证据。
+不要重写已通过的核心或输入实现，不开展 T5+。Claude Code 由用户在北京时间闲时
+手动启动；Codex 不代为启动或设置自动续跑。Claude 提交固定 T4 SHA 后，Codex
+在独立 worktree 验证。
+
+## 历史验收：T3（macOS native 范围内接受）
 
 任务卡：`docs/handoffs/T3_CLAUDE.md`。T1 已实现解析和 CLI，T3 仅补尚缺的原始字节、
 库层资源边界和位置证据；若新增测试发现真实不一致，再做最小修复。不重写已通过行为，
-不开展 T4+。用户控制 Claude Code 启动时间，仅在北京时间闲时运行；Codex 不代为启动
-或设置自动续跑。完成后 Claude 提供固定 T3 SHA，再由 Codex 独立复核。
+当时未开展 T4+。用户控制 Claude Code 启动时间，仅在北京时间闲时运行；Codex 不代为启动
+或设置自动续跑。T3 实际被测 SHA 与验收记录见下文；T4 已另发差量任务卡。
 
 ### T3 实施结果（2026-09-21，Claude Code）
 
@@ -41,7 +49,7 @@
 
 参赛关键路径并行：官网当前展示 9 月 30 日截止本期报名与验收，但规划快照中的
 9 月 24 日章程口径仍未复核；公开仓库、正式报名回执、CI、许可证、三场景、Mooncakes
-发布及干净消费者安装目前均无完成证据。不得用本地 T1/T2 验收替代官方资格/验收。
+发布及干净消费者安装目前均无完成证据。不得用本地 T1/T2/T3 验收替代官方资格/验收。
 
 ## 历史验收：T2（本机技术验收通过）
 
