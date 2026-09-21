@@ -1,13 +1,13 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1、T2、T3、T4 均已在明确实现 SHA 上完成 macOS native
-范围内验收。T4 首个实现 SHA 的两个文本报告反例已在修复 SHA 上独立复核通过。
+日期：2026-09-21。T1–T4 均已在明确实现 SHA 上完成 macOS native 范围内验收。
+T5 独立差分 oracle 已通过，固定工具链 CI 待 Claude Code 实施；远程 CI 仍未运行。
 
-- task_id: T4
-- status: ACCEPTED（T4 macOS native 范围）
-- active_owner: user（决定是否展开 T5）
-- implementation_authorized: YES（2026-09-21，用户要求按既定计划推进；范围仅 T4）
-- objective: 默认 text 报告、文本错误通道和真实 CLI 截断证据均已在固定 SHA 上独立复核
+- task_id: T5
+- status: READY（CI 实施待用户在闲时手动启动 Claude Code）
+- active_owner: Claude Code（用户控制启动时间；Codex 独立复核）
+- implementation_authorized: YES（2026-09-21 用户要求推进下一步；仅 T5 本地验证和 CI 候选，不含对外发布/报名）
+- objective: 在独立 oracle 基线上建立 macOS arm64 / Linux x86_64 固定版本 CI 候选并复核真实结果
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
@@ -15,9 +15,23 @@
   T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；
   T4 首个被测 SHA `6d9774519c2c9cb20376af7d79a32c0fea63732e` 复核未通过（两个文本反例）；
   T4 修复被测 SHA `e35fbb2c44ca3c9b4bec69ed528cabb2e944b06c` 已接受；
-  后续纯文档验收提交不改变被测 SHA
+  T5 oracle 提交 `4de792d86a3848d2f387d4dc774033edaa9b0f07` 仅新增 Python 独立测试；
+  后续文档提交不改变上述产品被测 SHA
 
-## 当前任务：T4（本机技术验收通过）
+## 当前任务：T5（独立 oracle 通过；CI 待实施）
+
+Codex 使用固定 T4 产品 SHA 的真实二进制完成独立 oracle：8 个手算样例、
+`seed=20260920` 的 1000 个小网格、30 组三类变形检查、一个 `N=10^12` 解析案例；
+逐字段 JSON、详情、截断及真实退出码无差异。测试代码提交 `4de792d`，
+证据 `docs/evidence/T5/oracle-baseline.md`。`moon fmt --check` 现场退出 255，
+既有格式差异需要在 CI 轮修正并重新运行。CI 工作流尚未创建，仓库无 Git remote，
+因此 Linux 和远程 GitHub Actions 都是 NOT_RUN；官方 core checksum 仍无来源证明。
+
+Claude Code 任务卡：`docs/handoffs/T5_CLAUDE_CI.md`。用户按北京时间闲时手动启动；
+Codex 不代为启动、不安排定时或后台续跑。T5 不能凭工作流文件或本地测试宣称
+跨平台 CI 已通过。
+
+## 历史验收：T4（本机技术验收通过）
 
 Codex 在固定 SHA `e35fbb2c44ca3c9b4bec69ed528cabb2e944b06c` 的独立
 worktree 复核修复：`moon check` 0（14 warnings）、全仓 77/77、report 23/23、
@@ -411,10 +425,10 @@ Codex 不代为启动或设置自动续跑。首个固定 T4 SHA 已交 Codex �
 
 ## 接下来
 
-1. T4 修复 SHA 已在独立 worktree 完成复核并接受，证据见
-   `docs/evidence/T4-fix/codex-independent-review-e35fbb2.md`。
-2. 由用户决定 T5（Linux、CI 与发布候选）是否展开。Claude Code 仍由用户在
-   北京时间闲时手动运行；Codex 不代为启动或设置自动续跑。
+1. 用户在北京时间闲时把 `docs/handoffs/T5_CLAUDE_CI.md` 交给 Claude Code，
+   先修 `moon fmt --check` 起点红灯，再完成固定工具链 CI 候选并提交 SHA。
+2. Codex 在固定 SHA 上独立复核格式、macOS native、真实 CLI、oracle 与工作流。
+   远程仓库和实际 CI run 缺席时保持 NOT_RUN，之后准备公开仓库与 T6 材料。
 
-T1–T4 均只在 macOS native 范围内成立。Linux native、CI、发布、报名与 T5+ 范围
-尚未运行；等待用户决定下一任务，不自动展开。
+T1–T4 验收和 T5 oracle 均只在 macOS native 范围内成立。Linux native、远程 CI、
+发布和报名尚未运行；T5 CI 候选待实施，不自动展开 T6。
