@@ -4,7 +4,7 @@ name = "z2823253773-p/moontick"
 
 version = "0.1.0"
 
-readme = "README.mbt.md"
+readme = "README.md"
 
 keywords = [ "testing", "time-series", "sample-plan", "audit" ]
 
