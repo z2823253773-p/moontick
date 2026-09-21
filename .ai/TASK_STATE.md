@@ -1,12 +1,11 @@
 # MoonTick 当前状态
 
 日期：2026-09-21。T1、T2、T3 均已在明确实现 SHA 上完成 macOS native 范围内验收；
-T4（默认 text 报告、文本错误通道、定位字段与五类截断）已由 Claude Code 实施完毕，
-等待 Codex 在固定 SHA 上独立复核。
+T4 首个实现 SHA 的独立复核发现两个文本报告反例，待 Claude Code 最小修复。
 
 - task_id: T4
-- status: REVIEW
-- active_owner: Codex（在固定 T4 SHA 的独立 worktree 复核）
+- status: READY
+- active_owner: Claude Code（用户手动在北京时间闲时启动修复）
 - implementation_authorized: YES（2026-09-21，用户要求按既定计划推进；范围仅 T4）
 - objective: 完成默认 text 报告、文本错误通道和真实 CLI 截断证据；Codex 在固定 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
@@ -14,9 +13,22 @@ T4（默认 text 报告、文本错误通道、定位字段与五类截断）已
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
   T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；
   T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；
-  T4 被测 SHA 见本文件所在提交本身（提交信息列出被测工件与新增测试文件）
+  T4 首个被测 SHA `6d9774519c2c9cb20376af7d79a32c0fea63732e` 需修复，尚未接受
 
-## 当前任务：T4（实施完毕，等待 Codex 独立复核）
+## 当前任务：T4（独立复核要求最小修复）
+
+复核记录：`docs/evidence/T4/codex-independent-review-6d97745.md`。在固定 SHA 的
+独立 worktree 重跑 check（0，14 warnings）、全仓 test（73/73）、report（19/19）、
+build（0）及真实 CLI（37/37），随后发现两例现有测试未覆盖的文本输出错误：
+
+1. `2/3` 显示 `66.66%`，违反规格 2.2 的两位小数四舍五入口径；`57/100`
+   甚至显示 `56.99%`，并非正确截断。
+2. 两个缺失区间、共 98 个缺失点、`detail_limit=1` 时，文本写成
+   `showing first 1 of 98; truncated`，把缺失点数当成缺失区间总数。
+
+T4 暂不接受。Claude Code 保留上述最小反例，仅修文本展示与相关测试，再交新的
+固定 SHA；Codex 随后独立复核。`__pycache__/` 已在 `.gitignore` 忽略，缓存文件本身
+未删除、未提交。用户继续手动控制 Claude Code 的闲时运行，不设置自动续跑。
 
 任务卡：`docs/handoffs/T4_CLAUDE.md`。T1–T3 已有 JSON、真实 CLI 与严格 ticks 输入；
 本轮只补默认 text 报告、非 JSON 错误输出通道、定位字段和五类截断的进程级证据。
