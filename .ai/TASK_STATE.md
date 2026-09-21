@@ -1,10 +1,10 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1 最小闭环已实现，等待 Codex 在明确 SHA 上独立复核。
+日期：2026-09-21。T1 最小闭环已在明确实现 SHA 上通过 Codex 独立复核。
 
 - task_id: T1
-- status: REVIEW
-- active_owner: Codex
+- status: ACCEPTED
+- active_owner: user
 - implementation_authorized: YES（2026-09-21，范围仅 T1）
 - objective: Claude Code 实现最小 core + ticks CLI；Codex 在明确 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
@@ -95,3 +95,33 @@
   ```
 - 证据：`docs/evidence/T1/int64-upper-bound.md`、`docs/evidence/T1/gates.md`
 - 实现提交 SHA：见本文件所在提交本身（提交信息列出被测工件）。
+
+## 独立复核（2026-09-21，Codex）
+
+复核固定在实现提交 `754ff0ea7eae10cc416f6207ce94277395ddb1f3`，不以本地后续状态
+代替该 SHA。验证在独立 detached worktree `/private/tmp/moontick-t1-verify` 进行，
+实际 HEAD 与该 SHA 一致；没有在 Claude 的 checkout 编译、写 oracle 或修改产品代码。
+
+- 精确隔离工具链复跑：`moon check --target native` 退出 0；`moon test --target native`
+  退出 0（41 passed / 0 failed）；`moon build --target native` 退出 0。
+- 对真实产物 `.../_build/native/debug/build/cmd/moontick/moontick.exe` 运行仓库进程级
+  测试，`python3 tests/cli/test_cli.py` 退出 0（16 passed）。本次独立构建产物 SHA-256 为
+  `1c36358005076a9616ebee8b7d4ca03ecc86641aa2e880f317ebaae03ac80131`。
+- 独立 Python 小网格 oracle（不导入产品代码、不复用产品缺口算法）以 seed `20260921`
+  枚举并比对 519 例：统计、所有详情位置、缺失半开区间、截断标记、JSON status 与真实退出码
+  全部一致。
+- 专项真实二进制验证通过：零字节全缺失；重复不补覆盖；Int64 最小/最大值；十亿级网格
+  缺口；CRLF 后空白行的 `line=2`；CONFIG/IO/usage 的 stdout/stderr 与退出码；确定性。
+  同时实测 21 字节 token、250001 条记录和 32 MiB+1 字节输入均为 `RESOURCE_LIMIT` /
+  退出 2。
+- 未发现需交回修复的反例。工具链仍给出非阻断 warnings（主包 blackbox 测试未来行为、
+  未显式 import `env`、未使用 `escape_text` 与若干 derive 提示），未伪装为零警告。
+
+按用户明确请求，已删除主 checkout 中未追踪的临时诊断文件
+`ticks_input/probe_wbtest.mbt`；删除前核实其内容仅为“Temporary diagnostic probe”。
+完整命令、范围与未测项见 `docs/evidence/T1/codex-independent-review-754ff0e.md`。
+
+## 接下来
+
+T1 仅在上述 SHA 和 macOS native 范围内接受。Linux native、CI、发布、报名、完整 text
+格式与 T2+ 范围仍未授权/未运行；等待用户决定下一任务，不自动展开。
