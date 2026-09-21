@@ -1,18 +1,18 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1 已在明确实现 SHA 上接受；T2 已实施完成，等待 Codex 独立复核。
+日期：2026-09-21。T1 与 T2 均已在明确实现 SHA 上完成本机技术验收；下一任务尚未开始。
 
 - task_id: T2
-- status: REVIEW
-- active_owner: Codex（独立复核；Claude Code 已交出实现）
+- status: ACCEPTED
+- active_owner: user
 - implementation_authorized: YES（2026-09-21，范围仅 T2）
 - objective: 补齐核心审计的 T2 行为与规模证据；Codex 在明确 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
-  T2 被测 SHA 见下方“T2 本轮交接”的 commit SHA，**不是**文档基线 `ddfc6b1`
+  T2 被测 SHA 为 `a88af81bf7e9ff07698c63a293111532b022ba75`，**不是**文档基线 `ddfc6b1`
 
-## 当前任务：T2（Claude Code，已实施完成，交 Codex）
+## 当前任务：T2（本机技术验收通过）
 
 任务卡：`docs/handoffs/T2_CLAUDE.md`。只补足该任务卡列出的 core 分类、细节截断、
 资源拒绝和规模证据；不要重写已通过的 core/CLI/ticks/report，不做 T3+、Linux、CI、text
@@ -36,6 +36,36 @@
   三用例与 T1 一致（0 / 1 / 1，stderr 均 0 字节）。
 - 证据：`docs/evidence/T2/precise-contract-tests.md`、`docs/evidence/T2/gates.md`、
   原始输出 `docs/evidence/T2/raw/`。
+
+### Codex 独立复核（2026-09-21）
+
+- 固定在 `a88af81bf7e9ff07698c63a293111532b022ba75` 的 detached worktree
+  `/private/tmp/moontick-t2-verify`；相对 `754ff0e` 仅新增
+  `core/audit_scope_test.mbt`，没有产品实现文件变更。
+- 独立复跑 check 退出 0（14 warnings / 0 errors）、全仓 test 52/52、core verbose
+  22/22、build 退出 0、真实二进制 CLI 16/16。
+- 独立 Python 小网格/详情 oracle 未导入产品代码、未复用产品缺失范围算法；七个指定
+  矩阵、256 个固定 seed `20260921` 小网格和一个截断案例共 264 例全部一致。
+- 未发现需交回修复的最小反例。独立 worktree debug 产物 SHA-256 为
+  `cf84224e18a66b9d2a6fad4e878008a4a0a70dfc2f2697be84fafdf302ff75dc`，与原 checkout
+  构建产物不同，故未声称跨 worktree 逐字节二进制复现。
+- `git diff --check a88af81^ a88af81` 退出 2，只因原始编译器输出的对齐尾随空格与
+  `raw/cli-three-cases.txt` EOF 空行；它是非阻断文档卫生项，未改写原始证据。
+
+完整记录：`docs/evidence/T2/codex-independent-review-a88af81.md`。Linux、CI、完整 text
+格式、发布和报名仍 NOT_RUN，未经用户指示不进入 T3。
+
+### T2 正式验收决定（2026-09-21）
+
+接受固定产品/测试提交 `a88af81bf7e9ff07698c63a293111532b022ba75` 的 T2 本机
+技术范围：七个分类矩阵与四项补充契约已有精确 core 测试，独立 oracle 264 例一致，
+且在该 SHA 的独立 worktree 再次运行 check（退出 0，14 warnings）、全仓 test
+（52/52）、core test（22/22）、build（退出 0）及真实 CLI（16/16），均通过。
+相对已接受的 T1 产品 SHA，只新增 core 测试，没有产品实现变更。
+
+`git diff --check a88af81^ a88af81` 的原始输出尾随空格及 EOF 空行仍记录为非阻断
+证据文件卫生项；跨 worktree debug 二进制不宣称逐字节一致。本次接受仅代表本机技术
+验收，不代表 Linux、CI、发布、报名或官方赛事验收。后续任务须另行启动。
 
 ## 本轮（2026-09-21，Claude Code）：实现与验证
 
