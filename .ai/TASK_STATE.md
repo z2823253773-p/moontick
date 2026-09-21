@@ -1,16 +1,23 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1 最小闭环已在明确实现 SHA 上通过 Codex 独立复核。
+日期：2026-09-21。T1 已在明确实现 SHA 上接受；用户已授权只实施 T2 核心审计与规模边界。
 
-- task_id: T1
-- status: ACCEPTED
-- active_owner: user
-- implementation_authorized: YES（2026-09-21，范围仅 T1）
-- objective: Claude Code 实现最小 core + ticks CLI；Codex 在明确 SHA 上独立复核
+- task_id: T2
+- status: READY
+- active_owner: Claude Code
+- implementation_authorized: YES（2026-09-21，范围仅 T2）
+- objective: 补齐核心审计的 T2 行为与规模证据；Codex 在明确 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
-- tested_commit: `754ff0ea7eae10cc416f6207ce94277395ddb1f3`（本文件为本次提交的一部分，
-  故 SHA 只能以提交信息与实际 `git log` 为准）
+- tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
+  本轮 T2 尚无实现 SHA
+
+## 当前任务：T2（Claude Code）
+
+任务卡：`docs/handoffs/T2_CLAUDE.md`。只补足该任务卡列出的 core 分类、细节截断、
+资源拒绝和规模证据；不要重写已通过的 core/CLI/ticks/report，不做 T3+、Linux、CI、text
+格式、发布或报名。若新测试发现真实不一致，先保留最小 RED，再最小化修复并记录证据；若
+现有实现直接通过新增测试，如实记录“既有实现通过新覆盖”，不伪造 RED。
 
 ## 本轮（2026-09-21，Claude Code）：实现与验证
 
