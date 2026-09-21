@@ -1,14 +1,14 @@
 # MoonTick 当前状态
 
 日期：2026-09-22。T1–T4 均已在明确实现 SHA 上完成 macOS native 范围内验收。
-T5 固定工具链 CI 候选已实施：本机格式门槛由 255 转绿，macOS arm64 全部门槛通过；
-Codex 独立复核发现工作流矩阵上下文 P1，CI 候选待单点返修。Linux 与远程 GitHub
-Actions 因无远程仓库而均为 NOT_RUN。
+T5 固定工具链 CI 候选已实施：本机格式门槛由 255 转绿，macOS arm64 全部门槛通过。
+Codex 独立复核发现的工作流矩阵上下文 P1 已单点返修并回归；等待 Codex 在返修 SHA 上复核。
+Linux 与远程 GitHub Actions 因无远程仓库而均为 NOT_RUN。
 用户于 2026-09-22 确认本期 9 月 30 日截止；这不等于报名或验收已提交。
 
 - task_id: T5
-- status: REVISE / Claude Code（T5 CI 单点返修待用户闲时手动启动）
-- active_owner: Claude Code（Codex 已交最小反例，用户控制启动时间）
+- status: REVIEW / Codex（CI 矩阵 P1 已返修，待在该 SHA 独立复核）
+- active_owner: Codex（独立复核）；Claude Code 上一轮已交付固定返修 SHA
 - implementation_authorized: YES（2026-09-21 用户要求推进下一步；仅 T5 本地验证和 CI 候选，不含对外发布/报名）
 - objective: 在独立 oracle 基线上建立 macOS arm64 / Linux x86_64 固定版本 CI 候选并复核真实结果
 - repo_root: /Users/henryz/Desktop/比赛/moontick
@@ -20,26 +20,64 @@ Actions 因无远程仓库而均为 NOT_RUN。
   T4 修复被测 SHA `e35fbb2c44ca3c9b4bec69ed528cabb2e944b06c` 已接受；
   T5 oracle 提交 `4de792d86a3848d2f387d4dc774033edaa9b0f07` 仅新增 Python 独立测试；
   后续文档提交不改变上述产品被测 SHA；
-  **T5 CI 候选被测 SHA `89b4e01fcece1ba8264e6109254571253c45b063`（本机门槛通过；CI 矩阵 P1 待返修）**
+  T5 CI 首轮候选 `89b4e01fcece1ba8264e6109254571253c45b063` 复核未通过（矩阵上下文 P1）；
+  **T5 CI 返修被测 SHA `22ae166880d531a21ba2d28c6c0d312351f3b0ff`（待 Codex 独立复核）**
 
-## 当前任务：T5（CI 候选返修）
+## 当前任务：T5（CI 矩阵 P1 已返修，待复核）
 
-Codex 在固定 `89b4e01` 的独立 worktree 复现本机门槛：fmt 0、check 0
-（14 warnings）、build 0、test 77/77、CLI 42/42、独立 oracle 全通过；
-`moon info` 后 `.mbti` 无差异。静态审查发现 `.github/workflows/ci.yml:52–57`
-的矩阵属性使用 `${{ env.* }}`，但 GitHub 官方上下文表不允许 `env` 用于
-`jobs.<job_id>.strategy`。这是依据官方规则确认的配置阻断，远程尚无运行错误日志。
-复核记录：`docs/evidence/T5/codex-independent-review-89b4e01.md`。
-返修卡：`docs/handoffs/T5_CI_REPAIR_CLAUDE.md`。两个 runner 标签已从 GitHub
-官方文档核实：`macos-15` 为 arm64，`ubuntu-24.04` 为 x64，无须改标签。
-本机 `gh auth status` 显示当前 GitHub CLI 登录凭据无效；仓库仍无 remote。
-用户需创建空的公开 GitHub 仓库并重新通过浏览器授权 GitHub CLI，之后再连接和
-推送经复核的提交。公开前预检另发现 `README.mbt.md` 仍是 T1 阶段文案，
-且缺 `LICENSE`；首次 push 前需修正并复核。证据：
-`docs/evidence/T5/github-preflight-2026-09-22.md`。不得在修复前把工作流
-静态检查写成远程 CI 通过。
+Codex 在固定 `89b4e01` 的独立 worktree 复现本机门槛全部通过，但静态审查发现
+`.github/workflows/ci.yml:52–57` 的矩阵属性使用 `${{ env.* }}`，而 GitHub 官方
+上下文表不允许 `env` 用于 `jobs.<job_id>.strategy`。这是依据官方规则确认的配置
+阻断，远程尚无运行错误日志。复核记录：
+`docs/evidence/T5/codex-independent-review-89b4e01.md`。
 
-## T5 首轮交接（历史记录；CI 矩阵待修）
+Claude Code 本轮（起点 `aa4902a`）按返修卡完成单点修复，固定 SHA
+`22ae166880d531a21ba2d28c6c0d312351f3b0ff`：
+
+1. **只改 `.github/workflows/ci.yml`**。四个矩阵表达式改为字面量（沿用已固定且有
+   来源记录的 SHA / core 观察值），并删除只被矩阵引用、已成死引用的工作流级
+   `SHA256_*` / `OBSERVED_CORE_*` 环境变量。选字面量而非 `vars`：仓库无 remote，
+   `vars` 尚不存在；字面量可离线自证。**未用 `latest`、未删平台、未放宽 checksum、
+   未绕开任何失败门槛。**
+2. 独立复核了规则本身（未仅依赖 Codex 结论）：官方
+   [上下文可用性表](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts)
+   的 `jobs.<job_id>.strategy` 行只列 `github, needs, vars, inputs`。P1 成立。
+3. 新增**非空跑的上下文审计**（`_build/check_workflow_contexts.py`，未提交）：把官方
+   可用性表编码为逐位置检查。对修复前工作流报 **BAD / 退出 1**，对修复后报
+   **0 处非法 / 退出 0**——能抓到原缺陷，故该检查有效。
+4. 本机回归：`fmt --check` 0、`check` 0（14 warnings）、`build` 0、`test` 77/77、
+   真实 CLI 42/42、独立 oracle 全通过、`moon info` 后 `.mbti` 无漂移。
+   YAML 双解析器通过；13 个 `run:` 块 `bash -n` 无语法错误。证据：
+   `docs/evidence/T5/CI-matrix-context-fix.md`、`raw/repair-*.txt`。
+
+**（Linux）= NOT_RUN；（GitHub Actions）= NOT_RUN**：仓库仍无 remote，未创建、未 push、
+未发布。静态核验不构成远程 CI 通过。官方 core checksum 仍无来源证明，供应链阻断项保留。
+
+返修卡：`docs/handoffs/T5_CI_REPAIR_CLAUDE.md`。两个 runner 标签已从 GitHub 官方文档
+核实：`macos-15` 为 arm64，`ubuntu-24.04` 为 x64，无须改标签。本机 `gh auth status`
+显示当前 GitHub CLI 登录凭据无效；仓库仍无 remote。用户需创建空的公开 GitHub 仓库并
+重新通过浏览器授权 GitHub CLI，之后再连接和推送经复核的提交。公开前预检另发现
+`README.mbt.md` 仍是 T1 阶段文案，且缺 `LICENSE`；首次 push 前需修正并复核。证据：
+`docs/evidence/T5/github-preflight-2026-09-22.md`。
+
+**交给 Codex 的最小复核命令**（复核目标 `22ae166880d531a21ba2d28c6c0d312351f3b0ff`，独立 worktree，隔离工具链）：
+
+```bash
+export MOON_HOME=/private/tmp/moontick-moon-0.10.14-OS4LNz
+export PATH="$MOON_HOME/bin:$PATH"
+git diff aa4902a 22ae166880d531a21ba2d28c6c0d312351f3b0ff --stat          # 期望只改 ci.yml
+grep -n 'env\.' .github/workflows/ci.yml # 期望只命中注释，无 env.* 表达式
+python3 -c 'import yaml;yaml.safe_load(open(".github/workflows/ci.yml"))'
+moon fmt --check && moon check --target native && moon build --target native
+moon test --target native                # 期望 77/77
+MOONTICK_BIN=$PWD/_build/native/debug/build/cmd/moontick/moontick.exe \
+  python3 tests/cli/test_cli.py          # 期望 42/42
+MOONTICK_BIN=$PWD/_build/native/debug/build/cmd/moontick/moontick.exe \
+  python3 tests/oracle/test_differential.py
+moon info && git diff --exit-code -- '*.mbti'   # 期望无输出
+```
+
+## T5 首轮交接（历史记录；其矩阵上下文 P1 已在 22ae166880d531a21ba2d28c6c0d312351f3b0ff 返修）
 
 Codex 使用固定 T4 产品 SHA 的真实二进制完成独立 oracle：8 个手算样例、
 `seed=20260920` 的 1000 个小网格、30 组三类变形检查、一个 `N=10^12` 解析案例；

@@ -8,7 +8,7 @@
 |---|---|
 | 起点 HEAD | `aa4902af1561c7d5f337d3085474d12f187db41b`（干净 `main`） |
 | 被返修的原 CI SHA | `89b4e01fcece1ba8264e6109254571253c45b063` |
-| 返修被测 SHA | `c9f50b003a7855eaedc52b2c69a0546d5e24562e` |
+| 返修被测 SHA | `22ae166880d531a21ba2d28c6c0d312351f3b0ff`（CI 修复提交；本证据随后以文档提交补录，不改变被测 SHA） |
 | 改动范围 | 仅 `.github/workflows/ci.yml`（+ 本证据与 `.ai/TASK_STATE.md`） |
 
 产品代码、测试、oracle 期望、checksum 严格程度均未改动。
@@ -65,7 +65,7 @@ YAML 解析器无法发现此类错误——合法 YAML 仍可能被 GitHub 拒�
 | 文件 | 结果 | 退出码 |
 |---|---|---:|
 | 修复前 `89b4e01` 的工作流 | **BAD**：`jobs.<job_id>.strategy` 使用 `env` | **1** |
-| 修复后 `c9f50b0` 的工作流 | 全部 OK，0 处非法 | **0** |
+| 修复后 `22ae166880d531a21ba2d28c6c0d312351f3b0ff` 的工作流 | 全部 OK，0 处非法 | **0** |
 
 修复前能报错、修复后转绿，说明该检查不是空跑。原始输出：
 `raw/repair-context-audit-before.txt`、`raw/repair-context-audit-after.txt`。
