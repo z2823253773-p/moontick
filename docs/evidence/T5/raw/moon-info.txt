@@ -1,0 +1,43 @@
+Warning: [0071]
+     ╭─[ /Users/henryz/Desktop/比赛/moontick/cmd/moontick/main.mbt:133:19 ]
+     │
+ 133 │   let arguments = @env.args()
+     │                   ────┬────  
+     │                       ╰────── Warning (core_package_not_imported): Package `env` from `moonbitlang/core/` is used without import. This is deprecated. Please add it to the imports in the moon.pkg file.
+─────╯
+Warning: [0001]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/report/json.mbt:11:4 ]
+    │
+ 11 │ fn escape_text(text : String) -> String {
+    │    ─────┬─────  
+    │         ╰─────── Warning (unused_value): Unused function 'escape_text'
+────╯
+Warning: [0079]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/ticks_input/parse.mbt:28:10 ]
+    │
+ 28 │ } derive(Eq, Debug)
+    │          ─┬  
+    │           ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for InputErrorKind` are implicit promoted as regular method for `InputErrorKind`. This behavior is deprecated and will be removed in the future. Add a `pub extend InputErrorKind with Eq::{not_equal, equal}` declaration or manually define regular methods for type `InputErrorKind` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/ticks_input/parse.mbt:28:14 ]
+    │
+ 28 │ } derive(Eq, Debug)
+    │              ──┬──  
+    │                ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for InputErrorKind` are implicit promoted as regular method for `InputErrorKind`. This behavior is deprecated and will be removed in the future. Add a `pub extend InputErrorKind with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `InputErrorKind` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/ticks_input/read.mbt:12:10 ]
+    │
+ 12 │ } derive(Eq, Debug)
+    │          ─┬  
+    │           ╰── Warning (implicit_impl_as_method): The methods not_equal, equal from `impl Eq for ReadErrorKind` are implicit promoted as regular method for `ReadErrorKind`. This behavior is deprecated and will be removed in the future. Add a `pub extend ReadErrorKind with Eq::{not_equal, equal}` declaration or manually define regular methods for type `ReadErrorKind` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Warning: [0079]
+    ╭─[ /Users/henryz/Desktop/比赛/moontick/ticks_input/read.mbt:12:14 ]
+    │
+ 12 │ } derive(Eq, Debug)
+    │              ──┬──  
+    │                ╰──── Warning (implicit_impl_as_method): The methods to_repr from `impl @moonbitlang/core/debug.Debug for ReadErrorKind` are implicit promoted as regular method for `ReadErrorKind`. This behavior is deprecated and will be removed in the future. Add a `pub extend ReadErrorKind with @moonbitlang/core/debug.Debug::{to_repr}` declaration or manually define regular methods for type `ReadErrorKind` instead. If the promotion is not desirable, add `#deprecated` on the `extend` declaration.
+────╯
+Finished. moon: ran 5 tasks, now up to date (6 warnings, 0 errors)

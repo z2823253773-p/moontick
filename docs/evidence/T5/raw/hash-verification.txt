@@ -1,0 +1,8 @@
+$ awk '{print $1}' <sidecar>
+20967f9389ac54508899ee2fc051a3470d051452bac5818a9696ed4c144f3ec3
+
+$ python3 hashlib <archive>
+20967f9389ac54508899ee2fc051a3470d051452bac5818a9696ed4c144f3ec3
+
+$ python3 hashlib <lib/core.tar.gz>
+6f18b8fdea18f85e628a75e4a1bd3977c5a5c9c6a836fd8824192b0e6bd91b14

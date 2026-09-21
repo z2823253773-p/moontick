@@ -1,0 +1,10 @@
+$ uname -srm                       # this host
+Darwin 25.4.0 arm64
+
+$ python3 -c 'import platform; print(platform.system())'
+Darwin
+
+# A Linux native run was NOT performed: this machine is macOS.
+# No Linux archive exists here:
+(no linux archive present)
+# Status: NOT_RUN

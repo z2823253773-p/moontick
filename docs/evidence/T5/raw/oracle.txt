@@ -1,0 +1,2 @@
+manual=8 random=1000 seed=20260920 metamorphic=30x3 large_N=10^12
+large-grid process elapsed=0.002s timeout=10s

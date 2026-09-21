@@ -1,0 +1,664 @@
+=== check full text ===
+exit=0
+--- stdout ---
+PASS
+grid: [0,60) step_ms=15
+records: 4  expected_points: 4
+coverage: 4/4 (100.00%)  missing: 0  longest_missing_run: 0
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  none
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check full json ===
+exit=0
+--- stdout ---
+{"schema":"moontick.audit.v1","status":"pass","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"4","expected_points":"4","covered_points":"4","missing_points":"0","duplicate_extra_records":"0","out_of_order_records":"0","off_grid_records":"0","out_of_range_records":"0","longest_missing_run":"0"},"missing_ranges":[],"duplicates":[],"out_of_order":[],"off_grid":[],"out_of_range":[],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+--- stderr ---
+
+=== check full default ===
+exit=0
+--- stdout ---
+PASS
+grid: [0,60) step_ms=15
+records: 4  expected_points: 4
+coverage: 4/4 (100.00%)  missing: 0  longest_missing_run: 0
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  none
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check one_missing text ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 3  expected_points: 4
+coverage: 3/4 (75.00%)  missing: 1  longest_missing_run: 1
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [1,2)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check one_missing json ===
+exit=1
+--- stdout ---
+{"schema":"moontick.audit.v1","status":"fail","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"3","expected_points":"4","covered_points":"3","missing_points":"1","duplicate_extra_records":"0","out_of_order_records":"0","off_grid_records":"0","out_of_range_records":"0","longest_missing_run":"1"},"missing_ranges":[["1","2"]],"duplicates":[],"out_of_order":[],"off_grid":[],"out_of_range":[],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+--- stderr ---
+
+=== check one_missing default ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 3  expected_points: 4
+coverage: 3/4 (75.00%)  missing: 1  longest_missing_run: 1
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [1,2)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check empty text ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 0  expected_points: 4
+coverage: 0/4 (0.00%)  missing: 4  longest_missing_run: 4
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [0,4)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check empty json ===
+exit=1
+--- stdout ---
+{"schema":"moontick.audit.v1","status":"fail","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"0","expected_points":"4","covered_points":"0","missing_points":"4","duplicate_extra_records":"0","out_of_order_records":"0","off_grid_records":"0","out_of_range_records":"0","longest_missing_run":"4"},"missing_ranges":[["0","4"]],"duplicates":[],"out_of_order":[],"off_grid":[],"out_of_range":[],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+--- stderr ---
+
+=== check empty default ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 0  expected_points: 4
+coverage: 0/4 (0.00%)  missing: 4  longest_missing_run: 4
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [0,4)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check dup text ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 4  expected_points: 4
+coverage: 3/4 (75.00%)  missing: 1  longest_missing_run: 1
+problems: duplicates=1 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [2,3)
+
+duplicates:
+    ms=15 record=3 line=3
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check dup json ===
+exit=1
+--- stdout ---
+{"schema":"moontick.audit.v1","status":"fail","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"4","expected_points":"4","covered_points":"3","missing_points":"1","duplicate_extra_records":"1","out_of_order_records":"0","off_grid_records":"0","out_of_range_records":"0","longest_missing_run":"1"},"missing_ranges":[["2","3"]],"duplicates":[{"timestamp_ms":"15","record_index":3,"line":3}],"out_of_order":[],"off_grid":[],"out_of_range":[],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+--- stderr ---
+
+=== check dup default ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 4  expected_points: 4
+coverage: 3/4 (75.00%)  missing: 1  longest_missing_run: 1
+problems: duplicates=1 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [2,3)
+
+duplicates:
+    ms=15 record=3 line=3
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check order text ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 4  expected_points: 4
+coverage: 4/4 (100.00%)  missing: 0  longest_missing_run: 0
+problems: duplicates=0 out_of_order=1 off_grid=0 out_of_range=0
+missing_ranges:
+  none
+
+duplicates:
+  none
+
+out_of_order:
+    ms=0 record=2 line=2
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check order json ===
+exit=1
+--- stdout ---
+{"schema":"moontick.audit.v1","status":"fail","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"4","expected_points":"4","covered_points":"4","missing_points":"0","duplicate_extra_records":"0","out_of_order_records":"1","off_grid_records":"0","out_of_range_records":"0","longest_missing_run":"0"},"missing_ranges":[],"duplicates":[],"out_of_order":[{"timestamp_ms":"0","record_index":2,"line":2}],"off_grid":[],"out_of_range":[],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+--- stderr ---
+
+=== check order default ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 4  expected_points: 4
+coverage: 4/4 (100.00%)  missing: 0  longest_missing_run: 0
+problems: duplicates=0 out_of_order=1 off_grid=0 out_of_range=0
+missing_ranges:
+  none
+
+duplicates:
+  none
+
+out_of_order:
+    ms=0 record=2 line=2
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check offgrid text ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 4  expected_points: 4
+coverage: 3/4 (75.00%)  missing: 1  longest_missing_run: 1
+problems: duplicates=0 out_of_order=0 off_grid=1 out_of_range=0
+missing_ranges:
+  [1,2)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+    ms=16 record=2 line=2
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check offgrid json ===
+exit=1
+--- stdout ---
+{"schema":"moontick.audit.v1","status":"fail","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"4","expected_points":"4","covered_points":"3","missing_points":"1","duplicate_extra_records":"0","out_of_order_records":"0","off_grid_records":"1","out_of_range_records":"0","longest_missing_run":"1"},"missing_ranges":[["1","2"]],"duplicates":[],"out_of_order":[],"off_grid":[{"timestamp_ms":"16","record_index":2,"line":2}],"out_of_range":[],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+--- stderr ---
+
+=== check offgrid default ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 4  expected_points: 4
+coverage: 3/4 (75.00%)  missing: 1  longest_missing_run: 1
+problems: duplicates=0 out_of_order=0 off_grid=1 out_of_range=0
+missing_ranges:
+  [1,2)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+    ms=16 record=2 line=2
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check oor text ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 6  expected_points: 4
+coverage: 4/4 (100.00%)  missing: 0  longest_missing_run: 0
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=2
+missing_ranges:
+  none
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+    ms=-15 record=1 line=1
+    ms=60 record=6 line=6
+
+
+--- stderr ---
+
+=== check oor json ===
+exit=1
+--- stdout ---
+{"schema":"moontick.audit.v1","status":"fail","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"6","expected_points":"4","covered_points":"4","missing_points":"0","duplicate_extra_records":"0","out_of_order_records":"0","off_grid_records":"0","out_of_range_records":"2","longest_missing_run":"0"},"missing_ranges":[],"duplicates":[],"out_of_order":[],"off_grid":[],"out_of_range":[{"timestamp_ms":"-15","record_index":1,"line":1},{"timestamp_ms":"60","record_index":6,"line":6}],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+--- stderr ---
+
+=== check oor default ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 6  expected_points: 4
+coverage: 4/4 (100.00%)  missing: 0  longest_missing_run: 0
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=2
+missing_ranges:
+  none
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+    ms=-15 record=1 line=1
+    ms=60 record=6 line=6
+
+
+--- stderr ---
+
+=== check tiny text ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 1  expected_points: 4
+coverage: 1/4 (25.00%)  missing: 3  longest_missing_run: 3
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [1,4)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check tiny json ===
+exit=1
+--- stdout ---
+{"schema":"moontick.audit.v1","status":"fail","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"1","expected_points":"4","covered_points":"1","missing_points":"3","duplicate_extra_records":"0","out_of_order_records":"0","off_grid_records":"0","out_of_range_records":"0","longest_missing_run":"3"},"missing_ranges":[["1","4"]],"duplicates":[],"out_of_order":[],"off_grid":[],"out_of_range":[],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+--- stderr ---
+
+=== check tiny default ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 1  expected_points: 4
+coverage: 1/4 (25.00%)  missing: 3  longest_missing_run: 3
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [1,4)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== check i64max text ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 1  expected_points: 4
+coverage: 0/4 (0.00%)  missing: 4  longest_missing_run: 4
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=1
+missing_ranges:
+  [0,4)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+    ms=9007199254740993 record=1 line=1
+
+
+--- stderr ---
+
+=== check i64max json ===
+exit=1
+--- stdout ---
+{"schema":"moontick.audit.v1","status":"fail","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"1","expected_points":"4","covered_points":"0","missing_points":"4","duplicate_extra_records":"0","out_of_order_records":"0","off_grid_records":"0","out_of_range_records":"1","longest_missing_run":"4"},"missing_ranges":[["0","4"]],"duplicates":[],"out_of_order":[],"off_grid":[],"out_of_range":[{"timestamp_ms":"9007199254740993","record_index":1,"line":1}],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+--- stderr ---
+
+=== check i64max default ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 1  expected_points: 4
+coverage: 0/4 (0.00%)  missing: 4  longest_missing_run: 4
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=1
+missing_ranges:
+  [0,4)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+    ms=9007199254740993 record=1 line=1
+
+
+--- stderr ---
+
+=== detail-limit 1 ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 1  expected_points: 4
+coverage: 1/4 (25.00%)  missing: 3  longest_missing_run: 3
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [1,4)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== detail-limit 10000 ===
+exit=1
+--- stdout ---
+FAIL
+grid: [0,60) step_ms=15
+records: 1  expected_points: 4
+coverage: 1/4 (25.00%)  missing: 3  longest_missing_run: 3
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [1,4)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+
+--- stderr ---
+
+=== help ===
+exit=0
+--- stdout ---
+moontick - audit a fixed-interval sampling plan against observed timestamps
+
+Usage:
+  moontick check <FILE> --start-ms <INT> --end-ms <INT> --step-ms <INT>
+                        [--format text|json] [--detail-limit <INT>]
+  moontick --help
+  moontick --version
+
+The window is half-open: [start-ms, end-ms). All times are integer
+milliseconds. FILE holds one canonical integer per line with no header.
+
+Options:
+  --format <text|json>     report shape, default text
+  --detail-limit <INT>     entries shown per problem category, 1..10000,
+                           default 1000
+
+Exit codes:
+  0  audit passed, or help/version
+  1  audit completed and found data problems
+  2  argument, config, input or resource error
+  3  I/O failure
+  4  internal error
+
+--- stderr ---
+
+=== version ===
+exit=0
+--- stdout ---
+moontick 0.1.0
+
+--- stderr ---
+
+=== no-args ===
+exit=2
+--- stdout ---
+
+--- stderr ---
+moontick: USAGE: missing subcommand: expected `check`, `--help`
+run `moontick --help` for usage
+
+=== missing-window ===
+exit=2
+--- stdout ---
+
+--- stderr ---
+moontick: USAGE: check requires --start-ms, --end-ms and --step-ms
+run `moontick --help` for usage
+
+=== step-zero ===
+exit=2
+--- stdout ---
+
+--- stderr ---
+moontick: CONFIG_INVALID: step_ms must be greater than zero
+
+=== unknown-option ===
+exit=2
+--- stdout ---
+
+--- stderr ---
+moontick: USAGE: unknown option: "--nope"
+run `moontick --help` for usage
+
+=== missing-file ===
+exit=3
+--- stdout ---
+
+--- stderr ---
+moontick: IO_ERROR: cannot open the input file
+
+=== blank-line ===
+exit=2
+--- stdout ---
+
+--- stderr ---
+moontick: INPUT_INVALID: blank lines are not records

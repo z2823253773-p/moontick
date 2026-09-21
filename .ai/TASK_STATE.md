@@ -1,11 +1,12 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1–T4 均已在明确实现 SHA 上完成 macOS native 范围内验收。
-T5 独立差分 oracle 已通过，固定工具链 CI 待 Claude Code 实施；远程 CI 仍未运行。
+日期：2026-09-22。T1–T4 均已在明确实现 SHA 上完成 macOS native 范围内验收。
+T5 固定工具链 CI 候选已实施：本机格式门槛由 255 转绿，macOS arm64 全部门槛通过；
+Linux 与远程 GitHub Actions 因无远程仓库而均为 NOT_RUN。
 
 - task_id: T5
-- status: READY（CI 实施待用户在闲时手动启动 Claude Code）
-- active_owner: Claude Code（用户控制启动时间；Codex 独立复核）
+- status: REVIEW / Codex（CI 候选已提交，等待在该 SHA 上独立复核）
+- active_owner: Codex（独立复核）；Claude Code 上一轮已交付固定 SHA
 - implementation_authorized: YES（2026-09-21 用户要求推进下一步；仅 T5 本地验证和 CI 候选，不含对外发布/报名）
 - objective: 在独立 oracle 基线上建立 macOS arm64 / Linux x86_64 固定版本 CI 候选并复核真实结果
 - repo_root: /Users/henryz/Desktop/比赛/moontick
@@ -16,20 +17,57 @@ T5 独立差分 oracle 已通过，固定工具链 CI 待 Claude Code 实施；�
   T4 首个被测 SHA `6d9774519c2c9cb20376af7d79a32c0fea63732e` 复核未通过（两个文本反例）；
   T4 修复被测 SHA `e35fbb2c44ca3c9b4bec69ed528cabb2e944b06c` 已接受；
   T5 oracle 提交 `4de792d86a3848d2f387d4dc774033edaa9b0f07` 仅新增 Python 独立测试；
-  后续文档提交不改变上述产品被测 SHA
+  后续文档提交不改变上述产品被测 SHA；
+  **T5 CI 候选被测 SHA `89b4e01fcece1ba8264e6109254571253c45b063`（待 Codex 独立复核）**
 
-## 当前任务：T5（独立 oracle 通过；CI 待实施）
+## 当前任务：T5（CI 候选已交付，待 Codex 独立复核）
 
 Codex 使用固定 T4 产品 SHA 的真实二进制完成独立 oracle：8 个手算样例、
 `seed=20260920` 的 1000 个小网格、30 组三类变形检查、一个 `N=10^12` 解析案例；
 逐字段 JSON、详情、截断及真实退出码无差异。测试代码提交 `4de792d`，
-证据 `docs/evidence/T5/oracle-baseline.md`。`moon fmt --check` 现场退出 255，
-既有格式差异需要在 CI 轮修正并重新运行。CI 工作流尚未创建，仓库无 Git remote，
-因此 Linux 和远程 GitHub Actions 都是 NOT_RUN；官方 core checksum 仍无来源证明。
+证据 `docs/evidence/T5/oracle-baseline.md`。
+
+Claude Code 本轮（起点 `3813d56`）交付固定 SHA `89b4e01`：
+
+1. 格式门槛由起点现场实测的 **255** 转绿。用隔离工具链的 `moon fmt` 整理 15 个文件，
+   diff 仅含换行、尾随逗号与字段简写。**未跳过门槛、未把失败写成通过。**
+   等价性用格式化前后两个真实二进制回放 37 个 CLI 调用证明：stdout、stderr、
+   退出码逐字节一致（两文件 SHA-256 同为 `67e6ce2c…0279a`）。
+2. `moon info` 暴露 `report/pkg.generated.mbti` 与 T4 源码不同步，补上三个纯新增公开
+   函数（`render_text`、`try_render_json`、`try_render_text`），无既有声明变化，重跑幂等。
+3. 新增 `.github/workflows/ci.yml`：`macos-15`(arm64) 与 `ubuntu-24.04`(x86_64) 固定
+   `moonc v0.10.14+7d59c7ec9`，跑 `moon fmt --check`、native check/build/test、真实 CLI
+   与独立 oracle，断言精确版本与 runner 架构。二进制归档按发行方 sidecar 校验；
+   core 无发行方校验材料，仅与单机观察值比对并在 summary 中明确标注非发行方证明，
+   Linux 侧记为 NOT VERIFIED。
+
+本机 macOS arm64 全部门槛：`fmt --check` 0、`check` 0（14 warnings）、`build` 0、
+`test` 77/77、真实 CLI 42/42、独立 oracle 全通过。证据 `docs/evidence/T5/CI.md`。
+
+**Linux 与远程 GitHub Actions 均为 NOT_RUN**：仓库仍无 Git remote，未创建、未 push、
+未发布。工作流只做了静态核验（两个 YAML 解析器 + 13 个 `run:` 块 `bash -n`），
+这不等于远程 CI 通过。官方 core checksum 仍无来源证明，供应链阻断项保留。
 
 Claude Code 任务卡：`docs/handoffs/T5_CLAUDE_CI.md`。用户按北京时间闲时手动启动；
 Codex 不代为启动、不安排定时或后台续跑。T5 不能凭工作流文件或本地测试宣称
 跨平台 CI 已通过。
+
+**交给 Codex 的最小复核命令**（在 `89b4e01` 的独立 worktree，隔离工具链）：
+
+```bash
+export MOON_HOME=/private/tmp/moontick-moon-0.10.14-OS4LNz
+export PATH="$MOON_HOME/bin:$PATH"
+moon fmt --check                          # 期望 0
+moon check --target native                # 期望 0，14 warnings
+moon test  --target native                # 期望 77/77
+moon build --target native                # 期望 0
+MOONTICK_BIN=$PWD/_build/native/debug/build/cmd/moontick/moontick.exe \
+  python3 tests/cli/test_cli.py           # 期望 42/42
+MOONTICK_BIN=$PWD/_build/native/debug/build/cmd/moontick/moontick.exe \
+  python3 tests/oracle/test_differential.py
+moon info && git diff --exit-code -- '*.mbti'   # 期望无输出（幂等）
+python3 -c 'import yaml;yaml.safe_load(open(".github/workflows/ci.yml"))'
+```
 
 ## 历史验收：T4（本机技术验收通过）
 

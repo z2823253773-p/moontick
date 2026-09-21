@@ -1,0 +1,6 @@
+$ git remote -v
+(exit 0)
+
+# empty output above = no remote configured
+$ git config --get-regexp '^remote\.'
+(no remote.* config)
