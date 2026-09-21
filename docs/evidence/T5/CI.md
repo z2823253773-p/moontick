@@ -14,6 +14,10 @@
 | 接口文件 | `8dd8388` chore: refresh the report package interface file |
 | CI 工作流 | `89b4e01` ci: add fixed-toolchain macOS arm64 and Linux x86_64 candidate |
 | 本轮被测产品 SHA | `89b4e01fcece1ba8264e6109254571253c45b063` |
+| 本文件所在提交 | `56844aa` docs(t5): record the CI candidate…（仅文档） |
+
+按仓库既有约定，本节之后新增的**文档提交不改变产品被测 SHA**。Codex 复核
+**产品与被测 SHA `89b4e01`**；`56844aa` 只追加本证据与 `.ai/TASK_STATE.md`。
 
 产品语义、schema、计数、退出码和 oracle 期望均未改动；本轮只做格式整理、重新生成
 被 T4 遗漏的公开接口文件和新增 CI。

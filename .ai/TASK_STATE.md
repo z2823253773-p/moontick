@@ -52,6 +52,9 @@ Claude Code 任务卡：`docs/handoffs/T5_CLAUDE_CI.md`。用户按北京时间�
 Codex 不代为启动、不安排定时或后台续跑。T5 不能凭工作流文件或本地测试宣称
 跨平台 CI 已通过。
 
+**复核目标 SHA 为 `89b4e01`**（产品与 CI 的最后一个提交）；其后的提交只追加
+`docs/evidence/T5/` 与 `.ai/TASK_STATE.md`，按既有约定不改变被测 SHA。
+
 **交给 Codex 的最小复核命令**（在 `89b4e01` 的独立 worktree，隔离工具链）：
 
 ```bash
