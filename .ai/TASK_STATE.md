@@ -1,23 +1,34 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1、T2、T3 均已在明确实现 SHA 上完成 macOS native 范围内验收；
-T4 首个实现 SHA 的独立复核发现两个文本报告反例，Claude Code 已完成最小修复并提交，
-待 Codex 在新的固定 SHA 上再次独立复核。
+日期：2026-09-21。T1、T2、T3、T4 均已在明确实现 SHA 上完成 macOS native
+范围内验收。T4 首个实现 SHA 的两个文本报告反例已在修复 SHA 上独立复核通过。
 
 - task_id: T4
-- status: REVIEW（修复后待复核）
-- active_owner: Codex（用户手动启动独立复核）
+- status: ACCEPTED（T4 macOS native 范围）
+- active_owner: user（决定是否展开 T5）
 - implementation_authorized: YES（2026-09-21，用户要求按既定计划推进；范围仅 T4）
-- objective: 完成默认 text 报告、文本错误通道和真实 CLI 截断证据；Codex 在固定 SHA 上独立复核
+- objective: 默认 text 报告、文本错误通道和真实 CLI 截断证据均已在固定 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
   T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；
   T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；
   T4 首个被测 SHA `6d9774519c2c9cb20376af7d79a32c0fea63732e` 复核未通过（两个文本反例）；
-  T4 修复 SHA 见本文件所在提交本身，待 Codex 独立复核
+  T4 修复被测 SHA `e35fbb2c44ca3c9b4bec69ed528cabb2e944b06c` 已接受；
+  后续纯文档验收提交不改变被测 SHA
 
-## 当前任务：T4（独立复核要求最小修复）
+## 当前任务：T4（本机技术验收通过）
+
+Codex 在固定 SHA `e35fbb2c44ca3c9b4bec69ed528cabb2e944b06c` 的独立
+worktree 复核修复：`moon check` 0（14 warnings）、全仓 77/77、report 23/23、
+native build 0、真实 CLI 42/42。独立 Decimal 参考值与文本输出在 262 个覆盖率
+案例一致；修复前后 3 个 JSON 用例的退出码、stdout、stderr 逐字节一致。
+`2/3` 为 `66.67%`、`57/100` 为 `57.00%`；19999/20000 虽显示
+`100.00%`，仍为 FAIL / 退出 1。缺失区间提示准确区分已显示的 1 个区间与
+总共缺失的 98 个点，接受语义等价措辞。复核记录：
+`docs/evidence/T4-fix/codex-independent-review-e35fbb2.md`。
+
+以下首轮复核反例保留为历史过程，不代表当前产品状态。
 
 复核记录：`docs/evidence/T4/codex-independent-review-6d97745.md`。在固定 SHA 的
 独立 worktree 重跑 check（0，14 warnings）、全仓 test（73/73）、report（19/19）、
@@ -28,8 +39,8 @@ build（0）及真实 CLI（37/37），随后发现两例现有测试未覆盖�
 2. 两个缺失区间、共 98 个缺失点、`detail_limit=1` 时，文本写成
    `showing first 1 of 98; truncated`，把缺失点数当成缺失区间总数。
 
-T4 首个 SHA 暂不接受。Claude Code 已保留上述最小反例、仅修文本展示与相关测试，
-并提交新的固定 SHA（见下文"T4 复核修复"节）；Codex 随后独立复核。
+T4 首个 SHA 未被接受。Claude Code 保留上述最小反例、仅修文本展示与相关测试，
+并提交新的固定 SHA；Codex 随后完成独立复核并接受修复。
 `__pycache__/` 已在 `.gitignore` 忽略，缓存文件本身未删除、未提交。
 用户继续手动控制 Claude Code 的闲时运行，不设置自动续跑。
 
@@ -319,10 +330,13 @@ Codex 不代为启动或设置自动续跑。首个固定 T4 SHA 已交 Codex �
 - 未完成/未授权：Linux native、CI、完整 text 格式、发布、报名均未运行；T1 已独立
   验证的 reader 入口字节上限与昂贵输入本轮按任务卡未重复制造。无待修复的最小反例。
 
-## T4 本轮交接（Claude Code → Codex）
+## T4 首轮交接（历史记录；已由修复与复核取代）
+
+以下保留首轮交接原貌；其中百分比预期、截断 golden 状态和待复核指令
+均已被 `e35fbb2` 修复及本机验收取代，不能作为当前产品结论。
 
 - 起点基线：`100830aad1c95e2999cb62f9c3c22b0d8e1150df`
-- T4 提交 SHA：见本文件所在提交本身（提交信息列出被测工件与新增测试文件）。
+- T4 首个实现 SHA：`6d9774519c2c9cb20376af7d79a32c0fea63732e`。
   相对 `8092ac6`（T3）**既有产品实现变更，也有测试与证据新增**。
 - 改动文件：
   - 新增 `report/text.mbt`、`report/text_test.mbt`（11 个测试）
@@ -355,10 +369,10 @@ Codex 不代为启动或设置自动续跑。首个固定 T4 SHA 已交 Codex �
 - 未完成/未授权：Linux native、CI、发布、报名均未运行；文本格式的截断 golden 未补；
   终端列对齐行为未测。无待修复的最小反例。
 
-## T4 复核修复（Claude Code → Codex）
+## T4 修复交接（已独立验收）
 
 - 起点 HEAD：`23d25dd`（Codex 复核记录提交），工作树干净。
-- T4 修复 SHA：见本文件所在提交本身（提交信息列出被测工件与新增测试文件）。
+- T4 修复被测 SHA：`e35fbb2c44ca3c9b4bec69ed528cabb2e944b06c`。
 - 只修复核记录中的两个文本输出反例，**未改核心计数、未改 JSON 契约、
   未改 `core/`、`ticks_input/`、`report/json.mbt`、`cmd/moontick/main.mbt`**。
 - 改动文件：
@@ -397,11 +411,10 @@ Codex 不代为启动或设置自动续跑。首个固定 T4 SHA 已交 Codex �
 
 ## 接下来
 
-1. Codex 在 T4 修复 SHA 的独立 worktree 复核：跑同一隔离工具链的
-   `moon check/test/build` 与真实二进制 CLI，读 `docs/evidence/T4-fix/raw/` 的原始输出，
-   重点复核上文"Codex 最小复核面"四条。
-   注意：启动复核前需用户手动授权；本会话不自行安排定时任务或后台续跑。
-2. 复核通过后由用户决定 T5（独立验证、CI 与发布候选）是否展开。
+1. T4 修复 SHA 已在独立 worktree 完成复核并接受，证据见
+   `docs/evidence/T4-fix/codex-independent-review-e35fbb2.md`。
+2. 由用户决定 T5（Linux、CI 与发布候选）是否展开。Claude Code 仍由用户在
+   北京时间闲时手动运行；Codex 不代为启动或设置自动续跑。
 
 T1–T4 均只在 macOS native 范围内成立。Linux native、CI、发布、报名与 T5+ 范围
-仍未授权/未运行；等待用户决定下一任务，不自动展开。
+尚未运行；等待用户决定下一任务，不自动展开。
