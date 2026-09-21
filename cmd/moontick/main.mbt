@@ -27,7 +27,27 @@ let exit_internal : Int = 4
 
 ///|
 fn version_text() -> String {
-  "moontick 0.1.0 (T1)"
+  "moontick 0.1.0"
+}
+
+///|
+/// Report an error that happened after the arguments parsed.
+///
+/// The output format is known here, so JSON mode writes one `moontick.error.v1`
+/// document to stdout and text mode writes a diagnostic line to stderr with
+/// stdout left empty. Neither echoes the input contents or an absolute path.
+fn report_error(
+  as_json : Bool,
+  code : String,
+  message : String,
+  record_index : Int?,
+  line : Int?,
+) -> Unit {
+  if as_json {
+    println(@report.render_error(code, message, record_index, line))
+  } else {
+    eprintln("moontick: " + code + ": " + message)
+  }
 }
 
 ///|
@@ -39,11 +59,8 @@ fn run_check(arguments : CheckArgs) -> Int {
     Err(error) => {
       let code = error.kind.code()
       let message = error.kind.message()
-      if as_json {
-        println(@report.render_error(code, message, None, None))
-      } else {
-        println("moontick: " + code + ": " + message)
-      }
+      // A file that could not be read has no record and no line to point at.
+      report_error(as_json, code, message, None, None)
       return if code == "RESOURCE_LIMIT" {
         exit_usage_or_input
       } else {
@@ -56,13 +73,14 @@ fn run_check(arguments : CheckArgs) -> Int {
     Err(error) => {
       let code = error.kind.code()
       let message = error.kind.message()
-      // A byte or record limit is not tied to one line; a blank line or a bad
-      // token is.
-      let line = if error.line == 0 { None } else { Some(error.line) }
-      if as_json {
-        println(@report.render_error(code, message, None, line))
+      // One bad record rejects the whole input, and that record *is* the
+      // location: its 1-based record number equals the physical line the
+      // adapter stopped on. A byte or record limit is not tied to one line, so
+      // both position fields stay absent.
+      if error.line == 0 {
+        report_error(as_json, code, message, None, None)
       } else {
-        println("moontick: " + code + ": " + message)
+        report_error(as_json, code, message, Some(error.line), Some(error.line))
       }
       return exit_usage_or_input
     }
@@ -76,11 +94,8 @@ fn run_check(arguments : CheckArgs) -> Int {
     Err(error) => {
       let code = error.code()
       let message = error.message()
-      if as_json {
-        println(@report.render_error(code, message, None, None))
-      } else {
-        println("moontick: " + code + ": " + message)
-      }
+      // A bad plan is a property of the invocation, not of any record.
+      report_error(as_json, code, message, None, None)
       return exit_usage_or_input
     }
   }
@@ -88,34 +103,24 @@ fn run_check(arguments : CheckArgs) -> Int {
     Err(error) => {
       let code = error.code()
       let message = error.message()
-      if as_json {
-        println(@report.render_error(code, message, None, None))
-      } else {
-        println("moontick: " + code + ": " + message)
-      }
+      report_error(as_json, code, message, None, None)
       exit_usage_or_input
     }
     Ok(report) => {
-      // T1 renders JSON only. SPEC section 4 puts text rendering in T4; until
-      // then a text request fails rather than printing a half-built report and
-      // calling it a pass.
-      if as_json {
-        match @report.try_render_json(report, parsed.start_lines) {
-          Ok(text) => println(text)
-          Err(message) => {
-            // The render layer rejected its own inputs, which no user action
-            // can cause. Reporting this as a usage or data error would let an
-            // internal defect masquerade as a finding about the input.
-            eprintln("moontick: INTERNAL: " + message)
-            return exit_internal
-          }
-        }
+      let rendered = if as_json {
+        @report.try_render_json(report, parsed.start_lines)
       } else {
-        println(
-          "moontick: CONFIG_INVALID: text output is not implemented in T1; " +
-          "use --format json",
-        )
-        return exit_usage_or_input
+        @report.try_render_text(report, parsed.start_lines)
+      }
+      match rendered {
+        Ok(text) => println(text)
+        Err(message) => {
+          // The render layer rejected its own inputs, which no user action can
+          // cause. Reporting this as a usage or data error would let an
+          // internal defect masquerade as a finding about the input.
+          eprintln("moontick: INTERNAL: " + message)
+          return exit_internal
+        }
       }
       if report.passed {
         exit_pass

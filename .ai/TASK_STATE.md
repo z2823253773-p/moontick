@@ -1,25 +1,54 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1、T2 与 T3 均已在明确实现 SHA 上完成 macOS native 范围内验收；T4 差量任务卡已备，Claude Code 尚未启动。
+日期：2026-09-21。T1、T2、T3 均已在明确实现 SHA 上完成 macOS native 范围内验收；
+T4（默认 text 报告、文本错误通道、定位字段与五类截断）已由 Claude Code 实施完毕，
+等待 Codex 在固定 SHA 上独立复核。
 
 - task_id: T4
-- status: READY
-- active_owner: Claude Code（用户手动在北京时间闲时启动）
+- status: REVIEW
+- active_owner: Codex（在固定 T4 SHA 的独立 worktree 复核）
 - implementation_authorized: YES（2026-09-21，用户要求按既定计划推进；范围仅 T4）
 - objective: 完成默认 text 报告、文本错误通道和真实 CLI 截断证据；Codex 在固定 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
   T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；
-  T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；T4 尚无被测 SHA
+  T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；
+  T4 被测 SHA 见本文件所在提交本身（提交信息列出被测工件与新增测试文件）
 
-## 当前任务：T4（准备完毕，等待用户手动启动 Claude Code）
+## 当前任务：T4（实施完毕，等待 Codex 独立复核）
 
 任务卡：`docs/handoffs/T4_CLAUDE.md`。T1–T3 已有 JSON、真实 CLI 与严格 ticks 输入；
 本轮只补默认 text 报告、非 JSON 错误输出通道、定位字段和五类截断的进程级证据。
-不要重写已通过的核心或输入实现，不开展 T5+。Claude Code 由用户在北京时间闲时
-手动启动；Codex 不代为启动或设置自动续跑。Claude 提交固定 T4 SHA 后，Codex
-在独立 worktree 验证。
+未重写已通过的核心或输入实现，未开展 T5+。用户在北京时间闲时手动启动 Claude Code；
+Codex 不代为启动或设置自动续跑。已提交固定 T4 SHA，交 Codex 在独立 worktree 验证。
+
+### T4 实施结果（2026-09-21，Claude Code）
+
+- 起点基线：`100830aad1c95e2999cb62f9c3c22b0d8e1150df`（T4 任务卡提交），工作树干净，
+  与任务卡一致。未把该文档 SHA 当作产品被测 SHA。
+- 隔离工具链 `/private/tmp/moontick-moon-0.10.14-OS4LNz` 可用，`moonc v0.10.14+7d59c7ec9`
+  现场复核；未使用全局 `~/.moon`，未读凭据。
+- **本轮有真实 RED**（与 T2/T3 的零改动不同，T4 是产品实现轮）：先写测试得
+  `37 tests, 11 failures + 2 errors`，再实现最小改动。五类截断矩阵与"显式/默认等价"
+  两组在无 UI 依赖下先行通过，按任务卡如实记录为"既有行为直接通过"，未伪造 RED。
+- **产品实现变更**：
+  - 新增 `report/text.mbt`（纯渲染器，无文件/时钟/主机/路径）。
+  - `cmd/moontick/main.mbt`：text 分支改为渲染报告；解析成功后的
+    `CONFIG_INVALID`/`INPUT_INVALID`/`RESOURCE_LIMIT`/`IO_ERROR` 改为写 stderr、
+    stdout 为空；可定位输入错误同时带 `record_index` 与 `line`；`--version` 去掉 `(T1)`。
+  - `report/moon.pkg` 仅加 `moonbitlang/core/double` 导入。**未改** `core/*`、
+    `ticks_input/*`、`report/json.mbt`，未扩大任何自有公开 API。
+- 门槛：`moon check` 退出 0（14 warnings / 0 errors，与 T1–T3 同数、无新增）、
+  `moon test` 退出 0（73/73，T3 为 62）、report 包 19/19、`moon build` 退出 0、
+  `python3 tests/cli/test_cli.py` 退出 0（37 passed，T3 为 17）。
+- 产品二进制 SHA-256 `a1f590ddda144ab26328e152f89885a0c560ca608a491aa8a79b96697a030497`，
+  与 T1–T3 的 `b9e3e189…` 不同——本轮确有产品变更，符合预期。
+- 变异抽查四处（错误通道 / 截断提示 / 百分比 / `record_index`）各自精确命中对应用例，
+  随后全部还原。**注意**：截断提示那处只被进程内用例捕获，三份 golden 都没抓到，
+  因为任务卡指定的 golden 输入均不触发截断。已记录为 golden 覆盖面的已知边界。
+- 证据：`docs/evidence/T4/report-and-cli.md`、`docs/evidence/T4/gates.md`、
+  原始输出 `docs/evidence/T4/raw/`、golden `tests/golden/text-*.txt`。
 
 ## 历史验收：T3（macOS native 范围内接受）
 
@@ -273,13 +302,49 @@
 - 未完成/未授权：Linux native、CI、完整 text 格式、发布、报名均未运行；T1 已独立
   验证的 reader 入口字节上限与昂贵输入本轮按任务卡未重复制造。无待修复的最小反例。
 
+## T4 本轮交接（Claude Code → Codex）
+
+- 起点基线：`100830aad1c95e2999cb62f9c3c22b0d8e1150df`
+- T4 提交 SHA：见本文件所在提交本身（提交信息列出被测工件与新增测试文件）。
+  相对 `8092ac6`（T3）**既有产品实现变更，也有测试与证据新增**。
+- 改动文件：
+  - 新增 `report/text.mbt`、`report/text_test.mbt`（11 个测试）
+  - 新增 `tests/golden/text-{complete,empty,duplicates-and-missing}.txt`
+  - 修改 `report/moon.pkg`（加 `moonbitlang/core/double`）、
+    `cmd/moontick/main.mbt`、`tests/cli/test_cli.py`（+21 个真实进程用例）
+  - 新增 `docs/evidence/T4/`；修改 `.ai/TASK_STATE.md`（状态 → REVIEW，owner → Codex）
+- 验证命令（同一隔离工具链，逐字照抄任务卡）：
+  ```bash
+  export MOON_HOME=/private/tmp/moontick-moon-0.10.14-OS4LNz
+  export PATH="$MOON_HOME/bin:$PATH"
+  moon check --target native && moon test --target native && moon build --target native
+  export MOONTICK_BIN=$PWD/_build/native/debug/build/cmd/moontick/moontick.exe
+  python3 tests/cli/test_cli.py
+  ```
+- 证据：`docs/evidence/T4/`
+- Codex 的最小复核面：
+  1. **文本错误通道**：`moontick check <bad> --start-ms 0 --end-ms 60 --step-ms 15`
+     必须退出 2、**stdout 为空**、stderr 含 `INPUT_INVALID`。旧 T3 产物把该诊断写在
+     stdout，复核时请确认这是本轮有意变更且符合 SPEC 3.2（该规格句限定 JSON 模式）。
+  2. **定位字段**：同一错误加 `--format json` 后应得
+     `"record_index":2,"line":2`；不可定位的错误（IO/CONFIG/字节或记录上限）应**同时
+     省略两字段**，请重点核对省略分支。
+  3. **百分比**：`covered/expected` 用 `Double` 缩放后截断（非四舍五入），且通过/失败
+     只来自 `report.passed`。请用独立计算核对 1/3→`33.33%`、2/3→`66.66%`。
+  4. **五类截断**：`--detail-limit 1` 逐类复核，重点确认"除本类别外 truncated 均为
+     false"以及"恰好等于上限不算截断"（比较为 `>` 而非 `>=`）。
+  5. **golden 局限**：三份 golden 均不触发详情截断，截断文本证据只在
+     `report/text_test.mbt`。请勿把 golden 通过当作截断证据。
+- 未完成/未授权：Linux native、CI、发布、报名均未运行；文本格式的截断 golden 未补；
+  终端列对齐行为未测。无待修复的最小反例。
+
 ## 接下来
 
-1. Codex 在下方 T3 commit SHA 的独立 worktree 复核：跑同一隔离工具链的
-   `moon check/test/build` 与真实二进制 CLI，读 `docs/evidence/T3/raw/` 的原始输出，
-   并用**原始字节 oracle**（不导入产品代码）复核五类差量证据，重点见上节"最小复核面"。
+1. Codex 在下方 T4 commit SHA 的独立 worktree 复核：跑同一隔离工具链的
+   `moon check/test/build` 与真实二进制 CLI，读 `docs/evidence/T4/raw/` 的原始输出，
+   复核文本报告、错误通道、JSON 位置与五类截断，重点见上节"最小复核面"。
    注意：启动复核前需用户手动授权；本会话不自行安排定时任务或后台续跑。
-2. 复核通过后由用户决定 T4（CLI、报告、错误与确定性）是否展开。
+2. 复核通过后由用户决定 T5（独立验证、CI 与发布候选）是否展开。
 
-T1、T2、T3 均只在 macOS native 范围内成立。Linux native、CI、发布、报名、完整 text
-格式与 T4+ 范围仍未授权/未运行；等待用户决定下一任务，不自动展开。
+T1–T4 均只在 macOS native 范围内成立。Linux native、CI、发布、报名与 T5+ 范围
+仍未授权/未运行；等待用户决定下一任务，不自动展开。

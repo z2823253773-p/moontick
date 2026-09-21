@@ -16,6 +16,7 @@ the shipped module imports it.
 
 import json
 import os
+import socket
 import subprocess
 import tempfile
 import unittest
@@ -32,13 +33,8 @@ def run(args, cwd=None):
     )
 
 
-class CliContract(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        if not BIN:
-            raise unittest.SkipTest("MOONTICK_BIN is not set")
-        if not Path(BIN).is_file():
-            raise unittest.SkipTest(f"MOONTICK_BIN does not exist: {BIN}")
+class RealBinaryTest(unittest.TestCase):
+    """Shared setup: every case here drives the compiled executable."""
 
     def check_ticks(self, text, extra=None):
         """Write `text` to a scratch .ticks file and run `check` on it."""
@@ -50,6 +46,24 @@ class CliContract(unittest.TestCase):
                 args += extra
             return run(args)
 
+    def check_text(self, text, extra=None, explicit=True):
+        """Run `check` in text mode and return the finished process.
+
+        `explicit=False` omits `--format` entirely, which is how the default
+        format is exercised: the default must be text, not a fallback.
+        """
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "input.ticks"
+            path.write_text(text, encoding="utf-8")
+            args = ["check", str(path)] + WINDOW
+            if explicit:
+                args += ["--format", "text"]
+            if extra:
+                args += extra
+            return run(args)
+
+
+class CliContract(RealBinaryTest):
     def report(self, text, extra=None):
         result = self.check_ticks(text, extra)
         self.assertEqual(result.stderr, "", result.stderr)
@@ -283,6 +297,305 @@ class CliContract(unittest.TestCase):
         second = self.check_ticks("0\n15\n15\n45\n")
         self.assertEqual(first.stdout, second.stdout)
         self.assertEqual(first.returncode, second.returncode)
+
+
+GOLDEN_DIR = Path(__file__).resolve().parent.parent / "golden"
+
+
+class TextReport(RealBinaryTest):
+    """The default text report. See docs/planning/02_SPEC.md section 4."""
+
+    # -- default format ----------------------------------------------------
+
+    def test_the_default_format_is_a_text_report(self):
+        result = self.check_text("0\n15\n30\n45\n", explicit=False)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stderr, "")
+        # Not JSON, and not an error: an actual report.
+        self.assertNotIn("{", result.stdout)
+        self.assertIn("PASS", result.stdout)
+
+    def test_explicit_text_is_byte_identical_to_the_default(self):
+        default = self.check_text("0\n15\n30\n45\n", explicit=False)
+        explicit = self.check_text("0\n15\n30\n45\n", explicit=True)
+        self.assertEqual(default.stdout, explicit.stdout)
+        self.assertEqual(default.returncode, explicit.returncode)
+
+    def test_a_problem_file_fails_with_exit_code_one(self):
+        result = self.check_text("0\n15\n15\n45\n")
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(result.stderr, "")
+        self.assertIn("FAIL", result.stdout)
+
+    def test_the_text_report_is_deterministic(self):
+        first = self.check_text("0\n15\n15\n45\n")
+        second = self.check_text("0\n15\n15\n45\n")
+        self.assertEqual(first.stdout, second.stdout)
+        self.assertEqual(first.returncode, second.returncode)
+
+    def test_the_text_report_carries_the_required_fields(self):
+        # 0,15000... no: the window here is [0,60) step 15. Input
+        # 0,15,15,45 covers grid indices 0,1,1,3: index 2 is missing.
+        result = self.check_text("0\n15\n15\n45\n")
+        report = result.stdout
+        for fragment in [
+            "FAIL",
+            "[0,60)",
+            "step_ms",
+            "15",
+            "3/4",  # covered_points / expected_points
+            "75.00%",
+            "missing",
+            "1",
+        ]:
+            self.assertIn(fragment, report, report)
+
+    def test_the_text_report_names_no_host_or_absolute_path_or_clock(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "input.ticks"
+            path.write_text("0\n15\n30\n45\n", encoding="utf-8")
+            result = run(["check", str(path)] + WINDOW)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        # A reproducible report must not carry environment-specific values.
+        self.assertNotIn(str(path), result.stdout)
+        self.assertNotIn(directory, result.stdout)
+        self.assertNotIn(socket.gethostname(), result.stdout)
+        # No date or time of day.
+        self.assertNotRegex(result.stdout, r"\d{4}-\d{2}-\d{2}")
+        self.assertNotRegex(result.stdout, r"\d{2}:\d{2}:\d{2}")
+
+    def test_text_reports_do_not_leak_the_input_contents(self):
+        result = self.check_text("0\n15\nbad\n30\n")
+        self.assertEqual(result.returncode, 2)
+        self.assertNotIn("bad", result.stdout)
+        self.assertNotIn("bad", result.stderr)
+
+    # -- golden ------------------------------------------------------------
+
+    def test_golden_text_reports(self):
+        cases = [
+            ("complete", "0\n15\n30\n45\n", 0),
+            ("empty", "", 1),
+            ("duplicates-and-missing", "0\n15\n15\n45\n", 1),
+        ]
+        for name, text, expected_code in cases:
+            with self.subTest(case=name):
+                golden = GOLDEN_DIR / f"text-{name}.txt"
+                self.assertTrue(golden.is_file(), f"missing golden {golden}")
+                result = self.check_text(text)
+                self.assertEqual(result.returncode, expected_code, result.stderr)
+                self.assertEqual(result.stdout, golden.read_text(encoding="utf-8"))
+
+
+class TextErrorChannel(RealBinaryTest):
+    """Errors once the arguments have parsed go to stderr in text mode."""
+
+    def text_run(self, text):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "input.ticks"
+            path.write_text(text, encoding="utf-8")
+            return run(["check", str(path)] + WINDOW)
+
+    def test_input_error_goes_to_stderr_with_stdout_empty(self):
+        # The path comes first: once the arguments parse, text mode must use
+        # stderr even for a data error, and stdout must stay empty.
+        result = self.text_run("0\n\n")
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("INPUT_INVALID", result.stderr)
+
+    def test_config_error_goes_to_stderr_with_stdout_empty(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "input.ticks"
+            path.write_text("0\n", encoding="utf-8")
+            result = run(
+                [
+                    "check",
+                    str(path),
+                    "--start-ms",
+                    "0",
+                    "--end-ms",
+                    "61",
+                    "--step-ms",
+                    "15",
+                ]
+            )
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("CONFIG_INVALID", result.stderr)
+
+    def test_io_error_goes_to_stderr_with_stdout_empty(self):
+        result = run(["check", "/nonexistent/path/input.ticks"] + WINDOW)
+        self.assertEqual(result.returncode, 3)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("IO_ERROR", result.stderr)
+        self.assertNotIn("/nonexistent", result.stderr + result.stdout)
+
+    def test_json_mode_still_writes_one_error_document_to_stdout(self):
+        result = self.check_ticks("0\n\n")
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.stderr, "")
+        error = json.loads(result.stdout)
+        self.assertEqual(error["schema"], "moontick.error.v1")
+        self.assertEqual(error["code"], "INPUT_INVALID")
+
+    def test_a_located_input_error_carries_record_index_and_line(self):
+        # The bad token sits on physical line 3, which is also record 3.
+        result = self.check_ticks("0\n15\nbad\n30\n")
+        self.assertEqual(result.returncode, 2)
+        error = json.loads(result.stdout)
+        self.assertEqual(error["code"], "INPUT_INVALID")
+        self.assertEqual(error["record_index"], 3)
+        self.assertEqual(error["line"], 3)
+
+    def test_an_unlocated_error_omits_both_position_fields(self):
+        # A file that does not exist has no record and no line.
+        result = run(
+            ["check", "/nonexistent/path/input.ticks"] + WINDOW + ["--format", "json"]
+        )
+        error = json.loads(result.stdout)
+        self.assertEqual(error["code"], "IO_ERROR")
+        self.assertNotIn("record_index", error)
+        self.assertNotIn("line", error)
+
+    def test_a_config_error_omits_both_position_fields(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "input.ticks"
+            path.write_text("0\n", encoding="utf-8")
+            result = run(
+                [
+                    "check",
+                    str(path),
+                    "--start-ms",
+                    "0",
+                    "--end-ms",
+                    "61",
+                    "--step-ms",
+                    "15",
+                    "--format",
+                    "json",
+                ]
+            )
+        error = json.loads(result.stdout)
+        self.assertEqual(error["code"], "CONFIG_INVALID")
+        self.assertNotIn("record_index", error)
+        self.assertNotIn("line", error)
+
+
+class DetailTruncation(RealBinaryTest):
+    """`--detail-limit 1` over all five detail categories, via the real binary.
+
+    Grid is [0,60) step 15, so there are four expected points. Each case is a
+    separate file and each is built so that exactly one category overflows.
+    """
+
+    def check_limited(self, text):
+        return self._run(text, ["--detail-limit", "1"])
+
+    def _run(self, text, extra):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "input.ticks"
+            path.write_text(text, encoding="utf-8")
+            return run(
+                ["check", str(path)] + WINDOW + ["--format", "json"] + extra
+            )
+
+    CASES = [
+        # name, ticks text, category, exact count, detail list key
+        ("missing_ranges", "0\n30\n", "missing_points", "2", "missing_ranges"),
+        (
+            "duplicates",
+            "0\n0\n0\n15\n30\n45\n",
+            "duplicate_extra_records",
+            "2",
+            "duplicates",
+        ),
+        (
+            "out_of_order",
+            "30\n0\n45\n15\n",
+            "out_of_order_records",
+            "2",
+            "out_of_order",
+        ),
+        (
+            "off_grid",
+            "0\n1\n2\n15\n30\n45\n",
+            "off_grid_records",
+            "2",
+            "off_grid",
+        ),
+        (
+            "out_of_range",
+            "-2\n-1\n0\n15\n30\n45\n",
+            "out_of_range_records",
+            "2",
+            "out_of_range",
+        ),
+    ]
+
+    def test_each_category_truncates_independently(self):
+        for name, text, count_key, count, list_key in self.CASES:
+            with self.subTest(category=name):
+                result = self.check_limited(text)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(result.stderr, "")
+                report = json.loads(result.stdout)
+                # The exact count is unaffected by the display limit.
+                self.assertEqual(report["summary"][count_key], count)
+                # Truncation is reported for the overflowing category only.
+                for key in (
+                    "missing_ranges",
+                    "duplicates",
+                    "out_of_order",
+                    "off_grid",
+                    "out_of_range",
+                ):
+                    self.assertEqual(
+                        report["details_truncated"][key],
+                        key == list_key,
+                        f"{name}: details_truncated[{key}]",
+                    )
+                # detail_limit 1 shows exactly the first detail entry.
+                self.assertEqual(len(report[list_key]), 1)
+
+    def test_the_truncated_category_shows_the_first_entry_only(self):
+        # The exact first entry per category, so a limit that showed the wrong
+        # element (last instead of first, or a sorted-away one) would fail.
+        expected = {
+            "missing_ranges": [["1", "2"]],
+            "duplicates": [{"timestamp_ms": "0", "record_index": 2, "line": 2}],
+            "out_of_order": [{"timestamp_ms": "0", "record_index": 2, "line": 2}],
+            "off_grid": [{"timestamp_ms": "1", "record_index": 2, "line": 2}],
+            "out_of_range": [{"timestamp_ms": "-2", "record_index": 1, "line": 1}],
+        }
+        for name, text, _count_key, _count, list_key in self.CASES:
+            with self.subTest(category=name):
+                report = json.loads(self.check_limited(text).stdout)
+                self.assertEqual(report[list_key], expected[list_key])
+
+    def test_a_category_at_the_limit_is_not_marked_truncated(self):
+        # One duplicate and detail_limit 1: the list is exactly full, which is
+        # not truncation. This pins the comparison to `>`, not `>=`.
+        report = json.loads(self.check_limited("0\n0\n15\n30\n45\n").stdout)
+        self.assertEqual(report["summary"]["duplicate_extra_records"], "1")
+        self.assertEqual(len(report["duplicates"]), 1)
+        self.assertFalse(report["details_truncated"]["duplicates"])
+
+    def test_a_larger_limit_restores_the_full_details(self):
+        full = json.loads(self._run("0\n0\n0\n15\n30\n45\n", []).stdout)
+        self.assertEqual(len(full["duplicates"]), 2)
+        self.assertFalse(full["details_truncated"]["duplicates"])
+
+
+class VersionAndBoundaries(RealBinaryTest):
+    """Version text and the documented CLI boundaries."""
+
+    def test_version_keeps_the_version_and_drops_the_development_marker(self):
+        result = run(["--version"])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("0.1.0", result.stdout)
+        # The development-phase marker is gone now that text output lands.
+        self.assertNotIn("(T1)", result.stdout)
 
 
 if __name__ == "__main__":

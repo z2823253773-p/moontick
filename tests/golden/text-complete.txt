@@ -1,0 +1,20 @@
+PASS
+grid: [0,60) step_ms=15
+records: 4  expected_points: 4
+coverage: 4/4 (100.00%)  missing: 0  longest_missing_run: 0
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  none
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
