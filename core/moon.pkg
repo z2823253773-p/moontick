@@ -1,0 +1,1 @@
+// Core audit rules: no file, shell, network, or clock access.

@@ -1,0 +1,10 @@
+// Command-line surface: argument parsing, file input, output and exit codes.
+// See docs/planning/02_SPEC.md section 3.
+
+import {
+  "z2823253773-p/moontick/core",
+  "z2823253773-p/moontick/report",
+  "z2823253773-p/moontick/ticks_input",
+}
+
+pkgtype(kind: "executable")

@@ -1,0 +1,50 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "z2823253773-p/moontick/ticks_input"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn parse_ticks(Bytes) -> Result[ParsedInput, InputError]
+
+pub fn read_ticks(String) -> Result[Bytes, ReadError]
+
+// Errors
+
+// Types and methods
+pub struct InputError {
+  kind : InputErrorKind
+  line : Int
+}
+
+pub(all) enum InputErrorKind {
+  BlankLine
+  OverlongToken
+  InvalidToken
+  TooManyRecords
+  TooManyBytes
+} derive(Eq, @debug.Debug)
+pub fn InputErrorKind::code(Self) -> String
+pub fn InputErrorKind::message(Self) -> String
+
+pub struct ParsedInput {
+  times : Array[Int64]
+  start_lines : Array[Int]
+}
+
+pub struct ReadError {
+  kind : ReadErrorKind
+}
+
+pub(all) enum ReadErrorKind {
+  FileUnavailable
+  ReadFailed
+  InputTooLarge
+} derive(Eq, @debug.Debug)
+pub fn ReadErrorKind::code(Self) -> String
+pub fn ReadErrorKind::message(Self) -> String
+
+// Type aliases
+
+// Traits

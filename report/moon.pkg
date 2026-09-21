@@ -1,0 +1,6 @@
+// Deterministic serialisation of an audit report. Pure: no I/O, no clock.
+// See docs/planning/02_SPEC.md section 4.
+
+import {
+  "z2823253773-p/moontick/core",
+}

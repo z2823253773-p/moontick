@@ -3,15 +3,18 @@
 ## 基线与权限
 
 - 工作目录：`/Users/henryz/Desktop/比赛/moontick`
-- 基线提交：`e366f11`。开始前确认工作树干净，并先读 `AGENTS.md`、
-  `.ai/TASK_STATE.md`、`docs/planning/02_SPEC.md` 第 1--6 节、
+- 基线提交：`e366f11`。当前工作树含上一会话留下的**未提交** T1 草稿；开始前先读
+  `AGENTS.md`、`.ai/TASK_STATE.md`、`docs/planning/02_SPEC.md` 第 1--6 节、
   `docs/planning/04_TASK_PLAN.md` 的 T1。
 - 用户已授权 **仅 T1**。允许创建最小 MoonBit 项目、core、ticks 输入、CLI、报告、
   测试、T1 证据与一个真实实现提交；不要实现 T2--T8、完整 CSV、多序列、CI、发布、
   报名或任何对外动作。
-- 本地模块名暂定为裸 `moontick`，已在指定工具链通过 native 最小工程探测。这不是
-  Mooncakes 发布命名空间；不得使用 `username/...`，不得猜测用户账户。真实命名空间
-  确定后统一替换导入路径并重新运行所有受影响检查。
+- 已由隔离 `moon login` 和 CLI 临时模块探针确认 Mooncakes 用户名为
+  `z2823253773-p`；模块名固定为 `z2823253773-p/moontick`。不要用裸 `moontick` 或
+  `username/...` 占位符。先用 `rg -n 'moontick/' .` 核对并更新所有本地导入路径；随后
+  重跑受影响检查。此确认不授予发布权限。
+- 保留现有未提交 core/ticks 草稿及旧的阻塞证据，先审查其 diff 与测试状态。它们既不是
+  可直接提交的成果，也不可因方便而删除；发现不符合规格时用最小反例记录后再修复。
 
 ## 隔离工具链
 
@@ -26,11 +29,31 @@ moonc -v
 
 预期 `moonc v0.10.14+7d59c7ec9 (2026-09-18)`。二进制 archive 已按官方 SHA-256
 sidecar 校验；core 仅有观察 hash，官方 core sidecar 未取得。相关限制见
-`docs/evidence/T0/toolchain.md`。
+ `docs/evidence/T0/toolchain.md`。
+
+启动 Claude Code 时，将该工具链目录列入该会话可访问目录并只授权上述 `moon` / `moonc`
+检查所需的命令；不得读取、展示或复制 `$MOON_HOME/credentials.json`。若会话仍被路径权限
+拦截，记录原始错误并交回 Codex，不要改用全局工具链或伪造验证。
+
+## 已观察的起点（不是验收）
+
+在模块名更新为 `z2823253773-p/moontick` 后，Codex 以该隔离工具链实测当前未提交草稿：
+
+| 命令 | 结果 |
+|---|---|
+| `moon check --target native` | 退出 0；4 个 `implicit_impl_as_method` warnings |
+| `moon test --target native` | 退出 255；子测试进程 SIGABRT |
+| `moon build --target native` | 退出 0；同 4 个 warnings |
+
+测试的最小复现已存在于 `ticks_input/parse_test.mbt:88--93`：输入
+`9223372036854775807` 预期被接受，却得到 `INPUT_INVALID at line 1`。先保持该断言，
+定位 `parse_canonical` 的 Int64 上界处理并最小修复；不要通过削弱测试、改为 Double 或
+绕过真实测试二进制来“通过”。当前没有 `cmd/moontick`，CLI 的 JSON 与退出码尚未测试。
 
 ## T1 任务卡
 
-先建立 `moon.mod`、`moon.pkg`，`preferred_target = "native"`，模块名为 `moontick`。
+先确认 `moon.mod` 的模块名是 `z2823253773-p/moontick`，`preferred_target = "native"`，
+并核对/补齐所需 `moon.pkg`。
 将文件限制在：
 
 ```text

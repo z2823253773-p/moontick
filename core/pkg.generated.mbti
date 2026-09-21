@@ -1,0 +1,69 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "z2823253773-p/moontick/core"
+
+// Values
+pub fn audit(Array[Int64], Grid, Int) -> Result[AuditReport, AuditError]
+
+pub fn make_grid(Int64, Int64, Int64) -> Result[Grid, ConfigError]
+
+// Errors
+
+// Types and methods
+pub(all) enum AuditError {
+  InvalidDetailLimit
+  TooManyRecords
+}
+pub fn AuditError::code(Self) -> String
+pub fn AuditError::message(Self) -> String
+
+pub struct AuditReport {
+  grid : Grid
+  input_records : Int64
+  covered_points : Int64
+  missing_points : Int64
+  duplicate_extra_records : Int64
+  out_of_order_records : Int64
+  off_grid_records : Int64
+  out_of_range_records : Int64
+  longest_missing_run : Int64
+  missing_ranges : Array[(Int64, Int64)]
+  duplicates : Array[RecordRef]
+  out_of_order : Array[RecordRef]
+  off_grid : Array[RecordRef]
+  out_of_range : Array[RecordRef]
+  truncated : DetailTruncation
+  passed : Bool
+}
+
+pub(all) enum ConfigError {
+  StepNotPositive
+  EndNotAfterStart
+  WindowDiffOverflow
+  WindowNotWholeSteps
+}
+pub fn ConfigError::code(Self) -> String
+pub fn ConfigError::message(Self) -> String
+
+pub struct DetailTruncation {
+  missing_ranges : Bool
+  duplicates : Bool
+  out_of_order : Bool
+  off_grid : Bool
+  out_of_range : Bool
+}
+
+pub struct Grid {
+  start_ms : Int64
+  end_ms : Int64
+  step_ms : Int64
+  expected_points : Int64
+}
+
+pub struct RecordRef {
+  timestamp_ms : Int64
+  record_index : Int
+}
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,19 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "z2823253773-p/moontick/report"
+
+import {
+  "z2823253773-p/moontick/core",
+}
+
+// Values
+pub fn render_error(String, String, Int?, Int?) -> String
+
+pub fn render_json(@core.AuditReport, Array[Int]) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
