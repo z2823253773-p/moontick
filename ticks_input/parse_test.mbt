@@ -87,10 +87,9 @@ test "non-canonical spellings are rejected" {
 ///|
 test "the Int64 endpoints are accepted" {
   assert_eq(parse_ok("9223372036854775807\n").times, [9223372036854775807L])
-  assert_eq(
-    parse_ok("-9223372036854775808\n").times,
-    [-9223372036854775807L - 1L],
-  )
+  assert_eq(parse_ok("-9223372036854775808\n").times, [
+    -9223372036854775807L - 1L,
+  ])
   assert_eq(parse_ok("-1\n").times, [-1L])
 }
 

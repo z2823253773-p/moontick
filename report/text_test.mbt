@@ -14,10 +14,7 @@ fn text_grid(start : Int64, end : Int64, step : Int64) -> @core.Grid {
 }
 
 ///|
-fn text_report_of(
-  times : Array[Int64],
-  limit : Int,
-) -> @core.AuditReport {
+fn text_report_of(times : Array[Int64], limit : Int) -> @core.AuditReport {
   match @core.audit(times, text_grid(0L, 60L, 15L), limit) {
     Ok(value) => value
     Err(error) => abort("expected a completed audit, got " + error.message())
@@ -139,7 +136,10 @@ test "every category shows its exact count even when the list is cut" {
   // Two duplicates with detail_limit 1: the list must be short but the count
   // must stay exact, and the block must say it is truncated.
   let report = text_report_of([0L, 0L, 0L, 15L, 30L, 45L], 1)
-  let text = @report.render_text(report, text_lines_of([0L, 0L, 0L, 15L, 30L, 45L]))
+  let text = @report.render_text(
+    report,
+    text_lines_of([0L, 0L, 0L, 15L, 30L, 45L]),
+  )
   assert_true(text.contains("duplicates=2"))
   // Here the shown count and the total count *are* the same kind of thing — both
   // are records — so "first N of M" stays correct for the record categories.

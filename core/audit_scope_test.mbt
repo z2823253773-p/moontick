@@ -36,7 +36,9 @@ fn scope_audit(times : Array[Int64]) -> @core.AuditReport {
 }
 
 ///|
-fn scope_error_code(result : Result[@core.AuditReport, @core.AuditError]) -> String {
+fn scope_error_code(
+  result : Result[@core.AuditReport, @core.AuditError],
+) -> String {
   match result {
     Ok(_) => "ACCEPTED"
     Err(error) => error.code()

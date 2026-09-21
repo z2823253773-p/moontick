@@ -8,9 +8,7 @@ let i64_min : Int64 = -9223372036854775807L - 1L
 let i64_max : Int64 = 9223372036854775807L
 
 ///|
-fn rejection_message(
-  result : Result[@core.Grid, @core.ConfigError],
-) -> String {
+fn rejection_message(result : Result[@core.Grid, @core.ConfigError]) -> String {
   match result {
     Ok(_) => "ACCEPTED"
     Err(error) => error.code() + ": " + error.message()

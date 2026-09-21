@@ -88,16 +88,16 @@ fn t3_expect_error(
     Ok(_) => abort(name + ": expected a rejection, got an accepted input")
     Err(error) => {
       if error.kind != kind {
-        abort(name + ": wrong error kind; expected " + code + " at line " + line.to_string())
-      }
-      if error.kind.code() != code {
         abort(
           name +
-          ": expected code " +
+          ": wrong error kind; expected " +
           code +
-          ", got " +
-          error.kind.code(),
+          " at line " +
+          line.to_string(),
         )
+      }
+      if error.kind.code() != code {
+        abort(name + ": expected code " + code + ", got " + error.kind.code())
       }
       if error.line != line {
         abort(
@@ -123,7 +123,10 @@ test "LF and CRLF report the same times on the same physical lines" {
   assert_eq(lf.start_lines, [1, 2])
   // The second record has no trailing newline: a final line without a
   // terminator is still one record.
-  let crlf = t3_expect_ok("0\\r\\n15", t3_bytes([b'0', b'\r', b'\n', b'1', b'5']))
+  let crlf = t3_expect_ok(
+    "0\\r\\n15",
+    t3_bytes([b'0', b'\r', b'\n', b'1', b'5']),
+  )
   assert_eq(crlf.times, [0L, 15L])
   assert_eq(crlf.start_lines, [1, 2])
 }
@@ -157,7 +160,9 @@ test "0\\n\\n is rejected at line 2 with no partial success" {
   match @ticks_input.parse_ticks(bytes) {
     Ok(parsed) =>
       abort(
-        "a rejected input produced " + parsed.times.length().to_string() + " records",
+        "a rejected input produced " +
+        parsed.times.length().to_string() +
+        " records",
       )
     Err(_) => ()
   }
@@ -170,7 +175,10 @@ test "every accepted input reports equally long time and line arrays" {
   assert_eq(t3_expect_ok("empty", t3_bytes([])).times.length(), 0)
   assert_eq(t3_expect_ok("one LF", t3_bytes([b'7', b'\n'])).times, [7L])
   assert_eq(
-    t3_expect_ok("three CRLF", t3_bytes([b'7', b'\r', b'\n', b'8', b'\r', b'\n', b'9'])).start_lines,
+    t3_expect_ok(
+      "three CRLF",
+      t3_bytes([b'7', b'\r', b'\n', b'8', b'\r', b'\n', b'9']),
+    ).start_lines,
     [1, 2, 3],
   )
 }
@@ -199,8 +207,16 @@ test "BOM, non-ASCII, invalid UTF-8, header, quotes, commas and isolated CR" {
     1,
   )
   // A single byte that cannot start any UTF-8 sequence.
-  t3_expect_input_invalid("illegal UTF-8 0xFF", t3_bytes([b'0', b'\xFF', b'\n']), 1)
-  t3_expect_input_invalid("illegal UTF-8 continuation 0x80", t3_bytes([b'\x80', b'\n']), 1)
+  t3_expect_input_invalid(
+    "illegal UTF-8 0xFF",
+    t3_bytes([b'0', b'\xFF', b'\n']),
+    1,
+  )
+  t3_expect_input_invalid(
+    "illegal UTF-8 continuation 0x80",
+    t3_bytes([b'\x80', b'\n']),
+    1,
+  )
   // A header row is just a non-numeric token.
   t3_expect_input_invalid(
     "timestamp_ms header",

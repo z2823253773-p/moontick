@@ -209,7 +209,8 @@ pub fn try_render_text(
         start_lines[reference.record_index - 1],
         reference.timestamp_ms,
         reference.record_index,
-      ) + "\n",
+      ) +
+      "\n",
     )
   }
   text_details(
@@ -225,7 +226,8 @@ pub fn try_render_text(
         start_lines[reference.record_index - 1],
         reference.timestamp_ms,
         reference.record_index,
-      ) + "\n",
+      ) +
+      "\n",
     )
   }
   text_details(
@@ -241,7 +243,8 @@ pub fn try_render_text(
         start_lines[reference.record_index - 1],
         reference.timestamp_ms,
         reference.record_index,
-      ) + "\n",
+      ) +
+      "\n",
     )
   }
   text_details(
@@ -257,7 +260,8 @@ pub fn try_render_text(
         start_lines[reference.record_index - 1],
         reference.timestamp_ms,
         reference.record_index,
-      ) + "\n",
+      ) +
+      "\n",
     )
   }
   Ok(buffer.to_string())

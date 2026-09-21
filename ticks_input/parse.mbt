@@ -191,14 +191,14 @@ fn parse_line(
   }
   let length = limit - start
   if length == 0 {
-    return Err({ kind: BlankLine, line: line })
+    return Err({ kind: BlankLine, line, })
   }
   if length > max_token_bytes {
-    return Err({ kind: OverlongToken, line: line })
+    return Err({ kind: OverlongToken, line, })
   }
   match parse_canonical(bytes, start, limit) {
     Some(value) => Ok(value)
-    None => Err({ kind: InvalidToken, line: line })
+    None => Err({ kind: InvalidToken, line, })
   }
 }
 
@@ -212,7 +212,7 @@ fn parse_line(
 pub fn parse_ticks(bytes : Bytes) -> Result[ParsedInput, InputError] {
   let total = bytes.length()
   if total > max_input_bytes {
-    return Err({ kind: TooManyBytes, line: 0 })
+    return Err({ kind: TooManyBytes, line: 0, })
   }
   let times : Array[Int64] = []
   let start_lines : Array[Int] = []
@@ -224,7 +224,7 @@ pub fn parse_ticks(bytes : Bytes) -> Result[ParsedInput, InputError] {
       match parse_line(bytes, line_start, i, true, line) {
         Ok(value) => {
           if times.length() >= max_records {
-            return Err({ kind: TooManyRecords, line: line })
+            return Err({ kind: TooManyRecords, line, })
           }
           times.push(value)
           start_lines.push(line)
@@ -240,7 +240,7 @@ pub fn parse_ticks(bytes : Bytes) -> Result[ParsedInput, InputError] {
     match parse_line(bytes, line_start, total, false, line) {
       Ok(value) => {
         if times.length() >= max_records {
-          return Err({ kind: TooManyRecords, line: line })
+          return Err({ kind: TooManyRecords, line, })
         }
         times.push(value)
         start_lines.push(line)
@@ -248,5 +248,5 @@ pub fn parse_ticks(bytes : Bytes) -> Result[ParsedInput, InputError] {
       Err(error) => return Err(error)
     }
   }
-  Ok({ times: times, start_lines: start_lines })
+  Ok({ times, start_lines, })
 }

@@ -55,19 +55,19 @@ pub fn audit(
     let timestamp = times[i]
     if i > 0 && timestamp < previous {
       out_of_order_count = out_of_order_count + 1L
-      out_of_order_all.push({ timestamp_ms: timestamp, record_index: i + 1 })
+      out_of_order_all.push({ timestamp_ms: timestamp, record_index: i + 1, })
     }
     previous = timestamp
     // Window membership is decided before any relative offset is computed, so
     // the subtraction below always stays inside the safe range.
     if timestamp < grid.start_ms || timestamp >= grid.end_ms {
       out_of_range_count = out_of_range_count + 1L
-      out_of_range_all.push({ timestamp_ms: timestamp, record_index: i + 1 })
+      out_of_range_all.push({ timestamp_ms: timestamp, record_index: i + 1, })
     } else {
       let offset = timestamp - grid.start_ms
       if offset % grid.step_ms != 0L {
         off_grid_count = off_grid_count + 1L
-        off_grid_all.push({ timestamp_ms: timestamp, record_index: i + 1 })
+        off_grid_all.push({ timestamp_ms: timestamp, record_index: i + 1, })
       } else {
         valid_ks.push(offset / grid.step_ms)
       }
@@ -102,7 +102,7 @@ pub fn audit(
   duplicate_indices.sort()
   let duplicates_all : Array[RecordRef] = []
   for index in duplicate_indices {
-    duplicates_all.push({ timestamp_ms: times[index], record_index: index + 1 })
+    duplicates_all.push({ timestamp_ms: times[index], record_index: index + 1, })
   }
   // Missing ranges: fold the sorted, de-duplicated valid indices into ordered
   // half-open intervals, then close the tail against the end of the window.
@@ -149,21 +149,21 @@ pub fn audit(
     off_grid_count == 0L &&
     out_of_range_count == 0L
   Ok({
-    grid: grid,
+    grid,
     input_records: input_records.to_int64(),
     covered_points: distinct_ks.length().to_int64(),
-    missing_points: missing_points,
+    missing_points,
     duplicate_extra_records: duplicate_extra_count,
     out_of_order_records: out_of_order_count,
     off_grid_records: off_grid_count,
     out_of_range_records: out_of_range_count,
-    longest_missing_run: longest_missing_run,
+    longest_missing_run,
     missing_ranges: first_n(missing_ranges_all, detail_limit),
     duplicates: first_n(duplicates_all, detail_limit),
     out_of_order: first_n(out_of_order_all, detail_limit),
     off_grid: first_n(off_grid_all, detail_limit),
     out_of_range: first_n(out_of_range_all, detail_limit),
-    truncated: truncated,
-    passed: passed,
+    truncated,
+    passed,
   })
 }

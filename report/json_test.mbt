@@ -20,17 +20,12 @@ fn report_of(times : Array[Int64], limit : Int) -> @core.AuditReport {
 test "a passing report carries the T1 schema and string counters" {
   let report = report_of([0L, 15L, 30L, 45L], 1000)
   let json = @report.render_json(report, [1, 2, 3, 4])
-  for fragment in [
-    "\"schema\":\"moontick.audit.v1\"",
-    "\"status\":\"pass\"",
-    "\"unit\":\"ms\"",
-    "\"input_records\":\"4\"",
-    "\"expected_points\":\"4\"",
-    "\"covered_points\":\"4\"",
-    "\"missing_points\":\"0\"",
-    "\"longest_missing_run\":\"0\"",
-    "\"missing_ranges\":[]",
-  ] {
+  for
+    fragment in [
+      "\"schema\":\"moontick.audit.v1\"", "\"status\":\"pass\"", "\"unit\":\"ms\"",
+      "\"input_records\":\"4\"", "\"expected_points\":\"4\"", "\"covered_points\":\"4\"",
+      "\"missing_points\":\"0\"", "\"longest_missing_run\":\"0\"", "\"missing_ranges\":[]",
+    ] {
     assert_true(json.contains(fragment))
   }
 }
@@ -38,11 +33,8 @@ test "a passing report carries the T1 schema and string counters" {
 ///|
 test "grid values survive as exact decimal strings" {
   let times : Array[Int64] = []
-  let report = match @core.audit(
-    times,
-    grid_of(9007199254740993L, 9007199254740997L, 1L),
-    1000,
-  ) {
+  let report = match
+    @core.audit(times, grid_of(9007199254740993L, 9007199254740997L, 1L), 1000) {
     Ok(value) => value
     Err(error) => abort("expected a completed audit, got " + error.message())
   }
@@ -57,11 +49,8 @@ test "grid values survive as exact decimal strings" {
 test "duplicates and off-grid records keep their line numbers" {
   // Window [0, 75) so both 60 and 62 are inside it: 60 is on the grid and 62 is
   // off it. The repeated 15 makes record 3 the duplicate.
-  let report = match @core.audit(
-    [0L, 15L, 15L, 45L, 62L],
-    grid_of(0L, 75L, 15L),
-    1000,
-  ) {
+  let report = match
+    @core.audit([0L, 15L, 15L, 45L, 62L], grid_of(0L, 75L, 15L), 1000) {
     Ok(value) => value
     Err(error) => abort("expected a completed audit, got " + error.message())
   }
@@ -126,7 +115,12 @@ test "an error document is shaped separately and omits unknown positions" {
 
 ///|
 test "an error document carries a line when one is known" {
-  let json = @report.render_error("INPUT_INVALID", "blank lines are not records", None, Some(2))
+  let json = @report.render_error(
+    "INPUT_INVALID",
+    "blank lines are not records",
+    None,
+    Some(2),
+  )
   assert_true(json.contains("\"line\":2"))
   // A line number is a safe JSON integer, not a quoted string.
   assert_true(!json.contains("\"line\":\"2\""))

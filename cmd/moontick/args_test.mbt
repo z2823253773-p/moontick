@@ -82,15 +82,13 @@ test "help and version win over everything else" {
 
 ///|
 test "non-canonical integers are rejected" {
-  for text in [
-    "check a.ticks --start-ms +1 --end-ms 60 --step-ms 15",
-    "check a.ticks --start-ms 01 --end-ms 60 --step-ms 15",
-    "check a.ticks --start-ms -0 --end-ms 60 --step-ms 15",
-    "check a.ticks --start-ms 1e3 --end-ms 60 --step-ms 15",
-    "check a.ticks --start-ms 1.0 --end-ms 60 --step-ms 15",
-    "check a.ticks --start-ms 9223372036854775808 --end-ms 60 --step-ms 15",
-    "check a.ticks --start-ms ab --end-ms 60 --step-ms 15",
-  ] {
+  for
+    text in [
+      "check a.ticks --start-ms +1 --end-ms 60 --step-ms 15", "check a.ticks --start-ms 01 --end-ms 60 --step-ms 15",
+      "check a.ticks --start-ms -0 --end-ms 60 --step-ms 15", "check a.ticks --start-ms 1e3 --end-ms 60 --step-ms 15",
+      "check a.ticks --start-ms 1.0 --end-ms 60 --step-ms 15", "check a.ticks --start-ms 9223372036854775808 --end-ms 60 --step-ms 15",
+      "check a.ticks --start-ms ab --end-ms 60 --step-ms 15",
+    ] {
     let message = error_of(text)
     assert_true(message != "ACCEPTED")
   }
@@ -107,7 +105,9 @@ test "unknown and repeated options are rejected" {
     "--start-ms given more than once",
   )
   assert_eq(
-    error_of("check a.ticks --start-ms 0 --end-ms 60 --step-ms 15 --format json --format json"),
+    error_of(
+      "check a.ticks --start-ms 0 --end-ms 60 --step-ms 15 --format json --format json",
+    ),
     "--format given more than once",
   )
 }
@@ -138,15 +138,21 @@ test "extra positionals and unknown subcommands are rejected" {
 ///|
 test "detail-limit is bounded to 1..10000" {
   assert_eq(
-    error_of("check a.ticks --start-ms 0 --end-ms 60 --step-ms 15 --detail-limit 0"),
+    error_of(
+      "check a.ticks --start-ms 0 --end-ms 60 --step-ms 15 --detail-limit 0",
+    ),
     "--detail-limit must be between 1 and 10000",
   )
   assert_eq(
-    error_of("check a.ticks --start-ms 0 --end-ms 60 --step-ms 15 --detail-limit 10001"),
+    error_of(
+      "check a.ticks --start-ms 0 --end-ms 60 --step-ms 15 --detail-limit 10001",
+    ),
     "--detail-limit must be between 1 and 10000",
   )
   assert_eq(
-    error_of("check a.ticks --start-ms 0 --end-ms 60 --step-ms 15 --detail-limit 1a"),
+    error_of(
+      "check a.ticks --start-ms 0 --end-ms 60 --step-ms 15 --detail-limit 1a",
+    ),
     "--detail-limit must be between 1 and 10000",
   )
 }

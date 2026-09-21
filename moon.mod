@@ -6,7 +6,7 @@ version = "0.1.0"
 
 readme = "README.mbt.md"
 
-keywords = ["testing", "time-series", "sample-plan", "audit"]
+keywords = [ "testing", "time-series", "sample-plan", "audit" ]
 
 preferred_target = "native"
 

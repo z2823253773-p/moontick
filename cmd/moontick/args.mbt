@@ -46,11 +46,12 @@ pub fn UsageError::message(self : UsageError) -> String {
 }
 
 ///|
+
 ///|
 /// A failed parse, generic in the success type so the integer helpers can reuse
 /// it without wrapping.
 fn[T] usage_error(message : String) -> Result[T, UsageError] {
-  Err({ message: message })
+  Err({ message, })
 }
 
 ///|
@@ -175,8 +176,11 @@ fn option_value(
     return usage_error(name + " requires a value")
   }
   let value = args[index + 1]
-  if value.length() > 0 && value[0] == '-' && name != "--start-ms" &&
-    name != "--end-ms" && name != "--step-ms" {
+  if value.length() > 0 &&
+    value[0] == '-' &&
+    name != "--start-ms" &&
+    name != "--end-ms" &&
+    name != "--step-ms" {
     return usage_error(name + " requires a value")
   }
   Ok(value)
@@ -187,9 +191,7 @@ fn option_value(
 ///
 /// `--help` and `--version` win wherever they appear and never read a file.
 /// Everything else must be one `check` invocation with no leftovers.
-pub fn parse_args(
-  args : Array[String],
-) -> Result[Invocation, UsageError] {
+pub fn parse_args(args : Array[String]) -> Result[Invocation, UsageError] {
   let mut index = 0
   while index < args.length() {
     match args[index] {
@@ -297,7 +299,9 @@ pub fn parse_args(
               Ok(value) => {
                 let limit = value.to_int()
                 if value < 1L || value > 10000L || limit.to_int64() != value {
-                  return usage_error("--detail-limit must be between 1 and 10000")
+                  return usage_error(
+                    "--detail-limit must be between 1 and 10000",
+                  )
                 }
                 detail_limit = limit
               }
@@ -326,20 +330,16 @@ pub fn parse_args(
     return usage_error("check requires an input file")
   }
   if !have_start || !have_end || !have_step {
-    return usage_error(
-      "check requires --start-ms, --end-ms and --step-ms",
-    )
+    return usage_error("check requires --start-ms, --end-ms and --step-ms")
   }
   Ok(
-    Check(
-      {
-        path: path_value,
-        start_ms: start_value,
-        end_ms: end_value,
-        step_ms: step_value,
-        format: format,
-        detail_limit: detail_limit,
-      },
-    ),
+    Check({
+      path: path_value,
+      start_ms: start_value,
+      end_ms: end_value,
+      step_ms: step_value,
+      format,
+      detail_limit,
+    }),
   )
 }

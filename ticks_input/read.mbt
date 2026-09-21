@@ -74,7 +74,7 @@ extern "C" fn c_close(descriptor : Int) -> Int = "close"
 pub fn read_ticks(path : String) -> Result[Bytes, ReadError] {
   let descriptor = c_open(c_string(path), open_read_only)
   if descriptor < 0 {
-    return Err({ kind: FileUnavailable })
+    return Err({ kind: FileUnavailable, })
   }
   let buffer = Bytes::make(read_chunk_bytes, b'\x00')
   let collected : Array[Byte] = []
@@ -107,7 +107,7 @@ pub fn read_ticks(path : String) -> Result[Bytes, ReadError] {
   }
   ignore(c_close(descriptor))
   match failure {
-    Some(kind) => Err({ kind: kind })
+    Some(kind) => Err({ kind, })
     None => Ok(Bytes::from_array(collected))
   }
 }

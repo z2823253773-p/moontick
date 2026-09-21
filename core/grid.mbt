@@ -30,10 +30,5 @@ pub fn make_grid(
   if window % step_ms != 0L {
     return Err(WindowNotWholeSteps)
   }
-  Ok({
-    start_ms: start_ms,
-    end_ms: end_ms,
-    step_ms: step_ms,
-    expected_points: window / step_ms,
-  })
+  Ok({ start_ms, end_ms, step_ms, expected_points: window / step_ms, })
 }

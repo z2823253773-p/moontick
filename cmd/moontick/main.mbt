@@ -85,11 +85,8 @@ fn run_check(arguments : CheckArgs) -> Int {
       return exit_usage_or_input
     }
   }
-  let grid = match @core.make_grid(
-    arguments.start_ms,
-    arguments.end_ms,
-    arguments.step_ms,
-  ) {
+  let grid = match
+    @core.make_grid(arguments.start_ms, arguments.end_ms, arguments.step_ms) {
     Ok(value) => value
     Err(error) => {
       let code = error.code()
