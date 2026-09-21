@@ -1,0 +1,12 @@
+$ moontick check tests/fixtures/full.ticks --start-ms 0 --end-ms 60 --step-ms 15 --format json
+exit=0  stderr_bytes=0
+{"schema":"moontick.audit.v1","status":"pass","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"4","expected_points":"4","covered_points":"4","missing_points":"0","duplicate_extra_records":"0","out_of_order_records":"0","off_grid_records":"0","out_of_range_records":"0","longest_missing_run":"0"},"missing_ranges":[],"duplicates":[],"out_of_order":[],"off_grid":[],"out_of_range":[],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+$ moontick check tests/fixtures/empty.ticks --start-ms 0 --end-ms 60 --step-ms 15 --format json
+exit=1  stderr_bytes=0
+{"schema":"moontick.audit.v1","status":"fail","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"0","expected_points":"4","covered_points":"0","missing_points":"4","duplicate_extra_records":"0","out_of_order_records":"0","off_grid_records":"0","out_of_range_records":"0","longest_missing_run":"4"},"missing_ranges":[["0","4"]],"duplicates":[],"out_of_order":[],"off_grid":[],"out_of_range":[],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+
+$ moontick check tests/fixtures/one_missing.ticks --start-ms 0 --end-ms 60 --step-ms 15 --format json
+exit=1  stderr_bytes=0
+{"schema":"moontick.audit.v1","status":"fail","unit":"ms","grid":{"start_ms":"0","end_ms":"60","step_ms":"15"},"summary":{"input_records":"3","expected_points":"4","covered_points":"3","missing_points":"1","duplicate_extra_records":"0","out_of_order_records":"0","off_grid_records":"0","out_of_range_records":"0","longest_missing_run":"1"},"missing_ranges":[["1","2"]],"duplicates":[],"out_of_order":[],"off_grid":[],"out_of_range":[],"details_truncated":{"missing_ranges":false,"duplicates":false,"out_of_order":false,"off_grid":false,"out_of_range":false}}
+

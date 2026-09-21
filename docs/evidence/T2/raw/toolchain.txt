@@ -1,0 +1,11 @@
+$ moon version --all
+moon 0.1.20260920 (914d7da 2026-09-20) /private/tmp/moontick-moon-0.10.14-OS4LNz/bin/moon
+moonc v0.10.14+7d59c7ec9 (2026-09-18) /private/tmp/moontick-moon-0.10.14-OS4LNz/bin/moonc
+moonrun 0.1.20260920 (914d7da 2026-09-20) /private/tmp/moontick-moon-0.10.14-OS4LNz/bin/moonrun
+
+Feature flags enabled: rr_moon_mod,rr_moon_pkg
+
+$ moonc -v
+v0.10.14+7d59c7ec9 (2026-09-18)
+
+MOON_HOME=/private/tmp/moontick-moon-0.10.14-OS4LNz

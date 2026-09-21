@@ -1,0 +1,6 @@
+$ moon build --target native
+Finished. moon: no work to do
+exit=0
+
+$ shasum -a 256 $MOONTICK_BIN
+b9e3e189602b3849d06a69555be6e16a548214ff1094059715f0094d37711975  /Users/henryz/Desktop/比赛/moontick/_build/native/debug/build/cmd/moontick/moontick.exe

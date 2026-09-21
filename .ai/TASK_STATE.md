@@ -1,23 +1,41 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1 已在明确实现 SHA 上接受；用户已授权只实施 T2 核心审计与规模边界。
+日期：2026-09-21。T1 已在明确实现 SHA 上接受；T2 已实施完成，等待 Codex 独立复核。
 
 - task_id: T2
-- status: READY
-- active_owner: Claude Code
+- status: REVIEW
+- active_owner: Codex（独立复核；Claude Code 已交出实现）
 - implementation_authorized: YES（2026-09-21，范围仅 T2）
 - objective: 补齐核心审计的 T2 行为与规模证据；Codex 在明确 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
-  本轮 T2 尚无实现 SHA
+  T2 被测 SHA 见下方“T2 本轮交接”的 commit SHA，**不是**文档基线 `ddfc6b1`
 
-## 当前任务：T2（Claude Code）
+## 当前任务：T2（Claude Code，已实施完成，交 Codex）
 
 任务卡：`docs/handoffs/T2_CLAUDE.md`。只补足该任务卡列出的 core 分类、细节截断、
 资源拒绝和规模证据；不要重写已通过的 core/CLI/ticks/report，不做 T3+、Linux、CI、text
 格式、发布或报名。若新测试发现真实不一致，先保留最小 RED，再最小化修复并记录证据；若
 现有实现直接通过新增测试，如实记录“既有实现通过新覆盖”，不伪造 RED。
+
+### T2 实施结果（2026-09-21，Claude Code）
+
+- 起点基线：`e329b5a935dfc22cff616fbc5239bf857c6e654a`，工作树干净，与任务卡一致。
+- 新增唯一文件：`core/audit_scope_test.mbt`（11 个测试）。**未修改任何产品代码**：
+  `git diff --stat` 为空，`moon build` 报 `no work to do`，被测二进制 SHA-256
+  `b9e3e189602b3849d06a69555be6e16a548214ff1094059715f0094d37711975` 与 T1 已验收
+  产物逐字节一致。
+- **没有 RED。** 任务卡表格的七个分类用例与四项 T2 证据写入后，现有实现一次通过：
+  core 包 22/22，全仓 52/52。按任务卡如实记录“既有实现通过新覆盖”，未伪造 RED，
+  未做任何修复。
+- 为排除“断言写弱”，做了一次临时变异抽查（仅改测试期望，不改产品代码）：三处变异
+  各自精确命中对应测试（22 → 19 passed / 3 failed），随后全部还原，最终树无残留标记。
+- 门槛：`moon check` 退出 0（14 warnings / 0 errors）、`moon test` 退出 0（52/52）、
+  `moon build` 退出 0、`python3 tests/cli/test_cli.py` 退出 0（16 passed）。真实二进制
+  三用例与 T1 一致（0 / 1 / 1，stderr 均 0 字节）。
+- 证据：`docs/evidence/T2/precise-contract-tests.md`、`docs/evidence/T2/gates.md`、
+  原始输出 `docs/evidence/T2/raw/`。
 
 ## 本轮（2026-09-21，Claude Code）：实现与验证
 
@@ -103,6 +121,31 @@
 - 证据：`docs/evidence/T1/int64-upper-bound.md`、`docs/evidence/T1/gates.md`
 - 实现提交 SHA：见本文件所在提交本身（提交信息列出被测工件）。
 
+### T2 本轮交接（Claude Code → Codex）
+
+- 起点基线：`e329b5a935dfc22cff616fbc5239bf857c6e654a`
+- T2 提交 SHA：见本文件所在提交本身（提交信息列出被测工件与新增测试文件）。
+  在 `754ff0e`（T1 产品实现）之上，本提交**只新增测试与证据**，未改产品代码。
+- 改动文件：
+  - 新增 `core/audit_scope_test.mbt`
+  - 新增 `docs/evidence/T2/precise-contract-tests.md`、`docs/evidence/T2/gates.md`、
+    `docs/evidence/T2/raw/{check,test,core-verbose,build,cli,cli-three-cases,toolchain}.txt`
+  - 修改 `.ai/TASK_STATE.md`（状态 → REVIEW，owner → Codex）
+- 验证命令（同一隔离工具链，逐字照抄任务卡）：
+  ```bash
+  export MOON_HOME=/private/tmp/moontick-moon-0.10.14-OS4LNz
+  export PATH="$MOON_HOME/bin:$PATH"
+  moon check --target native && moon test --target native && moon build --target native
+  export MOONTICK_BIN=$PWD/_build/native/debug/build/cmd/moontick/moontick.exe
+  python3 tests/cli/test_cli.py
+  ```
+- 证据：`docs/evidence/T2/`
+- Codex 的最小复核面：`core/audit_scope_test.mbt` 的 11 个测试与
+  `docs/evidence/T2/raw/core-verbose.txt` 的逐条输出；重点核对用例 7 的重叠计数语义、
+  用例 9 的 `detail_limit=1` 截断、以及用例 10/11 是否确实不经 CLI/ticks 层。
+- 未完成/未授权：Linux native、CI、完整 text 格式、发布、报名均未运行；T1 已独立
+  验证的昂贵输入本轮按任务卡未重复制造。无待修复的最小反例。
+
 ## 独立复核（2026-09-21，Codex）
 
 复核固定在实现提交 `754ff0ea7eae10cc416f6207ce94277395ddb1f3`，不以本地后续状态
@@ -130,5 +173,11 @@
 
 ## 接下来
 
-T1 仅在上述 SHA 和 macOS native 范围内接受。Linux native、CI、发布、报名、完整 text
-格式与 T2+ 范围仍未授权/未运行；等待用户决定下一任务，不自动展开。
+1. Codex 在下方 T2 commit SHA 的独立 worktree 复核：跑同一隔离工具链的
+   `moon check/test/build` 与真实二进制 CLI，读 `docs/evidence/T2/raw/` 的原始输出，
+   并用独立小网格 oracle 覆盖 T2 表格七例与截断/负时间/库层拒绝四项。
+   注意：启动复核前需用户手动授权；本会话不自行安排定时任务或后台续跑。
+2. 复核通过后由用户决定 T3（严格 ticks 输入与来源定位）是否展开。
+
+T1 与 T2 均只在 macOS native 范围内成立。Linux native、CI、发布、报名、完整 text
+格式与 T3+ 范围仍未授权/未运行；等待用户决定下一任务，不自动展开。

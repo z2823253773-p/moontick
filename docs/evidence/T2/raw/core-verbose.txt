@@ -1,0 +1,26 @@
+$ moon test --target native -p z2823253773-p/moontick/core -v
+./_build/native/debug/test/core/core.blackbox_test.exe grid_test.mbt:0-8/audit_test.mbt:0-3/audit_scope_test.mbt:0-11
+[z2823253773-p/moontick] test core/grid_test.mbt:21 ("step_ms = 0 is rejected") ok
+[z2823253773-p/moontick] test core/grid_test.mbt:29 ("negative step_ms is rejected") ok
+[z2823253773-p/moontick] test core/grid_test.mbt:37 ("end_ms equal to start_ms is rejected") ok
+[z2823253773-p/moontick] test core/grid_test.mbt:45 ("end_ms before start_ms is rejected") ok
+[z2823253773-p/moontick] test core/grid_test.mbt:53 ("a window that is not a whole number of steps is rejected") ok
+[z2823253773-p/moontick] test core/grid_test.mbt:61 ("a window difference that overflows Int64 is rejected") ok
+[z2823253773-p/moontick] test core/grid_test.mbt:69 ("a whole-period window is accepted and counts exact points") ok
+[z2823253773-p/moontick] test core/grid_test.mbt:75 ("an Int64-sized grid is accepted without floating point rounding") ok
+[z2823253773-p/moontick] test core/audit_test.mbt:20 ("grid=(0,60,15) times=[0,15,30,45] is full coverage and passes") ok
+[z2823253773-p/moontick] test core/audit_test.mbt:36 ("grid=(0,60,15) times=[] is entirely missing and fails") ok
+[z2823253773-p/moontick] test core/audit_test.mbt:48 ("grid=(0,60,15) times=[0,30,45] misses exactly one point") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:52 ("grid=(0,60,15) times=[0,15,15,45]: duplicate 15, k=2 missing") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:72 ("grid=(0,60,15) times=[30,0,15,45]: one out-of-order row, coverage still complete") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:93 ("grid=(0,60,15) times=[0,16,30,45]: 16 is off grid and k=1 goes missing") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:113 ("grid=(0,60,15) times=[-15,0,15,30,45,60]: two out-of-range rows, coverage complete") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:136 ("grid=(0,60,15) times=[15,30]: two separated gaps, longest run 1") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:152 ("grid=(0,60,15) times=[0,45]: one interior gap of 2, longest run 2") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:168 ("grid=(0,60,15) times=[60,60,0]: overlapping classes must not be summed") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:206 ("grid=(-30,30,15) times=[-30,-15,0,15]: negative milliseconds are valid grid points") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:227 ("grid=(0,10000,1) with every even index and detail_limit=1 truncates ranges only") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:255 ("audit rejects detail_limit=0 and detail_limit=10001 at the library layer") ok
+[z2823253773-p/moontick] test core/audit_scope_test.mbt:275 ("audit rejects 250001 parseable timestamps at the library layer") ok
+Total tests: 22, passed: 22, failed: 0.
+exit=0
