@@ -9,7 +9,8 @@
 - objective: Claude Code 实现最小 core + ticks CLI；Codex 在明确 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
-- tested_commit: 见下方「本轮交接」的实现提交 SHA
+- tested_commit: `754ff0ea7eae10cc416f6207ce94277395ddb1f3`（本文件为本次提交的一部分，
+  故 SHA 只能以提交信息与实际 `git log` 为准）
 
 ## 本轮（2026-09-21，Claude Code）：实现与验证
 
