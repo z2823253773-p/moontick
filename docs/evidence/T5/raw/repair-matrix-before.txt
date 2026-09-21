@@ -1,0 +1,22 @@
+$ git show 89b4e01:.github/workflows/ci.yml | sed -n '38,58p'
+jobs:
+  native:
+    name: ${{ matrix.runner }} / native
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macos-15 is arm64 and ubuntu-24.04 is x86_64 on GitHub-hosted
+          # runners; the two archives below are built for exactly those
+          # architectures, so a mislabelled runner must fail loudly.
+          - runner: macos-15
+            arch: arm64
+            archive_sha256: ${{ env.SHA256_DARWIN_AARCH64 }}
+            observed_core_sha256: ${{ env.OBSERVED_CORE_SHA256_DARWIN }}
+          - runner: ubuntu-24.04
+            arch: x86_64
+            archive_sha256: ${{ env.SHA256_LINUX_X86_64 }}
+            observed_core_sha256: ${{ env.OBSERVED_CORE_SHA256_LINUX }}
+

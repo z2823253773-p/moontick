@@ -1,0 +1,12 @@
+$ python3 _build/check_workflow_contexts.py _build/ci-before-fix.yml   # pre-fix (89b4e01)
+OK   jobs.<job_id>.name               uses `matrix`   (allowed: ['github', 'inputs', 'matrix', 'needs', 'strategy', 'vars'])
+OK   jobs.<job_id>.runs-on            uses `matrix`   (allowed: ['github', 'inputs', 'matrix', 'needs', 'strategy', 'vars'])
+BAD  jobs.<job_id>.strategy           uses `env`   -> NOT ALLOWED
+     allowed here: ['github', 'inputs', 'needs', 'vars']
+     expression: ${{ env.SHA256_DARWIN_AARCH64 }}
+OK   jobs.<job_id>.steps.run          uses `runner`   (allowed: ['env', 'github', 'inputs', 'job', 'matrix', 'needs', 'runner', 'secrets', 'steps', 'strategy', 'vars'])
+OK   jobs.<job_id>.steps.run          uses `matrix`   (allowed: ['env', 'github', 'inputs', 'job', 'matrix', 'needs', 'runner', 'secrets', 'steps', 'strategy', 'vars'])
+
+1 illegal context usage(s)
+exit=1
+BEFORE exit=1

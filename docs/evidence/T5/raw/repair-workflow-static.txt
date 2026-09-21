@@ -1,0 +1,5 @@
+$ python3 -c 'import yaml;yaml.safe_load(open(".github/workflows/ci.yml"))'
+YAML parse OK
+
+$ ruby -ryaml -e 'YAML.load_file(".github/workflows/ci.yml")'
+ruby YAML parse OK

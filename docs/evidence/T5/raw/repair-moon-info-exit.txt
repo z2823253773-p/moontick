@@ -1,0 +1,1 @@
+moon info exit=0

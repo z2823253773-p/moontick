@@ -1,0 +1,9 @@
+$ python3 _build/check_workflow_contexts.py .github/workflows/ci.yml   # post-fix
+OK   jobs.<job_id>.name               uses `matrix`   (allowed: ['github', 'inputs', 'matrix', 'needs', 'strategy', 'vars'])
+OK   jobs.<job_id>.runs-on            uses `matrix`   (allowed: ['github', 'inputs', 'matrix', 'needs', 'strategy', 'vars'])
+OK   jobs.<job_id>.steps.run          uses `runner`   (allowed: ['env', 'github', 'inputs', 'job', 'matrix', 'needs', 'runner', 'secrets', 'steps', 'strategy', 'vars'])
+OK   jobs.<job_id>.steps.run          uses `matrix`   (allowed: ['env', 'github', 'inputs', 'job', 'matrix', 'needs', 'runner', 'secrets', 'steps', 'strategy', 'vars'])
+
+0 illegal context usage(s)
+exit=0
+AFTER exit=0

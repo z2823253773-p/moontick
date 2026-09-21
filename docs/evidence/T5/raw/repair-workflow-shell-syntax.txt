@@ -1,0 +1,17 @@
+bash -n over every `run:` block of .github/workflows/ci.yml (post-fix)
+
+OK             Report environment
+OK             Assert runner architecture
+OK             Install pinned MoonBit toolchain
+OK             Assert pinned compiler version
+OK             Bundle pinned core
+OK             Format check
+OK             Check (native)
+OK             Build (native)
+OK             Test (native)
+OK             Locate and record the real binary
+OK             CLI process tests
+OK             Independent differential oracle
+OK             Toolchain and supply-chain summary
+
+13 run blocks checked, 0 syntax errors

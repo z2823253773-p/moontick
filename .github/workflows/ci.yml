@@ -16,24 +16,14 @@ permissions:
   contents: read
 
 env:
-  # Pinned toolchain. Never `latest`: the version is URL-escaped for `+`.
-  MOONBIT_VERSION: "0.10.14+7d59c7ec9"
+  # Toolchain pin. Never `latest`. The `+` in the version is URL-escaped on the
+  # wire, which is why the download path form is spelled out separately. These
+  # two are read as plain shell variables inside `run:` blocks, where the `env`
+  # context is allowed; the digests below are read as `matrix.*` instead.
   MOONBIT_VERSION_ESCAPED: "0.10.14%2B7d59c7ec9"
   # Exact compiler build asserted after install. This is the value the project
   # evidence records; the `moon` front-end revision is logged, not asserted.
   EXPECTED_MOONC: "v0.10.14+7d59c7ec9"
-  # Binary archives are verified against the publisher's own `.sha256` sidecar.
-  SHA256_DARWIN_AARCH64: "20967f9389ac54508899ee2fc051a3470d051452bac5818a9696ed4c144f3ec3"
-  SHA256_LINUX_X86_64: "9226694de9ff978db1ecf820b7710c4224e84ec7a76b19a222d96f0cd4e31b6a"
-  # The core archive has NO publisher-provided checksum (its `.sha256` sidecar
-  # returned HTTP 403 during the 2026-09-21 probe). These are *observed* local
-  # hashes from the single machine that has installed this version, not
-  # verification values. A mismatch is surfaced in the job summary as an open
-  # supply-chain limitation instead of being hidden; see
-  # docs/evidence/T5/CI.md. The moonc version assertion, not this hash, is the
-  # gate that the toolchain is the pinned one.
-  OBSERVED_CORE_SHA256_DARWIN: "6f18b8fdea18f85e628a75e4a1bd3977c5a5c9c6a836fd8824192b0e6bd91b14"
-  OBSERVED_CORE_SHA256_LINUX: "UNKNOWN_NOT_VERIFIED"
 
 jobs:
   native:
@@ -47,14 +37,30 @@ jobs:
           # macos-15 is arm64 and ubuntu-24.04 is x86_64 on GitHub-hosted
           # runners; the two archives below are built for exactly those
           # architectures, so a mislabelled runner must fail loudly.
+          #
+          # The digests are literals rather than `${{ env.* }}` because
+          # `jobs.<job_id>.strategy` may only use the `github`, `needs`, `vars`
+          # and `inputs` contexts - the `env` context is not allowed there, so
+          # an `env.*` expression would be rejected before the job ever starts.
+          # See docs/evidence/T5/CI-matrix-context-fix.md.
+          #
+          # archive_sha256: publisher-provided `.sha256` sidecar value, also
+          # re-computed locally against the downloaded archive on 2026-09-22.
+          # observed_core_sha256: the core archive has NO publisher checksum
+          # (its sidecar returned HTTP 403 on 2026-09-21). This is an *observed*
+          # hash from the single machine that installed this version, not a
+          # verification value. A mismatch is reported in the job summary as an
+          # open supply-chain limitation rather than hidden; see
+          # docs/evidence/T5/CI.md. The `moonc -v` assertion, not this hash, is
+          # the gate that the pinned toolchain is the one running.
           - runner: macos-15
             arch: arm64
-            archive_sha256: ${{ env.SHA256_DARWIN_AARCH64 }}
-            observed_core_sha256: ${{ env.OBSERVED_CORE_SHA256_DARWIN }}
+            archive_sha256: "20967f9389ac54508899ee2fc051a3470d051452bac5818a9696ed4c144f3ec3"
+            observed_core_sha256: "6f18b8fdea18f85e628a75e4a1bd3977c5a5c9c6a836fd8824192b0e6bd91b14"
           - runner: ubuntu-24.04
             arch: x86_64
-            archive_sha256: ${{ env.SHA256_LINUX_X86_64 }}
-            observed_core_sha256: ${{ env.OBSERVED_CORE_SHA256_LINUX }}
+            archive_sha256: "9226694de9ff978db1ecf820b7710c4224e84ec7a76b19a222d96f0cd4e31b6a"
+            observed_core_sha256: "UNKNOWN_NOT_VERIFIED"
 
     steps:
       - uses: actions/checkout@v4
