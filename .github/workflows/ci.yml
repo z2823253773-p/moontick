@@ -1,0 +1,218 @@
+name: ci
+
+# Fixed-toolchain candidate CI. Every run pins one exact MoonBit release on both
+# platforms and asserts the running compiler version, so a green job means "this
+# commit passed on this platform under this compiler" and nothing wider.
+#
+# Remote status is NOT_RUN until a remote exists and produces a run for the
+# recorded commit SHA. A local `act`-style replay or a YAML parse is not a run.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Pinned toolchain. Never `latest`: the version is URL-escaped for `+`.
+  MOONBIT_VERSION: "0.10.14+7d59c7ec9"
+  MOONBIT_VERSION_ESCAPED: "0.10.14%2B7d59c7ec9"
+  # Exact compiler build asserted after install. This is the value the project
+  # evidence records; the `moon` front-end revision is logged, not asserted.
+  EXPECTED_MOONC: "v0.10.14+7d59c7ec9"
+  # Binary archives are verified against the publisher's own `.sha256` sidecar.
+  SHA256_DARWIN_AARCH64: "20967f9389ac54508899ee2fc051a3470d051452bac5818a9696ed4c144f3ec3"
+  SHA256_LINUX_X86_64: "9226694de9ff978db1ecf820b7710c4224e84ec7a76b19a222d96f0cd4e31b6a"
+  # The core archive has NO publisher-provided checksum (its `.sha256` sidecar
+  # returned HTTP 403 during the 2026-09-21 probe). These are *observed* local
+  # hashes from the single machine that has installed this version, not
+  # verification values. A mismatch is surfaced in the job summary as an open
+  # supply-chain limitation instead of being hidden; see
+  # docs/evidence/T5/CI.md. The moonc version assertion, not this hash, is the
+  # gate that the toolchain is the pinned one.
+  OBSERVED_CORE_SHA256_DARWIN: "6f18b8fdea18f85e628a75e4a1bd3977c5a5c9c6a836fd8824192b0e6bd91b14"
+  OBSERVED_CORE_SHA256_LINUX: "UNKNOWN_NOT_VERIFIED"
+
+jobs:
+  native:
+    name: ${{ matrix.runner }} / native
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macos-15 is arm64 and ubuntu-24.04 is x86_64 on GitHub-hosted
+          # runners; the two archives below are built for exactly those
+          # architectures, so a mislabelled runner must fail loudly.
+          - runner: macos-15
+            arch: arm64
+            archive_sha256: ${{ env.SHA256_DARWIN_AARCH64 }}
+            observed_core_sha256: ${{ env.OBSERVED_CORE_SHA256_DARWIN }}
+          - runner: ubuntu-24.04
+            arch: x86_64
+            archive_sha256: ${{ env.SHA256_LINUX_X86_64 }}
+            observed_core_sha256: ${{ env.OBSERVED_CORE_SHA256_LINUX }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Report environment
+        run: |
+          echo "uname: $(uname -srm)"
+          python3 --version
+          echo "runner.arch=${{ runner.arch }}"
+
+      - name: Assert runner architecture
+        run: |
+          # Compare on a normalised architecture name: Linux reports arm64 as
+          # `aarch64`, macOS reports it as `arm64`. `runner.arch` is used
+          # because it is the value GitHub routes the runner label on.
+          actual="$(echo "${{ runner.arch }}" | tr '[:upper:]' '[:lower:]')"
+          case "$actual" in
+            arm64|aarch64) normalised="arm64" ;;
+            x64|x86_64) normalised="x86_64" ;;
+            *) normalised="$actual" ;;
+          esac
+          expected="${{ matrix.arch }}"
+          echo "uname -m: $(uname -m); runner.arch: ${{ runner.arch }}; normalised: $normalised; expected: $expected"
+          if [ "$normalised" != "$expected" ]; then
+            echo "::error::runner architecture mismatch: runner '${{ matrix.runner }}' is '$normalised' but this job installs the '$expected' archive"
+            exit 1
+          fi
+
+      - name: Install pinned MoonBit toolchain
+        run: |
+          set -euo pipefail
+          base="https://cli.moonbitlang.com"
+          version="$MOONBIT_VERSION_ESCAPED"
+          moon_home="$RUNNER_TEMP/moonbit"
+
+          case "${{ matrix.arch }}" in
+            arm64) target="darwin-aarch64" ;;
+            x86_64) target="linux-x86_64" ;;
+          esac
+
+          bin_uri="$base/binaries/$version/moonbit-$target.tar.gz"
+          core_uri="$base/cores/core-$version.tar.gz"
+          rm -rf "$moon_home"
+          mkdir -p "$moon_home"
+
+          curl --fail --location --silent --show-error --retry 3 \
+            --output "$RUNNER_TEMP/moonbit.tar.gz" "$bin_uri"
+          curl --fail --location --silent --show-error --retry 3 \
+            --output "$RUNNER_TEMP/core.tar.gz" "$core_uri"
+
+          # Binary archive: verified against the publisher's `.sha256` sidecar.
+          curl --fail --location --silent --show-error --retry 3 \
+            --output "$RUNNER_TEMP/moonbit.tar.gz.sha256" "$bin_uri.sha256"
+          expected_bin="${{ matrix.archive_sha256 }}"
+          sidecar_bin="$(awk '{print $1}' "$RUNNER_TEMP/moonbit.tar.gz.sha256")"
+          actual_bin="$(python3 -c 'import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$RUNNER_TEMP/moonbit.tar.gz")"
+          if [ "$sidecar_bin" != "$expected_bin" ]; then
+            echo "::error::the downloaded sidecar digest does not match the digest pinned in this workflow"
+            exit 1
+          fi
+          if [ "$actual_bin" != "$expected_bin" ]; then
+            echo "::error::binary archive SHA-256 mismatch: got $actual_bin"
+            exit 1
+          fi
+          echo "binary archive verified: $actual_bin"
+
+          # Core archive: no official sidecar exists, so compare against the
+          # observed hash and report rather than gate.
+          actual_core="$(python3 -c 'import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$RUNNER_TEMP/core.tar.gz")"
+          echo "observed_core_sha256_actual=$actual_core" >> "$GITHUB_ENV"
+
+          tar xf "$RUNNER_TEMP/moonbit.tar.gz" --directory="$moon_home"
+          mkdir -p "$moon_home/lib"
+          tar xf "$RUNNER_TEMP/core.tar.gz" --directory="$moon_home/lib"
+          echo "MOON_HOME=$moon_home" >> "$GITHUB_ENV"
+          echo "$moon_home/bin" >> "$GITHUB_PATH"
+
+      - name: Assert pinned compiler version
+        run: |
+          set -euo pipefail
+          # MOON_HOME and PATH are set by the install step; a separate process
+          # would not see a shell-local export, so rely on GITHUB_ENV/GITHUB_PATH.
+          moon version --all
+          actual="$(moonc -v)"
+          echo "moonc reports: $actual"
+          case "$actual" in
+            "$EXPECTED_MOONC "*) ;;
+            *) echo "::error::expected moonc $EXPECTED_MOONC, got: $actual"; exit 1 ;;
+          esac
+
+      - name: Bundle pinned core
+        run: |
+          set -euo pipefail
+          # Mirrors the official installer: the core source tree must be
+          # compiled before it is usable as the standard library. The path is
+          # deterministic (the archive contains a top-level `core/`), so it is
+          # named directly rather than globbed - a `lib/core*` glob also matches
+          # a leftover `core.tar.gz` and would pass two paths to `-C`.
+          core_dir="$MOON_HOME/lib/core"
+          if [ ! -d "$core_dir" ]; then
+            echo "::error::extracted core tree not found at $core_dir"
+            ls -la "$MOON_HOME/lib" || true
+            exit 1
+          fi
+          MOON_HOME="$MOON_HOME" moon -C "$core_dir" bundle --warn-list -a --all
+
+      - name: Format check
+        run: moon fmt --check
+
+      - name: Check (native)
+        run: moon check --target native
+
+      - name: Build (native)
+        run: moon build --target native
+
+      - name: Test (native)
+        run: moon test --target native
+
+      - name: Locate and record the real binary
+        run: |
+          set -euo pipefail
+          bin="_build/native/debug/build/cmd/moontick/moontick.exe"
+          if [ ! -x "$bin" ]; then
+            echo "::error::expected native binary at $bin"
+            find _build -name 'moontick*' -maxdepth 6 || true
+            exit 1
+          fi
+          echo "MOONTICK_BIN=$PWD/$bin" >> "$GITHUB_ENV"
+          python3 -c 'import hashlib,sys;print("binary sha256:", hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest())' "$bin"
+
+      - name: CLI process tests
+        run: python3 tests/cli/test_cli.py
+
+      - name: Independent differential oracle
+        run: python3 tests/oracle/test_differential.py
+
+      - name: Toolchain and supply-chain summary
+        if: always()
+        run: |
+          {
+            echo "## ${{ matrix.runner }}"
+            echo
+            echo '```text'
+            echo "\$ uname -srm"; uname -srm
+            echo
+            echo "\$ moon version --all"; moon version --all || true
+            echo
+            echo "\$ moonc -v"; moonc -v || true
+            echo '```'
+            echo
+            echo "- binary archive SHA-256 (publisher sidecar verified): \`${{ matrix.archive_sha256 }}\`"
+            echo "- core archive SHA-256 observed: \`${observed_core_sha256_actual:-not recorded}\`"
+            core_expected="${{ matrix.observed_core_sha256 }}"
+            if [ "$core_expected" = "UNKNOWN_NOT_VERIFIED" ]; then
+              echo "- core archive verification: **NOT VERIFIED** - no observed hash exists for this platform yet. The publisher provides no core checksum (its sidecar returned HTTP 403), so this remains an open supply-chain item."
+            elif [ "${observed_core_sha256_actual:-}" = "$core_expected" ]; then
+              echo "- core archive verification: matches the observed hash recorded on the macOS arm64 reference install. This is a consistency check against a single-machine observation, **not** a publisher attestation."
+            else
+              echo "- core archive verification: **MISMATCH** - observed \`${observed_core_sha256_actual:-none}\` vs recorded \`$core_expected\`. Investigate: either the artifact changed or this platform ships a different core. Do not treat the toolchain as pinned until resolved."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
