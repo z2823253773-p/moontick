@@ -36,9 +36,9 @@ Claude Code 本轮（起点 `aa4902a`）按返修卡完成单点修复，固定 
 
 1. **只改 `.github/workflows/ci.yml`**。四个矩阵表达式改为字面量（沿用已固定且有
    来源记录的 SHA / core 观察值），并删除只被矩阵引用、已成死引用的工作流级
-   `SHA256_*` / `OBSERVED_CORE_*` 环境变量。选字面量而非 `vars`：仓库无 remote，
-   `vars` 尚不存在；字面量可离线自证。**未用 `latest`、未删平台、未放宽 checksum、
-   未绕开任何失败门槛。**
+   `SHA256_*` / `OBSERVED_CORE_*` 环境变量。选字面量而非 `vars`：远程仓库虽已配置
+   `origin`，但尚无任何 push，远程 `vars` 从未设置过；字面量可离线自证，不依赖远程状态。
+   **未用 `latest`、未删平台、未放宽 checksum、未绕开任何失败门槛。**
 2. 独立复核了规则本身（未仅依赖 Codex 结论）：官方
    [上下文可用性表](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts)
    的 `jobs.<job_id>.strategy` 行只列 `github, needs, vars, inputs`。P1 成立。
@@ -50,15 +50,18 @@ Claude Code 本轮（起点 `aa4902a`）按返修卡完成单点修复，固定 
    YAML 双解析器通过；13 个 `run:` 块 `bash -n` 无语法错误。证据：
    `docs/evidence/T5/CI-matrix-context-fix.md`、`raw/repair-*.txt`。
 
-**（Linux）= NOT_RUN；（GitHub Actions）= NOT_RUN**：仓库仍无 remote，未创建、未 push、
-未发布。静态核验不构成远程 CI 通过。官方 core checksum 仍无来源证明，供应链阻断项保留。
+**（Linux）= NOT_RUN；（GitHub Actions）= NOT_RUN。** 注意状态依据已变化：远程 `origin`
+现已配置为 `https://github.com/z2823253773-p/moontick.git`（2026-09-22 00:28:29 写入
+`.git/config`），但该远程**为空**——`git ls-remote origin` 返回 0 个 ref，任何分支都没有
+upstream，**没有任何提交被 push**。因此 Actions 从未对任何 SHA 运行过，NOT_RUN 成立，
+但理由已不是"无 remote"。首次 push 前需先完成 `README.mbt.md` 与 `LICENSE` 的公开前修正。
+静态核验不构成远程 CI 通过。官方 core checksum 仍无来源证明，供应链阻断项保留。
 
 返修卡：`docs/handoffs/T5_CI_REPAIR_CLAUDE.md`。两个 runner 标签已从 GitHub 官方文档
 核实：`macos-15` 为 arm64，`ubuntu-24.04` 为 x64，无须改标签。本机 `gh auth status`
-显示当前 GitHub CLI 登录凭据无效；仓库仍无 remote。用户需创建空的公开 GitHub 仓库并
-重新通过浏览器授权 GitHub CLI，之后再连接和推送经复核的提交。公开前预检另发现
-`README.mbt.md` 仍是 T1 阶段文案，且缺 `LICENSE`；首次 push 前需修正并复核。证据：
-`docs/evidence/T5/github-preflight-2026-09-22.md`。
+显示当前 GitHub CLI 登录凭据无效，用户需重新通过浏览器授权后再推送经复核的提交。
+公开前预检另发现 `README.mbt.md` 仍是 T1 阶段文案，且缺 `LICENSE`；首次 push 前需修正
+并复核。证据：`docs/evidence/T5/github-preflight-2026-09-22.md`。
 
 **交给 Codex 的最小复核命令**（复核目标 `22ae166880d531a21ba2d28c6c0d312351f3b0ff`，独立 worktree，隔离工具链）：
 

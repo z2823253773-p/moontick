@@ -1,6 +1,14 @@
-$ git remote -v
-(exit 0)
+$ git remote -v                                        # 2026-09-22 (R2)
+origin	https://github.com/z2823253773-p/moontick.git (fetch)
+origin	https://github.com/z2823253773-p/moontick.git (push)
 
-# empty output above = no remote configured
-$ git config --get-regexp '^remote\.'
-(no remote.* config)
+$ git ls-remote origin                                 # refs on the remote
+(exit 0; 0 lines = EMPTY remote)
+
+$ git for-each-ref --format='%(refname:short) -> %(upstream:short)' refs/heads
+docs/public-readiness -> 
+main -> 
+(empty right-hand side = nothing pushed)
+
+# => origin exists but is empty; GitHub Actions has never run for any SHA.
+# Status: NOT_RUN (reason corrected from 'no remote' to 'remote empty, nothing pushed').

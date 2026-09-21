@@ -2,6 +2,13 @@
 
 日期：2026-09-22。任务：T5 返修。状态图例：**PASS / FAIL / NOT_RUN / BLOCKED**。
 
+> **状态依据更正（本轮现场发现）**：起草本文件时我沿用了上一轮的措辞"仓库无 remote"，
+> 这是**陈旧的**。远程 `origin` 实际已在 `2026-09-22T00:28:29` 写入 `.git/config`，
+> 早于本轮修复提交 `22ae166`（`00:30:18`）。逐条复核后改述为：**`origin` 已配置但为空**
+> （`git ls-remote origin` 返回 0 个 ref，无分支有 upstream，**没有任何 push**）。
+> 结论不变——Actions 从未运行，仍是 **NOT_RUN**——但**理由不同，必须按新依据表述**。
+> 原始命令与输出：`raw/remote-ci.txt`。
+
 ## 1. 起点与返修 SHA
 
 | 项目 | 值 |
@@ -23,8 +30,8 @@
 本轮独立复核该规则（未仅依赖 Codex 结论）：官方文档的 `jobs.<job_id>.strategy`
 一行确实只列出上述四个上下文。Codex 的 P1 成立。
 
-这是**依据官方规则确认的配置阻断**，不是运行期日志观察到的失败：仓库无 remote，
-远程从未运行，因此没有对应的 Actions 错误日志。
+这是**依据官方规则确认的配置阻断**，不是运行期日志观察到的失败：没有任何提交被
+push，远程从未运行，因此没有对应的 Actions 错误日志。
 
 ## 3. 修复（最小改动）
 
@@ -113,7 +120,8 @@ OK  jobs.<job_id>.steps.run uses `matrix`   允许 env, github, inputs, job, mat
 
 - （macOS arm64，本机）= **PASS**（本次返修回归）
 - （Linux）= **NOT_RUN**（本机为 macOS，未下载 Linux 归档）
-- （GitHub Actions，任一平台）= **NOT_RUN**（仓库仍无 remote；未创建、未 push、未发布）
+- （GitHub Actions，任一平台）= **NOT_RUN**（`origin` 已配置但**为空**，0 个 ref；
+  没有任何提交被 push，未发布）
 - 官方 core 校验仍无来源证明，**供应链阻断项保留**
 
 必须等远程仓库建成、推送该 SHA 并取得对应 run URL 后，才能把任一平台标为 CI 通过；
