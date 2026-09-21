@@ -1,18 +1,29 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1 与 T2 均已在明确实现 SHA 上完成本机技术验收；下一任务尚未开始。
+日期：2026-09-21。T1 与 T2 均已在明确实现 SHA 上完成本机技术验收；按用户指示准备 T3 差量验证，Claude Code 尚未启动。
 
-- task_id: T2
-- status: ACCEPTED
-- active_owner: user
-- implementation_authorized: YES（2026-09-21，范围仅 T2）
-- objective: 补齐核心审计的 T2 行为与规模证据；Codex 在明确 SHA 上独立复核
+- task_id: T3
+- status: READY
+- active_owner: Claude Code（用户手动在北京时间闲时启动）
+- implementation_authorized: YES（2026-09-21，用户要求按计划推进；范围仅 T3）
+- objective: 补齐严格 ticks 输入的原始字节语法、库层限额与物理行号证据；Codex 在明确 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
-  T2 被测 SHA 为 `a88af81bf7e9ff07698c63a293111532b022ba75`，**不是**文档基线 `ddfc6b1`
+  T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；T3 尚无被测 SHA
 
-## 当前任务：T2（本机技术验收通过）
+## 当前任务：T3（准备完毕，等待用户手动启动 Claude Code）
+
+任务卡：`docs/handoffs/T3_CLAUDE.md`。T1 已实现解析和 CLI，T3 仅补尚缺的原始字节、
+库层资源边界和位置证据；若新增测试发现真实不一致，再做最小修复。不重写已通过行为，
+不开展 T4+。用户控制 Claude Code 启动时间，仅在北京时间闲时运行；Codex 不代为启动
+或设置自动续跑。完成后 Claude 提供固定 T3 SHA，再由 Codex 独立复核。
+
+参赛关键路径并行：官网当前展示 9 月 30 日截止本期报名与验收，但规划快照中的
+9 月 24 日章程口径仍未复核；公开仓库、正式报名回执、CI、许可证、三场景、Mooncakes
+发布及干净消费者安装目前均无完成证据。不得用本地 T1/T2 验收替代官方资格/验收。
+
+## 历史验收：T2（本机技术验收通过）
 
 任务卡：`docs/handoffs/T2_CLAUDE.md`。只补足该任务卡列出的 core 分类、细节截断、
 资源拒绝和规模证据；不要重写已通过的 core/CLI/ticks/report，不做 T3+、Linux、CI、text
@@ -53,7 +64,7 @@
   `raw/cli-three-cases.txt` EOF 空行；它是非阻断文档卫生项，未改写原始证据。
 
 完整记录：`docs/evidence/T2/codex-independent-review-a88af81.md`。Linux、CI、完整 text
-格式、发布和报名仍 NOT_RUN，未经用户指示不进入 T3。
+格式、发布和报名仍 NOT_RUN；T3 已按用户指示进入准备阶段，其他后续任务另行启动。
 
 ### T2 正式验收决定（2026-09-21）
 
@@ -65,7 +76,7 @@
 
 `git diff --check a88af81^ a88af81` 的原始输出尾随空格及 EOF 空行仍记录为非阻断
 证据文件卫生项；跨 worktree debug 二进制不宣称逐字节一致。本次接受仅代表本机技术
-验收，不代表 Linux、CI、发布、报名或官方赛事验收。后续任务须另行启动。
+验收，不代表 Linux、CI、发布、报名或官方赛事验收。T3 由用户手动启动 Claude Code。
 
 ## 本轮（2026-09-21，Claude Code）：实现与验证
 
