@@ -10,6 +10,12 @@ pub fn render_error(String, String, Int?, Int?) -> String
 
 pub fn render_json(@core.AuditReport, Array[Int]) -> String
 
+pub fn render_text(@core.AuditReport, Array[Int]) -> String
+
+pub fn try_render_json(@core.AuditReport, Array[Int]) -> Result[String, String]
+
+pub fn try_render_text(@core.AuditReport, Array[Int]) -> Result[String, String]
+
 // Errors
 
 // Types and methods
