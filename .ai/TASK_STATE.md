@@ -34,7 +34,10 @@ Codex 在固定 `89b4e01` 的独立 worktree 复现本机门槛：fmt 0、check 
 官方文档核实：`macos-15` 为 arm64，`ubuntu-24.04` 为 x64，无须改标签。
 本机 `gh auth status` 显示当前 GitHub CLI 登录凭据无效；仓库仍无 remote。
 用户需创建空的公开 GitHub 仓库并重新通过浏览器授权 GitHub CLI，之后再连接和
-推送经复核的提交。不得在修复前把工作流静态检查写成远程 CI 通过。
+推送经复核的提交。公开前预检另发现 `README.mbt.md` 仍是 T1 阶段文案，
+且缺 `LICENSE`；首次 push 前需修正并复核。证据：
+`docs/evidence/T5/github-preflight-2026-09-22.md`。不得在修复前把工作流
+静态检查写成远程 CI 通过。
 
 ## T5 首轮交接（历史记录；CI 矩阵待修）
 
@@ -486,7 +489,8 @@ Codex 不代为启动或设置自动续跑。首个固定 T4 SHA 已交 Codex �
    只修工作流矩阵上下文并提交新固定 SHA；Codex 随后复核。
 2. 用户在 GitHub 账号 `z2823253773-p` 下创建**空的公开** `moontick` 仓库，
    不勾选 README、许可证或 `.gitignore` 初始化；通过浏览器重新授权本机 `gh`。
-   这些是用户身份操作。取得仓库 URL 与有效登录后再连接、推送、取得两平台实际
+   这些是用户身份操作。首次推送前更新过时 README、加入并核对开源许可证；
+   取得仓库 URL、有效登录与经复核的公开内容后再连接、推送，取得两平台实际
    Actions run URL。没有对应 SHA 的真实 run 前，macOS/Linux 远程 CI 仍为 NOT_RUN。
 
 T1–T4 验收和 T5 oracle 均只在 macOS native 范围内成立。Linux native、远程 CI、
