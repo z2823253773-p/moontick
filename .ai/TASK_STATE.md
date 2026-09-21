@@ -1,18 +1,17 @@
 # MoonTick 当前状态
 
-日期：2026-09-21。T1 与 T2 均已在明确实现 SHA 上完成本机技术验收；T3（严格 ticks 输入的
-原始字节、库层限额与物理行号证据）已由 Claude Code 实施完毕，等待 Codex 在固定 SHA 上独立复核。
+日期：2026-09-21。T1、T2 与 T3 均已在明确实现 SHA 上完成 macOS native 范围内验收。
 
 - task_id: T3
-- status: REVIEW
-- active_owner: Codex（在固定 T3 SHA 的独立 worktree 复核）
+- status: ACCEPTED
+- active_owner: user
 - implementation_authorized: YES（2026-09-21，用户要求按计划推进；范围仅 T3）
 - objective: 补齐严格 ticks 输入的原始字节语法、库层限额与物理行号证据；Codex 在明确 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
   T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；
-  T3 被测 SHA 见本文件所在提交本身（提交信息列出被测工件与新增测试文件）
+  T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；本提交仅记录验收
 
 ## 当前任务：T3（实施完毕，等待 Codex 独立复核）
 
