@@ -3,5 +3,4 @@
 
 import {
   "z2823253773-p/moontick/core",
-  "moonbitlang/core/double",
 }

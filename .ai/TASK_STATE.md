@@ -1,11 +1,12 @@
 # MoonTick 当前状态
 
 日期：2026-09-21。T1、T2、T3 均已在明确实现 SHA 上完成 macOS native 范围内验收；
-T4 首个实现 SHA 的独立复核发现两个文本报告反例，待 Claude Code 最小修复。
+T4 首个实现 SHA 的独立复核发现两个文本报告反例，Claude Code 已完成最小修复并提交，
+待 Codex 在新的固定 SHA 上再次独立复核。
 
 - task_id: T4
-- status: READY
-- active_owner: Claude Code（用户手动在北京时间闲时启动修复）
+- status: REVIEW（修复后待复核）
+- active_owner: Codex（用户手动启动独立复核）
 - implementation_authorized: YES（2026-09-21，用户要求按既定计划推进；范围仅 T4）
 - objective: 完成默认 text 报告、文本错误通道和真实 CLI 截断证据；Codex 在固定 SHA 上独立复核
 - repo_root: /Users/henryz/Desktop/比赛/moontick
@@ -13,7 +14,8 @@ T4 首个实现 SHA 的独立复核发现两个文本报告反例，待 Claude C
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
   T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；
   T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；
-  T4 首个被测 SHA `6d9774519c2c9cb20376af7d79a32c0fea63732e` 需修复，尚未接受
+  T4 首个被测 SHA `6d9774519c2c9cb20376af7d79a32c0fea63732e` 复核未通过（两个文本反例）；
+  T4 修复 SHA 见本文件所在提交本身，待 Codex 独立复核
 
 ## 当前任务：T4（独立复核要求最小修复）
 
@@ -26,14 +28,16 @@ build（0）及真实 CLI（37/37），随后发现两例现有测试未覆盖�
 2. 两个缺失区间、共 98 个缺失点、`detail_limit=1` 时，文本写成
    `showing first 1 of 98; truncated`，把缺失点数当成缺失区间总数。
 
-T4 暂不接受。Claude Code 保留上述最小反例，仅修文本展示与相关测试，再交新的
-固定 SHA；Codex 随后独立复核。`__pycache__/` 已在 `.gitignore` 忽略，缓存文件本身
-未删除、未提交。用户继续手动控制 Claude Code 的闲时运行，不设置自动续跑。
+T4 首个 SHA 暂不接受。Claude Code 已保留上述最小反例、仅修文本展示与相关测试，
+并提交新的固定 SHA（见下文"T4 复核修复"节）；Codex 随后独立复核。
+`__pycache__/` 已在 `.gitignore` 忽略，缓存文件本身未删除、未提交。
+用户继续手动控制 Claude Code 的闲时运行，不设置自动续跑。
 
 任务卡：`docs/handoffs/T4_CLAUDE.md`。T1–T3 已有 JSON、真实 CLI 与严格 ticks 输入；
 本轮只补默认 text 报告、非 JSON 错误输出通道、定位字段和五类截断的进程级证据。
 未重写已通过的核心或输入实现，未开展 T5+。用户在北京时间闲时手动启动 Claude Code；
-Codex 不代为启动或设置自动续跑。已提交固定 T4 SHA，交 Codex 在独立 worktree 验证。
+Codex 不代为启动或设置自动续跑。首个固定 T4 SHA 已交 Codex 复核并收到两个反例，
+修复后的新固定 SHA 再次交 Codex 在独立 worktree 验证。
 
 ### T4 实施结果（2026-09-21，Claude Code）
 
@@ -49,7 +53,8 @@ Codex 不代为启动或设置自动续跑。已提交固定 T4 SHA，交 Codex 
   - `cmd/moontick/main.mbt`：text 分支改为渲染报告；解析成功后的
     `CONFIG_INVALID`/`INPUT_INVALID`/`RESOURCE_LIMIT`/`IO_ERROR` 改为写 stderr、
     stdout 为空；可定位输入错误同时带 `record_index` 与 `line`；`--version` 去掉 `(T1)`。
-  - `report/moon.pkg` 仅加 `moonbitlang/core/double` 导入。**未改** `core/*`、
+  - `report/moon.pkg` 仅加 `moonbitlang/core/double` 导入（**该导入已在后续修复中
+    移除**，见下节：百分比改为纯整数运算后不再需要）。**未改** `core/*`、
     `ticks_input/*`、`report/json.mbt`，未扩大任何自有公开 API。
 - 门槛：`moon check` 退出 0（14 warnings / 0 errors，与 T1–T3 同数、无新增）、
   `moon test` 退出 0（73/73，T3 为 62）、report 包 19/19、`moon build` 退出 0、
@@ -350,11 +355,51 @@ Codex 不代为启动或设置自动续跑。已提交固定 T4 SHA，交 Codex 
 - 未完成/未授权：Linux native、CI、发布、报名均未运行；文本格式的截断 golden 未补；
   终端列对齐行为未测。无待修复的最小反例。
 
+## T4 复核修复（Claude Code → Codex）
+
+- 起点 HEAD：`23d25dd`（Codex 复核记录提交），工作树干净。
+- T4 修复 SHA：见本文件所在提交本身（提交信息列出被测工件与新增测试文件）。
+- 只修复核记录中的两个文本输出反例，**未改核心计数、未改 JSON 契约、
+  未改 `core/`、`ticks_input/`、`report/json.mbt`、`cmd/moontick/main.mbt`**。
+- 改动文件：
+  - 修改 `report/text.mbt`（`percent()` 改纯整数四舍五入；缺失区间截断提示分列两个量）
+  - 修改 `report/moon.pkg`（移除已不需要的 `moonbitlang/core/double`）
+  - 修改 `report/text_test.mbt`（+4 进程内用例）、`tests/cli/test_cli.py`
+    （+5 真实进程用例，新增 `TextAccuracyRegressions`）
+  - 新增 `tests/golden/text-truncated-missing.txt`（首份触发详情截断的文本 golden）
+  - 新增 `docs/evidence/T4-fix/`；修改 `.ai/TASK_STATE.md`
+- 两处修复：
+  1. **P1 百分比**：`Double` 比例缩放在 `trunc` 前已略小于精确整数值，导致
+     `57/100` 显示 `56.99%`、`2/3` 显示 `66.66%`。改为**全整数**：先拆出整数商与
+     余数，只缩放余数（`remainder < 250000`，受记录上限约束），末尾做四舍五入。
+     仍不使用 `report.passed` 以外的通过判据。
+  2. **P2 截断提示**：原 `showing first 1 of 98` 把缺失**点数**当成区间**总数**。
+     改为分列两个量且不虚构区间总数：`ranges shown: 1; missing points in total: 98`，
+     并把 `(truncated)` 提到标题。**未扩展 `AuditReport` schema**（复核记录明确不要求）。
+     记录类别的 "first N of M" 两数同量纲，保持原样。
+- 门槛：`moon check` 退出 0（**14 warnings / 0 errors，无新增**）、
+  `moon test` 退出 0（**77/77**，修复前 73）、report 包 **23/23**、
+  `moon build` 退出 0、`python3 tests/cli/test_cli.py` 退出 0（**42/42**，修复前 37）。
+- 产品二进制 SHA-256 `d3f53710a11d0249524a24ff32cb89554bddb9bb7d0e44c8fc1f162ee7579a8a`。
+- 变异抽查三处（四舍五入 `>=`→`>`、四舍五入→截断、提示改回旧措辞）现**同时**被
+  进程内与进程级用例捕获；其中提示那处由新增的截断 golden 捕获。
+- **JSON 契约实测未变**：用旧源码与新源码各构建一次，对同一命令同一输入做逐字节
+  `diff`，无差异（`docs/evidence/T4-fix/raw/json-before-vs-after.txt`）。
+- Codex 最小复核面：
+  1. `2/3` 是否显示 `66.67%`、`57/100` 是否显示 `57.00%`；请用**独立于产品代码**的
+     百分比 oracle 交叉验证，不要调用 `percent()` 当真值。
+  2. 19999/20000 是否显示 `100.00%` 但**仍 `FAIL` / 退出 1**（SPEC 2.2 点名场景）。
+  3. `ranges shown: 1; missing points in total: 98` 两个计数是否量纲正确。
+  4. 采用的措辞与复核记录所给示例措辞**不同**（语义等价、约束满足）。如要求逐字
+     一致，请明确指出。
+- 未完成/未授权：Linux native、CI、发布、报名均未运行；终端列对齐未测。
+- 证据：`docs/evidence/T4-fix/review-repair.md`、`docs/evidence/T4-fix/raw/`。
+
 ## 接下来
 
-1. Codex 在下方 T4 commit SHA 的独立 worktree 复核：跑同一隔离工具链的
-   `moon check/test/build` 与真实二进制 CLI，读 `docs/evidence/T4/raw/` 的原始输出，
-   复核文本报告、错误通道、JSON 位置与五类截断，重点见上节"最小复核面"。
+1. Codex 在 T4 修复 SHA 的独立 worktree 复核：跑同一隔离工具链的
+   `moon check/test/build` 与真实二进制 CLI，读 `docs/evidence/T4-fix/raw/` 的原始输出，
+   重点复核上文"Codex 最小复核面"四条。
    注意：启动复核前需用户手动授权；本会话不自行安排定时任务或后台续跑。
 2. 复核通过后由用户决定 T5（独立验证、CI 与发布候选）是否展开。
 

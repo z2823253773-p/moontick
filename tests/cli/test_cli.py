@@ -46,16 +46,19 @@ class RealBinaryTest(unittest.TestCase):
                 args += extra
             return run(args)
 
-    def check_text(self, text, extra=None, explicit=True):
+    def check_text(self, text, extra=None, explicit=True, window=None):
         """Run `check` in text mode and return the finished process.
 
         `explicit=False` omits `--format` entirely, which is how the default
         format is exercised: the default must be text, not a fallback.
+        `window` overrides the shared `[0,60)` step-15 plan. The counterexamples
+        below need grids whose points are neither all covered nor all missing,
+        which the shared plan cannot express.
         """
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "input.ticks"
             path.write_text(text, encoding="utf-8")
-            args = ["check", str(path)] + WINDOW
+            args = ["check", str(path)] + (WINDOW if window is None else window)
             if explicit:
                 args += ["--format", "text"]
             if extra:
@@ -585,6 +588,76 @@ class DetailTruncation(RealBinaryTest):
         full = json.loads(self._run("0\n0\n0\n15\n30\n45\n", []).stdout)
         self.assertEqual(len(full["duplicates"]), 2)
         self.assertFalse(full["details_truncated"]["duplicates"])
+
+
+class TextAccuracyRegressions(RealBinaryTest):
+    """The two text counterexamples from Codex's review of `6d97745`.
+
+    Both are process-level: they are the exact invocations the reviewer ran
+    against the compiled executable, kept so the repaired behaviour cannot
+    regress silently.
+    """
+
+    PERCENT_GRID = ["--start-ms", "0", "--end-ms", "3", "--step-ms", "1"]
+    HUNDRED_GRID = ["--start-ms", "0", "--end-ms", "100", "--step-ms", "1"]
+
+    def test_two_of_three_rounds_up_to_the_nearest_hundredth(self):
+        # 0 and 1 covered out of [0,3) step 1 is exactly 2/3 = 66.666...%, which
+        # SPEC 2.2 wants displayed with two decimals as 66.67%. Trimming the
+        # third decimal printed 66.66%.
+        result = self.check_text("0\n1\n", window=self.PERCENT_GRID)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("coverage: 2/3 (66.67%)", result.stdout, result.stdout)
+
+    def test_a_whole_percentage_is_not_shaved_by_binary_rounding(self):
+        # 57 of 100 covered is exactly 57%, so no rounding decision is involved
+        # at all. Scaling the ratio through a Double landed a hair under 5700
+        # hundredths and printed 56.99%.
+        ticks = "".join(f"{index}\n" for index in range(57))
+        result = self.check_text(ticks, window=self.HUNDRED_GRID)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("coverage: 57/100 (57.00%)", result.stdout, result.stdout)
+
+    def test_rounded_up_hundred_percent_still_fails(self):
+        # 19999 of 20000 is 99.995%, which displays as 100.00% while one point is
+        # missing. SPEC 2.2 names this case: the rounded display must never decide
+        # the verdict. The report shows 100.00% and still exits 1 with FAIL.
+        ticks = "".join(f"{index}\n" for index in range(19999))
+        result = self.check_text(
+            ticks, window=["--start-ms", "0", "--end-ms", "20000", "--step-ms", "1"]
+        )
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("coverage: 19999/20000 (100.00%)", result.stdout, result.stdout)
+        self.assertIn("missing: 1", result.stdout, result.stdout)
+        self.assertIn("FAIL", result.stdout, result.stdout)
+
+    def test_missing_range_notice_does_not_pass_off_points_as_ranges(self):
+        # [0,100) step 1 with 0 and 50 covered: 98 missing points split over two
+        # ranges, [1,50) and [51,100). The notice must not read as "98 missing
+        # ranges"; the two quantities are different and are labelled separately.
+        result = self.check_text(
+            "0\n50\n", extra=["--detail-limit", "1"], window=self.HUNDRED_GRID
+        )
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("missing_ranges (truncated):", result.stdout, result.stdout)
+        self.assertIn(
+            "ranges shown: 1; missing points in total: 98",
+            result.stdout,
+            result.stdout,
+        )
+        # The old wording presented the point count as a range count.
+        self.assertNotIn("of 98", result.stdout, result.stdout)
+
+    def test_golden_truncated_missing_ranges(self):
+        # The three T4 goldens never trigger detail truncation, so the truncated
+        # text path had no byte-level golden. This closes that gap.
+        golden = GOLDEN_DIR / "text-truncated-missing.txt"
+        self.assertTrue(golden.is_file(), f"missing golden {golden}")
+        result = self.check_text(
+            "0\n50\n", extra=["--detail-limit", "1"], window=self.HUNDRED_GRID
+        )
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(result.stdout, golden.read_text(encoding="utf-8"))
 
 
 class VersionAndBoundaries(RealBinaryTest):

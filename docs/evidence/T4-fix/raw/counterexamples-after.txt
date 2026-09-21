@@ -1,0 +1,69 @@
+$ moontick check p1a.ticks --start-ms 0 --end-ms 3 --step-ms 1   # input: 0,1
+FAIL
+grid: [0,3) step_ms=1
+records: 2  expected_points: 3
+coverage: 2/3 (66.67%)  missing: 1  longest_missing_run: 1
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [2,3)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+EXIT=1
+
+$ moontick check p1b.ticks --start-ms 0 --end-ms 100 --step-ms 1  # input: 0..56
+FAIL
+grid: [0,100) step_ms=1
+records: 57  expected_points: 100
+coverage: 57/100 (57.00%)  missing: 43  longest_missing_run: 43
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges:
+  [57,100)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+EXIT=1
+
+$ moontick check p2.ticks --start-ms 0 --end-ms 100 --step-ms 1 --detail-limit 1  # input: 0,50
+FAIL
+grid: [0,100) step_ms=1
+records: 2  expected_points: 100
+coverage: 2/100 (2.00%)  missing: 98  longest_missing_run: 49
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges (truncated):
+  ranges shown: 1; missing points in total: 98
+  [1,50)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+
+EXIT=1

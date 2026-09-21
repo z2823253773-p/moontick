@@ -2,13 +2,19 @@
 // section 4. Pure: no file, clock, host or path ever reaches the output.
 
 ///|
-/// `covered / expected` as a percentage with two decimals.
+/// `covered / expected` as a percentage with two decimals, rounded half up.
 ///
-/// The scaling happens before the division, so the intermediate value must not
-/// overflow. It is a `Double` for exactly that reason: SPEC section 2.2 forbids
-/// multiplying an `Int64` counter by 100, because a large `covered_points`
-/// would wrap. This value is display-only and never decides pass or fail, which
-/// stays the exact `Bool` the audit computed.
+/// Every step is integer arithmetic. SPEC section 2.2 forbids scaling the
+/// counters first — a large `covered_points` times 100 would wrap an `Int64` —
+/// so the whole part and the remainder are split before either is scaled, and
+/// only the remainder is ever multiplied. Rendering through a `Double` was the
+/// earlier approach and was wrong: `57/100` computed as a ratio landed a hair
+/// below 57 and printed `56.99%`, so an exact value must not depend on binary
+/// floating point at all.
+///
+/// The half-up rule matches SPEC section 2.2's two-decimal display, and is
+/// display-only: passing or failing stays the exact `Bool` the audit computed
+/// and is never recomputed from a rounded number.
 ///
 /// A zero-length window has no percentage to show; `make_grid` already requires
 /// `end_ms > start_ms`, so `expected` is never zero, but the guard keeps the
@@ -17,19 +23,37 @@ fn percent(covered : Int64, expected : Int64) -> String {
   if expected <= 0L {
     return "n/a"
   }
-  let scaled = (covered.to_double() / expected.to_double()) * 10000.0
-  // Truncate towards zero and render as an integer number of hundredths, then
-  // place the decimal point by hand. This avoids depending on how this
-  // toolchain formats a `Double`, which is what keeps the output byte-stable.
-  let hundredths = @double.trunc(scaled).to_int64()
-  let whole = hundredths / 100L
-  let fraction = hundredths % 100L
+  let whole = covered / expected
+  let remainder = covered % expected
+  // Both scaled quantities stay far inside `Int64` even though `expected_points`
+  // is not itself bounded — a one-millisecond step over a huge window makes it
+  // enormous. The reason is that `covered_points` can never exceed the number of
+  // input records, capped at 250,000 by the resource limit, and `whole <=
+  // covered`. So `remainder < 250,000` and `whole * 10000 < 2.5 * 10^9`; neither
+  // multiplication can come close to wrapping. This is exactly the shape SPEC
+  // section 2.2 asks for: the counters are never scaled before dividing.
+  let scaled = remainder * 10000L
+  let hundredths = scaled / expected
+  let leftover = scaled % expected
+  // Round half up. Comparing against `expected - leftover` rather than doubling
+  // `leftover` keeps the comparison itself inside `Int64`; `leftover < expected`
+  // makes the subtraction safe.
+  let rounded = if leftover >= expected - leftover {
+    hundredths + 1L
+  } else {
+    hundredths
+  }
+  // Total hundredths of a percent: `whole` percent is `whole * 100` hundredths,
+  // and `rounded` is already in hundredths.
+  let total = whole * 10000L + rounded
+  let units = total / 100L
+  let fraction = total % 100L
   let digits = if fraction < 10L {
     "0" + fraction.to_string()
   } else {
     fraction.to_string()
   }
-  whole.to_string() + "." + digits + "%"
+  units.to_string() + "." + digits + "%"
 }
 
 ///|
@@ -148,24 +172,29 @@ pub fn try_render_text(
     " out_of_range=" +
     report.out_of_range_records.to_string(),
   )
-  buffer.write_string("\nmissing_ranges:\n")
-  if report.missing_ranges.length() == 0 {
-    buffer.write_string("  none\n")
+  // `missing_ranges` is the one category where the shown entries and the total
+  // are different kinds of thing: a *range* count against a *point* count. The
+  // report does not carry a range total, so the notice never invents one — it
+  // states how many ranges are listed and repeats the exact missing-point total
+  // under its own label. Printing "first 1 of 98" here read as 98 ranges.
+  if report.truncated.missing_ranges {
+    buffer.write_string(
+      "\nmissing_ranges (truncated):\n  ranges shown: " +
+      report.missing_ranges.length().to_string() +
+      "; missing points in total: " +
+      report.missing_points.to_string() +
+      "\n",
+    )
   } else {
-    if report.truncated.missing_ranges {
-      buffer.write_string(
-        "  (showing first " +
-        report.missing_ranges.length().to_string() +
-        " of " +
-        report.missing_points.to_string() +
-        "; truncated)\n",
-      )
+    buffer.write_string("\nmissing_ranges:\n")
+    if report.missing_ranges.length() == 0 {
+      buffer.write_string("  none\n")
     }
-    for range in report.missing_ranges {
-      buffer.write_string(
-        "  [" + range.0.to_string() + "," + range.1.to_string() + ")\n",
-      )
-    }
+  }
+  for range in report.missing_ranges {
+    buffer.write_string(
+      "  [" + range.0.to_string() + "," + range.1.to_string() + ")\n",
+    )
   }
   text_details(
     buffer,

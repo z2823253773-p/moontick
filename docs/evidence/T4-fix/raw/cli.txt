@@ -1,0 +1,47 @@
+test_a_bad_token_fails_the_whole_input (__main__.CliContract.test_a_bad_token_fails_the_whole_input) ... ok
+test_big_integers_keep_every_digit (__main__.CliContract.test_big_integers_keep_every_digit) ... ok
+test_blank_line_is_an_input_error_with_a_line_number (__main__.CliContract.test_blank_line_is_an_input_error_with_a_line_number) ... ok
+test_duplicate_does_not_fill_the_missing_slot (__main__.CliContract.test_duplicate_does_not_fill_the_missing_slot) ... ok
+test_empty_file_is_entirely_missing (__main__.CliContract.test_empty_file_is_entirely_missing) ... ok
+test_full_coverage_passes_with_exit_zero (__main__.CliContract.test_full_coverage_passes_with_exit_zero) ... ok
+test_help_and_version_need_no_input_file (__main__.CliContract.test_help_and_version_need_no_input_file) ... ok
+test_invalid_step_is_a_config_error (__main__.CliContract.test_invalid_step_is_a_config_error) ... ok
+test_isolated_carriage_return_is_rejected (__main__.CliContract.test_isolated_carriage_return_is_rejected) ... ok
+test_missing_file_is_an_io_error (__main__.CliContract.test_missing_file_is_an_io_error) ... ok
+test_non_whole_period_window_is_a_config_error (__main__.CliContract.test_non_whole_period_window_is_a_config_error) ... ok
+test_one_missing_point_is_located (__main__.CliContract.test_one_missing_point_is_located) ... ok
+test_out_of_range_and_off_grid_are_separate (__main__.CliContract.test_out_of_range_and_off_grid_are_separate) ... ok
+test_raw_bytes_are_rejected_verbatim_with_a_line_number (__main__.CliContract.test_raw_bytes_are_rejected_verbatim_with_a_line_number) ... ok
+test_the_same_input_renders_identical_bytes (__main__.CliContract.test_the_same_input_renders_identical_bytes) ... ok
+test_unknown_option_is_rejected (__main__.CliContract.test_unknown_option_is_rejected) ... ok
+test_usage_errors_go_to_stderr_only (__main__.CliContract.test_usage_errors_go_to_stderr_only) ... ok
+test_a_category_at_the_limit_is_not_marked_truncated (__main__.DetailTruncation.test_a_category_at_the_limit_is_not_marked_truncated) ... ok
+test_a_larger_limit_restores_the_full_details (__main__.DetailTruncation.test_a_larger_limit_restores_the_full_details) ... ok
+test_each_category_truncates_independently (__main__.DetailTruncation.test_each_category_truncates_independently) ... ok
+test_the_truncated_category_shows_the_first_entry_only (__main__.DetailTruncation.test_the_truncated_category_shows_the_first_entry_only) ... ok
+test_a_whole_percentage_is_not_shaved_by_binary_rounding (__main__.TextAccuracyRegressions.test_a_whole_percentage_is_not_shaved_by_binary_rounding) ... ok
+test_golden_truncated_missing_ranges (__main__.TextAccuracyRegressions.test_golden_truncated_missing_ranges) ... ok
+test_missing_range_notice_does_not_pass_off_points_as_ranges (__main__.TextAccuracyRegressions.test_missing_range_notice_does_not_pass_off_points_as_ranges) ... ok
+test_rounded_up_hundred_percent_still_fails (__main__.TextAccuracyRegressions.test_rounded_up_hundred_percent_still_fails) ... ok
+test_two_of_three_rounds_up_to_the_nearest_hundredth (__main__.TextAccuracyRegressions.test_two_of_three_rounds_up_to_the_nearest_hundredth) ... ok
+test_a_config_error_omits_both_position_fields (__main__.TextErrorChannel.test_a_config_error_omits_both_position_fields) ... ok
+test_a_located_input_error_carries_record_index_and_line (__main__.TextErrorChannel.test_a_located_input_error_carries_record_index_and_line) ... ok
+test_an_unlocated_error_omits_both_position_fields (__main__.TextErrorChannel.test_an_unlocated_error_omits_both_position_fields) ... ok
+test_config_error_goes_to_stderr_with_stdout_empty (__main__.TextErrorChannel.test_config_error_goes_to_stderr_with_stdout_empty) ... ok
+test_input_error_goes_to_stderr_with_stdout_empty (__main__.TextErrorChannel.test_input_error_goes_to_stderr_with_stdout_empty) ... ok
+test_io_error_goes_to_stderr_with_stdout_empty (__main__.TextErrorChannel.test_io_error_goes_to_stderr_with_stdout_empty) ... ok
+test_json_mode_still_writes_one_error_document_to_stdout (__main__.TextErrorChannel.test_json_mode_still_writes_one_error_document_to_stdout) ... ok
+test_a_problem_file_fails_with_exit_code_one (__main__.TextReport.test_a_problem_file_fails_with_exit_code_one) ... ok
+test_explicit_text_is_byte_identical_to_the_default (__main__.TextReport.test_explicit_text_is_byte_identical_to_the_default) ... ok
+test_golden_text_reports (__main__.TextReport.test_golden_text_reports) ... ok
+test_text_reports_do_not_leak_the_input_contents (__main__.TextReport.test_text_reports_do_not_leak_the_input_contents) ... ok
+test_the_default_format_is_a_text_report (__main__.TextReport.test_the_default_format_is_a_text_report) ... ok
+test_the_text_report_carries_the_required_fields (__main__.TextReport.test_the_text_report_carries_the_required_fields) ... ok
+test_the_text_report_is_deterministic (__main__.TextReport.test_the_text_report_is_deterministic) ... ok
+test_the_text_report_names_no_host_or_absolute_path_or_clock (__main__.TextReport.test_the_text_report_names_no_host_or_absolute_path_or_clock) ... ok
+test_version_keeps_the_version_and_drops_the_development_marker (__main__.VersionAndBoundaries.test_version_keeps_the_version_and_drops_the_development_marker) ... ok
+
+----------------------------------------------------------------------
+Ran 42 tests in 0.145s
+
+OK

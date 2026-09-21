@@ -1,0 +1,21 @@
+FAIL
+grid: [0,100) step_ms=1
+records: 2  expected_points: 100
+coverage: 2/100 (2.00%)  missing: 98  longest_missing_run: 49
+problems: duplicates=0 out_of_order=0 off_grid=0 out_of_range=0
+missing_ranges (truncated):
+  ranges shown: 1; missing points in total: 98
+  [1,50)
+
+duplicates:
+  none
+
+out_of_order:
+  none
+
+off_grid:
+  none
+
+out_of_range:
+  none
+

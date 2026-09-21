@@ -1,0 +1,25 @@
+./_build/native/debug/test/report/report.blackbox_test.exe text_test.mbt:0-15/json_test.mbt:0-8
+[z2823253773-p/moontick] test report/text_test.mbt:37 ("a passing audit renders PASS and a failing one renders FAIL") ok
+[z2823253773-p/moontick] test report/text_test.mbt:49 ("the percentage is display-only and rounds while the verdict does not") ok
+[z2823253773-p/moontick] test report/text_test.mbt:66 ("the percentage renders two decimals in integer arithmetic") ok
+[z2823253773-p/moontick] test report/text_test.mbt:85 ("a whole percentage is exact, not one hundredth low") ok
+[z2823253773-p/moontick] test report/text_test.mbt:114 ("a rounded-up 100.00% does not decide pass or fail") ok
+[z2823253773-p/moontick] test report/text_test.mbt:138 ("every category shows its exact count even when the list is cut") ok
+[z2823253773-p/moontick] test report/text_test.mbt:150 ("a fully shown category is never labelled truncated") ok
+[z2823253773-p/moontick] test report/text_test.mbt:160 ("a truncated block never presents the shown entries as the whole set") ok
+[z2823253773-p/moontick] test report/text_test.mbt:173 ("the missing-range notice does not label missing points as ranges") ok
+[z2823253773-p/moontick] test report/text_test.mbt:190 ("an untruncated report never claims truncation") ok
+[z2823253773-p/moontick] test report/text_test.mbt:199 ("a report with no problems of a category prints none for it") ok
+[z2823253773-p/moontick] test report/text_test.mbt:209 ("details carry the timestamp, record number and physical line") ok
+[z2823253773-p/moontick] test report/text_test.mbt:218 ("the renderer uses the supplied physical lines, not the record numbers") ok
+[z2823253773-p/moontick] test report/text_test.mbt:227 ("the renderer reports a position mismatch instead of guessing") ok
+[z2823253773-p/moontick] test report/text_test.mbt:242 ("the text report is a pure function of the report and the positions") ok
+[z2823253773-p/moontick] test report/json_test.mbt:20 ("a passing report carries the T1 schema and string counters") ok
+[z2823253773-p/moontick] test report/json_test.mbt:39 ("grid values survive as exact decimal strings") ok
+[z2823253773-p/moontick] test report/json_test.mbt:57 ("duplicates and off-grid records keep their line numbers") ok
+[z2823253773-p/moontick] test report/json_test.mbt:81 ("out-of-range records are reported with their line numbers") ok
+[z2823253773-p/moontick] test report/json_test.mbt:95 ("rendering is byte-identical for the same report") ok
+[z2823253773-p/moontick] test report/json_test.mbt:103 ("a position array that does not match the record count is refused") ok
+[z2823253773-p/moontick] test report/json_test.mbt:114 ("an error document is shaped separately and omits unknown positions") ok
+[z2823253773-p/moontick] test report/json_test.mbt:128 ("an error document carries a line when one is known") ok
+Total tests: 23, passed: 23, failed: 0.

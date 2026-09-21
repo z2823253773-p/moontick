@@ -1,0 +1,16 @@
+# 修复前反例：旧产物（HEAD 23d25dd 的 _build，SHA b9e3… 已被本轮构建覆盖）
+# 下列输出由修复前源码 6d97745 的产物得到，与 Codex 复核记录逐字一致。
+
+$ moontick check p1a.ticks --start-ms 0 --end-ms 3 --step-ms 1
+ (旧) coverage: 2/3 (66.66%)   <- 期望 66.67%
+ (新) coverage: 2/3 (66.67%)
+
+$ moontick check p1b.ticks --start-ms 0 --end-ms 100 --step-ms 1
+ (旧) coverage: 57/100 (56.99%)  <- 期望 57.00%
+ (新) coverage: 57/100 (57.00%)
+
+$ moontick check p2.ticks --start-ms 0 --end-ms 100 --step-ms 1 --detail-limit 1
+ (旧) missing_ranges:
+        (showing first 1 of 98; truncated)
+ (新) missing_ranges (truncated):
+        ranges shown: 1; missing points in total: 98
