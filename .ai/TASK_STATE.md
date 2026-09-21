@@ -2,15 +2,15 @@
 
 日期：2026-09-22。T1–T4 均已在明确实现 SHA 上完成 macOS native 范围内验收。
 T5 固定工具链 CI 候选已实施：本机格式门槛由 255 转绿，macOS arm64 全部门槛通过。
-Codex 独立复核发现的工作流矩阵上下文 P1 已单点返修并回归；等待 Codex 在返修 SHA 上复核。
-Linux 与远程 GitHub Actions 因无远程仓库而均为 NOT_RUN。
+Codex 独立复核发现的工作流矩阵上下文 P1 已单点返修，固定 SHA 本机复核通过。
+公开 GitHub 空仓库已连接为 `origin`，尚未 push；Linux 与远程 GitHub Actions 均为 NOT_RUN。
 用户于 2026-09-22 确认本期 9 月 30 日截止；这不等于报名或验收已提交。
 
 - task_id: T5
-- status: REVIEW / Codex（CI 矩阵 P1 已返修，待在该 SHA 独立复核）
-- active_owner: Codex（独立复核）；Claude Code 上一轮已交付固定返修 SHA
-- implementation_authorized: YES（2026-09-21 用户要求推进下一步；仅 T5 本地验证和 CI 候选，不含对外发布/报名）
-- objective: 在独立 oracle 基线上建立 macOS arm64 / Linux x86_64 固定版本 CI 候选并复核真实结果
+- status: LOCAL_ACCEPTED / Codex（本机 CI 候选通过，远程运行待验证）
+- active_owner: Codex（准备首次公开推送与远程 CI 复核）
+- implementation_authorized: YES（2026-09-21 推进 T5；2026-09-22 用户提供公开 GitHub 仓库 URL 并完成登录，允许连接与首次 push 以运行 CI；不含 Mooncakes 发布或赛事报名）
+- objective: 在独立 oracle 基线上验证 macOS arm64 / Linux x86_64 的固定版本真实 CI
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
@@ -21,9 +21,20 @@ Linux 与远程 GitHub Actions 因无远程仓库而均为 NOT_RUN。
   T5 oracle 提交 `4de792d86a3848d2f387d4dc774033edaa9b0f07` 仅新增 Python 独立测试；
   后续文档提交不改变上述产品被测 SHA；
   T5 CI 首轮候选 `89b4e01fcece1ba8264e6109254571253c45b063` 复核未通过（矩阵上下文 P1）；
-  **T5 CI 返修被测 SHA `22ae166880d531a21ba2d28c6c0d312351f3b0ff`（待 Codex 独立复核）**
+  **T5 CI 返修被测 SHA `22ae166880d531a21ba2d28c6c0d312351f3b0ff`（本机候选接受；远程 CI 未运行）**；
+  README/许可证整合提交 `f32c413` 已在主工作树回归验证
 
-## 当前任务：T5（CI 矩阵 P1 已返修，待复核）
+## 当前任务：T5（本机候选通过；准备首次公开运行）
+
+Codex 在固定返修 SHA `22ae166` 的独立 worktree 复核矩阵字面量与 GitHub
+上下文规则，并重跑 fmt/check/build/test 77/77、真实 CLI 42/42、独立 oracle 和
+`moon info` 幂等，全部通过。独立记录：
+`docs/evidence/T5/codex-independent-review-22ae166.md`。公开 README 与 MIT
+许可证已从隔离 worktree 整合；组合 HEAD 本机门槛同样通过。现有 `origin` 是
+`https://github.com/z2823253773-p/moontick.git`，空的公开仓库；只有推送后
+对应 SHA 的 Actions run 能决定远程 macOS/Linux 状态。官方 core 校验材料仍缺。
+
+## T5 返修交接（历史记录；已本机复核）
 
 Codex 在固定 `89b4e01` 的独立 worktree 复现本机门槛全部通过，但静态审查发现
 `.github/workflows/ci.yml:52–57` 的矩阵属性使用 `${{ env.* }}`，而 GitHub 官方
@@ -526,13 +537,12 @@ Codex 不代为启动或设置自动续跑。首个固定 T4 SHA 已交 Codex �
 
 ## 接下来
 
-1. 用户在北京时间闲时把 `docs/handoffs/T5_CI_REPAIR_CLAUDE.md` 交给 Claude Code，
-   只修工作流矩阵上下文并提交新固定 SHA；Codex 随后复核。
-2. 用户在 GitHub 账号 `z2823253773-p` 下创建**空的公开** `moontick` 仓库，
-   不勾选 README、许可证或 `.gitignore` 初始化；通过浏览器重新授权本机 `gh`。
-   这些是用户身份操作。首次推送前更新过时 README、加入并核对开源许可证；
-   取得仓库 URL、有效登录与经复核的公开内容后再连接、推送，取得两平台实际
-   Actions run URL。没有对应 SHA 的真实 run 前，macOS/Linux 远程 CI 仍为 NOT_RUN。
+1. 首次推送当前已核验的主分支到 `origin`；核对 GitHub 页面显示 README、MIT
+   许可证和完整提交记录，不把公开仓库创建本身当作报名。
+2. 取得该提交的 macOS arm64 与 Linux x86_64 GitHub Actions run URL，逐步
+   复核安装、格式、测试、CLI、oracle 和供应链提示。若失败，保存真实日志与最小
+   原因，修复后重新验证；只有两个真实 run 都通过才接受 T5 远程 CI。
+3. 随后推进 T6 的三个可运行场景、Mooncakes 发布候选和用户本人撰写的一页申报。
 
 T1–T4 验收和 T5 oracle 均只在 macOS native 范围内成立。Linux native、远程 CI、
-发布和报名尚未运行；T5 CI 候选待返修，不自动展开 T6。
+发布和报名尚未运行；T5 已在本机通过，远程结果待验证。
