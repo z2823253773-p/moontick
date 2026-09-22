@@ -1,15 +1,15 @@
 # MoonTick 当前状态
 
 日期：2026-09-22。T1–T4 已按固定 SHA 验收；T5 在 macOS arm64 与 Linux x86_64 的真实 GitHub Actions 上通过。
-T6 发布候选的元数据、公开说明、三组可运行示例与 29 文件包归档已完成本地预检。
-GitHub 已公开；Mooncakes 正式发布与赛事报名未完成。
+T6 的 29 文件包归档已正式发布为 Mooncakes `z2823253773-p/moontick@0.1.0`；
+公开版本页与仓库外安装、core 调用均已验证。赛事报名仍未完成。
 用户于 2026-09-22 确认本期 9 月 30 日截止；这不等于报名或验收已提交。
 
 - task_id: T6
-- status: RELEASE_CANDIDATE / Codex（本地包预检及双平台远端 CI 均已完成；正式发布待决定）
-- active_owner: Codex（完成发布候选核验与用户可审查材料）
-- implementation_authorized: YES（本地预检和已明确批准的 GitHub 推送；不含 Mooncakes 正式发布或赛事报名）
-- objective: 准备可安装的 v0.1.0 包并核实报名事实；正式发布后再做独立消费者安装
+- status: PUBLISHED_VERIFIED / Codex（Mooncakes 0.1.0 发布及独立安装复现通过；赛事申报未完成）
+- active_owner: Codex（整理已完成的发布证据和用户人工申报事实清单）
+- implementation_authorized: YES（本地预检、公开 GitHub 推送、用户明确批准的 Mooncakes 0.1.0 正式发布；不含赛事报名）
+- objective: 保存发布/安装证据，支持参赛负责人在 9 月 30 日前人工完成申报与季度选项
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
@@ -23,9 +23,9 @@ GitHub 已公开；Mooncakes 正式发布与赛事报名未完成。
   **T5 CI 返修被测 SHA `22ae166880d531a21ba2d28c6c0d312351f3b0ff`（本机候选接受；远程 CI 未运行）**；
   README/许可证整合提交 `f32c413` 已在主工作树回归验证；
   **远程 CI 权限修复 SHA `e047c4d20db6b83db7e633730b07f9467045201d`（双平台真实运行通过）**；
-  **T6 发布候选最终包 SHA `4a9bf78b516cf9cf166455b561a442741e896f4a`（本地预检；Mooncakes 未发布）**
+  **T6 发布候选最终包 SHA `4a9bf78b516cf9cf166455b561a442741e896f4a`；`v0.1.0` 标签指向 `30ea5ec64fc5000c84b7aa526de0d3a7e1ea97cd`，Mooncakes 与独立安装已核实**
 
-## 当前任务：T6（发布候选待正式发布决定）
+## 当前任务：T6（已发布；正式申报待用户）
 
 `moon.mod` 已写入已验证的 `z2823253773-p/moontick`、公开仓库 URL、MIT 与版本
 `0.1.0`。`.moonignore` 将发布包收敛为 29 个文件，含 core/ticks_input/report/CLI、
@@ -36,9 +36,13 @@ README、LICENSE、CHANGELOG、AI_USAGE 和三组各有正常/故障输入的合
 本机 fmt/check/build/test 通过（test 77/77；check 14 warnings），真实 CLI 42/42、
 独立 oracle 通过。`moon publish --dry-run --frozen` 的服务端响应为
 `202 Accepted: Dry run completed successfully. No changes were made`，但 CLI
-最终仍退出 **255**，不能记录为命令成功，更不能记录为已发布；原始输出与包清单见
-`docs/evidence/T6/`。官方 core sidecar 仍缺；Mooncakes 正式发布、从 registry 的独立
-消费者安装、赛事报名与验收回执均未完成。
+最终仍退出 **255**，当时不能记录为命令成功或已发布。随后在用户明确批准下，
+`moon publish --frozen` 退出 0、服务端 `200 OK`；[Mooncakes 0.1.0 版本页](https://mooncakes.io/docs/z2823253773-p/moontick@0.1.0)
+显示模块、版本、MIT 与仓库。仓库外新工程用 `moon add z2823253773-p/moontick@0.1.0`
+下载，native check 0、test 2/2；安装得到的 29 个文件与候选归档逐字节一致。
+公开 `v0.1.0` Git 标签指向上述源提交。完整记录：
+`docs/evidence/T6/release-and-consumer.md`。官方 core sidecar 仍缺；赛事报名、
+官方验收与季度资格回执尚未完成。
 
 候选已推送；[run 35748833083](https://github.com/z2823253773-p/moontick/actions/runs/35748833083)
 在仅多出 T6 证据文档的 SHA `aebf418f19131245b15732aec178101057d9c9a7`
