@@ -6,7 +6,7 @@ GitHub 已公开；Mooncakes 正式发布与赛事报名未完成。
 用户于 2026-09-22 确认本期 9 月 30 日截止；这不等于报名或验收已提交。
 
 - task_id: T6
-- status: RELEASE_CANDIDATE / Codex（本地包预检已完成；正式发布待决定）
+- status: RELEASE_CANDIDATE / Codex（本地包预检及双平台远端 CI 均已完成；正式发布待决定）
 - active_owner: Codex（完成发布候选核验与用户可审查材料）
 - implementation_authorized: YES（本地预检和已明确批准的 GitHub 推送；不含 Mooncakes 正式发布或赛事报名）
 - objective: 准备可安装的 v0.1.0 包并核实报名事实；正式发布后再做独立消费者安装
@@ -39,6 +39,11 @@ README、LICENSE、CHANGELOG、AI_USAGE 和三组各有正常/故障输入的合
 最终仍退出 **255**，不能记录为命令成功，更不能记录为已发布；原始输出与包清单见
 `docs/evidence/T6/`。官方 core sidecar 仍缺；Mooncakes 正式发布、从 registry 的独立
 消费者安装、赛事报名与验收回执均未完成。
+
+候选已推送；[run 35748833083](https://github.com/z2823253773-p/moontick/actions/runs/35748833083)
+在仅多出 T6 证据文档的 SHA `aebf418f19131245b15732aec178101057d9c9a7`
+上双平台 success：各 77/77、CLI 42/42、独立 oracle 通过。包文件与已核对的
+`4a9bf78` 候选相同，因为随后提交只增加 `.moonignore` 排除的内部文档。
 
 ## 历史任务：T5（双平台远程 CI 已通过）
 
