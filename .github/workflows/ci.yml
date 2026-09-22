@@ -133,6 +133,9 @@ jobs:
           echo "observed_core_sha256_actual=$actual_core" >> "$GITHUB_ENV"
 
           tar xf "$RUNNER_TEMP/moonbit.tar.gz" --directory="$moon_home"
+          # The publisher's archive records binaries without execute bits;
+          # extraction leaves moon/moonc at 0644 on both hosted runners.
+          find "$moon_home/bin" -type f ! -name '*.wasm' -exec chmod a+x {} +
           mkdir -p "$moon_home/lib"
           tar xf "$RUNNER_TEMP/core.tar.gz" --directory="$moon_home/lib"
           echo "MOON_HOME=$moon_home" >> "$GITHUB_ENV"
