@@ -56,6 +56,6 @@ The oracle uses enumerated small grids, a fixed random seed, and metamorphic che
 
 The v0.1 design audits one finite series on one constant-step integer grid. It does not parse multi-column CSV, infer a timezone, tolerate jitter, handle variable calendar intervals, predict missing values, or repair input. Resource limits are 32 MiB of input, 250,000 records, and 20 bytes per token. The expected grid may be much larger because missing intervals are compressed rather than enumerated in the product.
 
-The implementation contract and evidence are in `docs/planning/02_SPEC.md` and `docs/evidence/`. Mooncakes package installation and external-user validation remain pending until their own evidence exists.
+The implementation contract and review evidence are in the source repository's [specification](https://github.com/z2823253773-p/moontick/blob/main/docs/planning/02_SPEC.md) and [evidence directory](https://github.com/z2823253773-p/moontick/tree/main/docs/evidence); they are intentionally excluded from the small Mooncakes archive. Mooncakes package installation and external-user validation remain pending until their own evidence exists.
 
 Licensed under [MIT](LICENSE).
