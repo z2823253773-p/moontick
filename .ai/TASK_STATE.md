@@ -1,14 +1,14 @@
 # MoonTick 当前状态
 
 日期：2026-09-22。T1–T4 均已在明确实现 SHA 上完成 macOS native 范围内验收。
-T5 固定工具链 CI 候选已实施：本机格式门槛由 255 转绿，macOS arm64 全部门槛通过。
-Codex 独立复核发现的工作流矩阵上下文 P1 已单点返修，固定 SHA 本机复核通过。
-公开 GitHub 空仓库已连接为 `origin`，尚未 push；Linux 与远程 GitHub Actions 均为 NOT_RUN。
+T5 固定工具链 CI 已在 macOS arm64 与 Linux x86_64 的真实 GitHub Actions 上通过。
+首次远程运行暴露官方二进制归档缺执行位；`e047c4d` 单点修复后双平台通过。
+公开 GitHub 仓库已连接为 `origin`，`main` 已推送；Mooncakes 发布与赛事报名未完成。
 用户于 2026-09-22 确认本期 9 月 30 日截止；这不等于报名或验收已提交。
 
 - task_id: T5
-- status: LOCAL_ACCEPTED / Codex（本机 CI 候选通过，远程运行待验证）
-- active_owner: Codex（准备首次公开推送与远程 CI 复核）
+- status: REMOTE_ACCEPTED / Codex（固定 SHA 的双平台真实 CI 通过）
+- active_owner: Codex（准备 Mooncakes 发布与赛事报名材料）
 - implementation_authorized: YES（2026-09-21 推进 T5；2026-09-22 用户提供公开 GitHub 仓库 URL 并完成登录，允许连接与首次 push 以运行 CI；不含 Mooncakes 发布或赛事报名）
 - objective: 在独立 oracle 基线上验证 macOS arm64 / Linux x86_64 的固定版本真实 CI
 - repo_root: /Users/henryz/Desktop/比赛/moontick
@@ -22,9 +22,23 @@ Codex 独立复核发现的工作流矩阵上下文 P1 已单点返修，固定 
   后续文档提交不改变上述产品被测 SHA；
   T5 CI 首轮候选 `89b4e01fcece1ba8264e6109254571253c45b063` 复核未通过（矩阵上下文 P1）；
   **T5 CI 返修被测 SHA `22ae166880d531a21ba2d28c6c0d312351f3b0ff`（本机候选接受；远程 CI 未运行）**；
-  README/许可证整合提交 `f32c413` 已在主工作树回归验证
+  README/许可证整合提交 `f32c413` 已在主工作树回归验证；
+  **远程 CI 权限修复 SHA `e047c4d20db6b83db7e633730b07f9467045201d`（双平台真实运行通过）**
 
-## 当前任务：T5（本机候选通过；准备首次公开运行）
+## 当前任务：T5（双平台远程 CI 已通过）
+
+真实运行：[成功 run 35747020671](https://github.com/z2823253773-p/moontick/actions/runs/35747020671)，
+固定 SHA `e047c4d20db6b83db7e633730b07f9467045201d`。`macos-15 / native` 与
+`ubuntu-24.04 / native` 均为 success：各自 `moon test` 77/77、真实 CLI 42/42，
+独立 oracle（8 手算、1000 随机、30×3 变形、`N=10^12`）通过。精确版本
+`moonc v0.10.14+7d59c7ec9`、二进制归档发行方 sidecar 哈希、runner 架构均通过。
+首轮 [失败 run 35746584237](https://github.com/z2823253773-p/moontick/actions/runs/35746584237)
+停在 `moon: Permission denied`：官方归档文件权限为 0644。修复只在解压后为
+`bin/` 下非 `.wasm` 文件补执行位，未改产品代码、版本钉定、哈希门槛或测试。
+证据：`docs/evidence/T5/remote-ci-2026-09-22.md`。
+
+官方 core 归档仍无发行方 sidecar；Linux core 只记录观察哈希，**供应链验证未完成**。
+Mooncakes 发布、赛事申报/验收、季度评选资格均未完成或未得到确认。
 
 Codex 在固定返修 SHA `22ae166` 的独立 worktree 复核矩阵字面量与 GitHub
 上下文规则，并重跑 fmt/check/build/test 77/77、真实 CLI 42/42、独立 oracle 和
