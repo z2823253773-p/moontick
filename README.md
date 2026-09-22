@@ -13,10 +13,12 @@ moon check --target native
 moon test --target native
 moon build --target native
 ./_build/native/debug/build/cmd/moontick/moontick.exe check \
-  tests/fixtures/full.ticks --start-ms 0 --end-ms 60 --step-ms 15 --format json
+  examples/synthetic/complete.ticks --start-ms 0 --end-ms 60 --step-ms 15 --format json
 ```
 
-The last command audits the half-open window `[0,60)` at 15 ms intervals. Its four expected timestamps are `0,15,30,45`; the fixture covers all four and exits `0`. To see one missing point and exit `1`, replace `full.ticks` with `one_missing.ticks`. Omit `--format json` for the default text report.
+The last command audits the half-open window `[0,60)` at 15 ms intervals. Its four expected timestamps are `0,15,30,45`; the example covers all four and exits `0`. Replace `complete.ticks` with `duplicate-and-missing.ticks` to see a duplicate that cannot repair a missing point; that audit exits `1`. Omit `--format json` for the default text report.
+
+[Three runnable synthetic examples](examples/README.md) cover minute archives, aggregated bucket starts, and duplicate records. Each has a complete and a failing input, a declared plan, and expected counts. MoonTick does not ingest the source systems directly; callers supply extracted timestamp ticks.
 
 The input format is **ticks**: no header, one canonical signed `Int64` millisecond value per line. A zero-byte file is valid and reports the whole plan as missing. Blank lines, BOM, non-ASCII bytes, CSV fields, whitespace around values, and malformed integers are rejected. The declared window and step must form a positive whole number of grid intervals; MoonTick never infers them from the data.
 
@@ -48,12 +50,12 @@ MOONTICK_BIN="$PWD/_build/native/debug/build/cmd/moontick/moontick.exe" python3 
 MOONTICK_BIN="$PWD/_build/native/debug/build/cmd/moontick/moontick.exe" python3 tests/oracle/test_differential.py
 ```
 
-The oracle uses enumerated small grids, a fixed random seed, and metamorphic checks rather than the product's gap algorithm. The GitHub Actions workflow is a candidate for macOS arm64 and Linux x86_64; platform support should be read from **actual run results**, not from the presence of a workflow file.
+The oracle uses enumerated small grids, a fixed random seed, and metamorphic checks rather than the product's gap algorithm. [GitHub Actions run 35747020671](https://github.com/z2823253773-p/moontick/actions/runs/35747020671) passed on macOS arm64 and Linux x86_64 at commit `e047c4d` with the pinned compiler. Each platform ran 77 MoonBit tests, 42 real-process CLI tests, and the independent oracle. The publisher has not provided a usable checksum for the core archive, so its supply-chain verification remains open.
 
 ## Scope and limits
 
 The v0.1 design audits one finite series on one constant-step integer grid. It does not parse multi-column CSV, infer a timezone, tolerate jitter, handle variable calendar intervals, predict missing values, or repair input. Resource limits are 32 MiB of input, 250,000 records, and 20 bytes per token. The expected grid may be much larger because missing intervals are compressed rather than enumerated in the product.
 
-The implementation contract and evidence are in `docs/planning/02_SPEC.md` and `docs/evidence/`. Published package installation, Linux CI, and external-user validation should be treated as pending until their own evidence exists.
+The implementation contract and evidence are in `docs/planning/02_SPEC.md` and `docs/evidence/`. Mooncakes package installation and external-user validation remain pending until their own evidence exists.
 
 Licensed under [MIT](LICENSE).

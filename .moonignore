@@ -1,0 +1,6 @@
+# Keep the Mooncakes archive focused on the library, CLI, and runnable examples.
+/docs/
+/tests/
+/AGENTS.md
+/CLAUDE.md
+*_test.mbt
