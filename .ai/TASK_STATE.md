@@ -1,16 +1,15 @@
 # MoonTick 当前状态
 
-日期：2026-09-22。T1–T4 均已在明确实现 SHA 上完成 macOS native 范围内验收。
-T5 固定工具链 CI 已在 macOS arm64 与 Linux x86_64 的真实 GitHub Actions 上通过。
-首次远程运行暴露官方二进制归档缺执行位；`e047c4d` 单点修复后双平台通过。
-公开 GitHub 仓库已连接为 `origin`，`main` 已推送；Mooncakes 发布与赛事报名未完成。
+日期：2026-09-22。T1–T4 已按固定 SHA 验收；T5 在 macOS arm64 与 Linux x86_64 的真实 GitHub Actions 上通过。
+T6 发布候选的元数据、公开说明、三组可运行示例与 29 文件包归档已完成本地预检。
+GitHub 已公开；Mooncakes 正式发布与赛事报名未完成。
 用户于 2026-09-22 确认本期 9 月 30 日截止；这不等于报名或验收已提交。
 
-- task_id: T5
-- status: REMOTE_ACCEPTED / Codex（固定 SHA 的双平台真实 CI 通过）
-- active_owner: Codex（准备 Mooncakes 发布与赛事报名材料）
-- implementation_authorized: YES（2026-09-21 推进 T5；2026-09-22 用户提供公开 GitHub 仓库 URL 并完成登录，允许连接与首次 push 以运行 CI；不含 Mooncakes 发布或赛事报名）
-- objective: 在独立 oracle 基线上验证 macOS arm64 / Linux x86_64 的固定版本真实 CI
+- task_id: T6
+- status: RELEASE_CANDIDATE / Codex（本地包预检已完成；正式发布待决定）
+- active_owner: Codex（完成发布候选核验与用户可审查材料）
+- implementation_authorized: YES（本地预检和已明确批准的 GitHub 推送；不含 Mooncakes 正式发布或赛事报名）
+- objective: 准备可安装的 v0.1.0 包并核实报名事实；正式发布后再做独立消费者安装
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
@@ -23,9 +22,25 @@ T5 固定工具链 CI 已在 macOS arm64 与 Linux x86_64 的真实 GitHub Actio
   T5 CI 首轮候选 `89b4e01fcece1ba8264e6109254571253c45b063` 复核未通过（矩阵上下文 P1）；
   **T5 CI 返修被测 SHA `22ae166880d531a21ba2d28c6c0d312351f3b0ff`（本机候选接受；远程 CI 未运行）**；
   README/许可证整合提交 `f32c413` 已在主工作树回归验证；
-  **远程 CI 权限修复 SHA `e047c4d20db6b83db7e633730b07f9467045201d`（双平台真实运行通过）**
+  **远程 CI 权限修复 SHA `e047c4d20db6b83db7e633730b07f9467045201d`（双平台真实运行通过）**；
+  **T6 发布候选最终包 SHA `4a9bf78b516cf9cf166455b561a442741e896f4a`（本地预检；Mooncakes 未发布）**
 
-## 当前任务：T5（双平台远程 CI 已通过）
+## 当前任务：T6（发布候选待正式发布决定）
+
+`moon.mod` 已写入已验证的 `z2823253773-p/moontick`、公开仓库 URL、MIT 与版本
+`0.1.0`。`.moonignore` 将发布包收敛为 29 个文件，含 core/ticks_input/report/CLI、
+README、LICENSE、CHANGELOG、AI_USAGE 和三组各有正常/故障输入的合成示例；
+排除内部规划、测试脚本与原始日志。六个例子实测覆盖、缺口、重复、退出码均符合手算；
+从归档另行解压后 native check/build 和正常/故障 CLI 均通过。
+
+本机 fmt/check/build/test 通过（test 77/77；check 14 warnings），真实 CLI 42/42、
+独立 oracle 通过。`moon publish --dry-run --frozen` 的服务端响应为
+`202 Accepted: Dry run completed successfully. No changes were made`，但 CLI
+最终仍退出 **255**，不能记录为命令成功，更不能记录为已发布；原始输出与包清单见
+`docs/evidence/T6/`。官方 core sidecar 仍缺；Mooncakes 正式发布、从 registry 的独立
+消费者安装、赛事报名与验收回执均未完成。
+
+## 历史任务：T5（双平台远程 CI 已通过）
 
 真实运行：[成功 run 35747020671](https://github.com/z2823253773-p/moontick/actions/runs/35747020671)，
 固定 SHA `e047c4d20db6b83db7e633730b07f9467045201d`。`macos-15 / native` 与
