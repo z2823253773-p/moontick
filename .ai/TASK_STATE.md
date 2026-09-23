@@ -6,6 +6,11 @@ T6 的 29 文件包归档已正式发布为 Mooncakes `z2823253773-p/moontick@0.
 T7 正在 `release/0.1.1-candidate` 隔离分支准备仅文档与发布元数据的 0.1.1 候选；
 本机门槛及 ZIP 解包通过，未正式发布、未打 v0.1.1 标签。精确包 hash、干跑
 255/无服务端响应、变更清单见 [T7 候选证据](../docs/evidence/T7/release-candidate-0.1.1.md)。
+首个候选 `18f7cc3` 经独立复核发现包内 CHANGELOG 仍写“只是候选、尚未发布”，
+已在 `ed82086f613351b568521d1641a2f138d16a4450` 只修 README/CHANGELOG；
+新的 ZIP hash 和仓库外复现见 [独立复核](../docs/evidence/T7/codex-review-0.1.1.md)。
+[run 35849740864](https://github.com/z2823253773-p/moontick/actions/runs/35849740864)
+按修复 SHA 的 macOS 15 与 Ubuntu 24.04 两项均 success。
 固定候选 SHA `18f7cc3d43593dbdfe258f180240eaddccc539f3` 已推送；
 [GitHub Actions run 35813925913](https://github.com/z2823253773-p/moontick/actions/runs/35813925913)
 的 `macos-15 / native` 与 `ubuntu-24.04 / native` 均 success。官方 MoonBit core
@@ -16,13 +21,13 @@ T7 正在 `release/0.1.1-candidate` 隔离分支准备仅文档与发布元数�
 双平台 success。2026-09-23 查询公开仓库 Issues 返回空列表；只表示无 GitHub Issue，
 不等于无人试用。
 
-- task_id: T6-PRE-SUBMISSION
-- status: TECHNICALLY_DELIVERABLE / Codex（技术交付可复现；外部试用、人工申报和官方验收未完成）
+- task_id: T7-RELEASE-CANDIDATE
+- status: REVIEWED_CANDIDATE / Codex（0.1.1 文案修复已复核；尚未正式发布、外部试用或赛事申报）
 - active_owner: Codex（准备短演示与独立试用说明；Claude Code 由用户在闲时启动）
 - implementation_authorized: YES（本地预检、公开 GitHub 推送、用户明确批准的 Mooncakes 0.1.0 正式发布；不含赛事报名）
 - objective: 先收集一次独立试用并修复真实阻断，再冻结候选，支持参赛负责人在 9 月 30 日前人工完成申报与季度选项
 - repo_root: /Users/henryz/Desktop/比赛/moontick
-- branch: main
+- branch: release/0.1.1-candidate（main 仍为 44bbc6c）
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
   T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；
   T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；
