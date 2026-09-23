@@ -1,12 +1,10 @@
 # Changelog
 
-## 0.1.1 — candidate, 2026-09-23
+## 0.1.1
 
 - Correct the packaged README's stale pre-release statement about the already-published 0.1.0 version.
 - Clarify the published 0.1.0 install command and the 0.1.1 command for use after publication; link excluded release documents to the public source repository.
 - No product behavior or public API changes.
-
-This is a release candidate only. Mooncakes publication and a formal `v0.1.1` tag have not been performed.
 
 ## 0.1.0 — 2026-09-22
 
