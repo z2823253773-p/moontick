@@ -1,7 +1,8 @@
 # MoonTick 0.1.1 候选整理与本机复现
 
-日期：2026-09-23。基线：`44bbc6c4b777c6499135f135edeb9608576ef007`，
-分支：`release/0.1.1-candidate`。这是文档与发布元数据候选，不是已发布版本。
+日期：2026-09-23。基线：`44bbc6c4b777c6499135f135edeb9608576ef007`；固定候选
+SHA：`18f7cc3d43593dbdfe258f180240eaddccc539f3`；分支：
+`release/0.1.1-candidate`。这是文档与发布元数据候选，不是已发布版本。
 没有改核心语义、公共 API 或功能范围。
 
 ## 版本与包内文案
@@ -76,7 +77,12 @@ Moon CLI 的 macOS `system-configuration` 层因 NULL object panic，进程退�
 0.1.0 的早期干跑曾收到服务端 **202 Accepted**、CLI 仍退出 **255**，历史记录见
 [`T6/release-preflight.md`](../T6/release-preflight.md)。本轮没有运行正式 publish。
 
-候选推送及 GitHub Actions 尚待完成；不得把本机 macOS 结果算作 Linux 或远程 CI。
+候选分支已推送。精确 SHA `18f7cc3d43593dbdfe258f180240eaddccc539f3` 的
+[GitHub Actions run 35813925913](https://github.com/z2823253773-p/moontick/actions/runs/35813925913)
+为 success：[`ubuntu-24.04 / native`](https://github.com/z2823253773-p/moontick/actions/runs/35813925913/job/107031280789)
+与 [`macos-15 / native`](https://github.com/z2823253773-p/moontick/actions/runs/35813925913/job/107031280976)
+均成功完成工具链校验、fmt、native check/build/test、真实 CLI 与独立 oracle。
+这只证明该 SHA 在两个指定 runner 和固定 MoonBit 工具链下通过。
 官方 MoonBit core 校验材料仍缺，工具链供应链验证不完整。未发现需要 Claude Code
 实现的产品问题，故没有创建 Claude 任务卡；若后续复核发现真实产品反例，再按最小
 复现和明确任务卡交回用户。

@@ -6,7 +6,10 @@ T6 的 29 文件包归档已正式发布为 Mooncakes `z2823253773-p/moontick@0.
 T7 正在 `release/0.1.1-candidate` 隔离分支准备仅文档与发布元数据的 0.1.1 候选；
 本机门槛及 ZIP 解包通过，未正式发布、未打 v0.1.1 标签。精确包 hash、干跑
 255/无服务端响应、变更清单见 [T7 候选证据](../docs/evidence/T7/release-candidate-0.1.1.md)。
-候选分支推送和双平台 Actions 尚待完成；不得将本机结果称为 Linux/远程 CI。
+固定候选 SHA `18f7cc3d43593dbdfe258f180240eaddccc539f3` 已推送；
+[GitHub Actions run 35813925913](https://github.com/z2823253773-p/moontick/actions/runs/35813925913)
+的 `macos-15 / native` 与 `ubuntu-24.04 / native` 均 success。官方 MoonBit core
+校验材料仍缺；本机和双 runner 通过不等于供应链完整验证。
 用户于 2026-09-22 确认本期 9 月 30 日截止；这不等于报名或验收已提交。
 主分支发布记录提交 `70c5b628103d7281016520eec06ce0dae7c253da` 的
 [run 35750616008](https://github.com/z2823253773-p/moontick/actions/runs/35750616008)
