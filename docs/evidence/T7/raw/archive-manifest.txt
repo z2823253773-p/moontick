@@ -1,0 +1,37 @@
+archive_bytes=29165
+archive_sha256=fe174bb6a28708309c0b3163a87e541a3e5da8ac718c6735115c5d947f54c09e
+zip_test=OK file_count=29
+package_docs_excluded=True
+package_tests_excluded=True
+relative_links=['examples/README.md', 'LICENSE']
+unresolved_relative_links=[]
+files:
+AI_USAGE.md
+CHANGELOG.md
+LICENSE
+README.md
+cmd/moontick/args.mbt
+cmd/moontick/main.mbt
+cmd/moontick/moon.pkg
+cmd/moontick/pkg.generated.mbti
+core/audit.mbt
+core/grid.mbt
+core/moon.pkg
+core/pkg.generated.mbti
+core/types.mbt
+examples/README.md
+examples/archive/complete.ticks
+examples/archive/missing-middle.ticks
+examples/buckets/complete.ticks
+examples/buckets/missing-middle.ticks
+examples/synthetic/complete.ticks
+examples/synthetic/duplicate-and-missing.ticks
+moon.mod
+report/json.mbt
+report/moon.pkg
+report/pkg.generated.mbti
+report/text.mbt
+ticks_input/moon.pkg
+ticks_input/parse.mbt
+ticks_input/pkg.generated.mbti
+ticks_input/read.mbt

@@ -2,9 +2,9 @@
 
 MoonTick audits a **declared fixed sampling plan** against observed integer-millisecond timestamps. It reports exact grid coverage, compresses missing points into index ranges, and identifies duplicates, out-of-order records, off-grid timestamps, and out-of-range timestamps. An empty input is a valid observation of a completely missing plan.
 
-MoonTick is a MoonBit library and native CLI. [Version 0.1.0 is published on Mooncakes](https://mooncakes.io/docs/z2823253773-p/moontick@0.1.0); competition acceptance has not been claimed.
+MoonTick is a MoonBit library and native CLI. This module is version 0.1.1; [version 0.1.0 is published on Mooncakes](https://mooncakes.io/docs/z2823253773-p/moontick@0.1.0). Competition acceptance has not been claimed.
 
-To use the library from a separate MoonBit project, run `moon add z2823253773-p/moontick@0.1.0`, add `"z2823253773-p/moontick/core"` to that project's `moon.pkg` imports, then call `@core.make_grid` and `@core.audit`. An [independent install check](https://github.com/z2823253773-p/moontick/blob/main/docs/evidence/T6/release-and-consumer.md) built a fresh project against the registry copy and ran complete and missing-point cases.
+To use this release from a separate MoonBit project, run `moon add z2823253773-p/moontick@0.1.1`, add `"z2823253773-p/moontick/core"` to that project's `moon.pkg` imports, then call `@core.make_grid` and `@core.audit`. An [independent install check](https://github.com/z2823253773-p/moontick/blob/main/docs/evidence/T6/release-and-consumer.md) built a fresh project against the published 0.1.0 registry copy and ran complete and missing-point cases.
 
 ## Build and try it
 
@@ -60,6 +60,6 @@ The oracle uses enumerated small grids, a fixed random seed, and metamorphic che
 
 The v0.1 design audits one finite series on one constant-step integer grid. It does not parse multi-column CSV, infer a timezone, tolerate jitter, handle variable calendar intervals, predict missing values, or repair input. Resource limits are 32 MiB of input, 250,000 records, and 20 bytes per token. The expected grid may be much larger because missing intervals are compressed rather than enumerated in the product.
 
-The implementation contract and review evidence are in the source repository's [specification](https://github.com/z2823253773-p/moontick/blob/main/docs/planning/02_SPEC.md) and [evidence directory](https://github.com/z2823253773-p/moontick/tree/main/docs/evidence); they are intentionally excluded from the small Mooncakes archive. Independent third-party user feedback remains pending.
+The implementation contract and review evidence are in the public source repository's [specification](https://github.com/z2823253773-p/moontick/blob/main/docs/planning/02_SPEC.md), [five-minute demo](https://github.com/z2823253773-p/moontick/blob/main/docs/demo/five-minute.md), and [evidence directory](https://github.com/z2823253773-p/moontick/tree/main/docs/evidence); these documents are intentionally excluded from the small Mooncakes archive. The 0.1.1 package and install checks are recorded in the public [0.1.1 candidate evidence](https://github.com/z2823253773-p/moontick/blob/release/0.1.1-candidate/docs/evidence/T7/release-candidate-0.1.1.md). Independent third-party user feedback remains pending.
 
 Licensed under [MIT](LICENSE).

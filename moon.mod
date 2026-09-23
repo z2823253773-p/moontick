@@ -2,7 +2,7 @@
 // on 2026-09-21. Publishing requires a separate release decision.
 name = "z2823253773-p/moontick"
 
-version = "0.1.0"
+version = "0.1.1"
 
 readme = "README.md"
 
