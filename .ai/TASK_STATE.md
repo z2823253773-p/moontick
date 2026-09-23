@@ -3,14 +3,16 @@
 日期：2026-09-23。T1–T4 已按固定 SHA 验收；T5 在 macOS arm64 与 Linux x86_64 的真实 GitHub Actions 上通过。
 T6 的 29 文件包归档已正式发布为 Mooncakes `z2823253773-p/moontick@0.1.0`；
 公开版本页与仓库外安装、core 调用均已验证。赛事报名仍未完成。
-T7 正在 `release/0.1.1-candidate` 隔离分支准备仅文档与发布元数据的 0.1.1 候选；
-本机门槛及 ZIP 解包通过，未正式发布、未打 v0.1.1 标签。精确包 hash、干跑
+T7 的 0.1.1 候选已从 `release/0.1.1-candidate` 快进整合至 `main`；
+本机门槛及 ZIP 解包通过，未正式发布、未打 v0.1.1 标签。首个候选的干跑
 255/无服务端响应、变更清单见 [T7 候选证据](../docs/evidence/T7/release-candidate-0.1.1.md)。
 首个候选 `18f7cc3` 经独立复核发现包内 CHANGELOG 仍写“只是候选、尚未发布”，
 已在 `ed82086f613351b568521d1641a2f138d16a4450` 只修 README/CHANGELOG；
 新的 ZIP hash 和仓库外复现见 [独立复核](../docs/evidence/T7/codex-review-0.1.1.md)。
 [run 35849740864](https://github.com/z2823253773-p/moontick/actions/runs/35849740864)
 按修复 SHA 的 macOS 15 与 Ubuntu 24.04 两项均 success。
+主线整合后重新打包的 SHA-256 仍为
+`40393815a8ae5f7f788955451e6a4cf0c907ae7b9f32e0a50c11aa94c7ed2fc0`。
 固定候选 SHA `18f7cc3d43593dbdfe258f180240eaddccc539f3` 已推送；
 [GitHub Actions run 35813925913](https://github.com/z2823253773-p/moontick/actions/runs/35813925913)
 的 `macos-15 / native` 与 `ubuntu-24.04 / native` 均 success。官方 MoonBit core
@@ -22,12 +24,12 @@ T7 正在 `release/0.1.1-candidate` 隔离分支准备仅文档与发布元数�
 不等于无人试用。
 
 - task_id: T7-RELEASE-CANDIDATE
-- status: REVIEWED_CANDIDATE / Codex（0.1.1 文案修复已复核；尚未正式发布、外部试用或赛事申报）
-- active_owner: Codex（准备短演示与独立试用说明；Claude Code 由用户在闲时启动）
+- status: RELEASE_READY_PENDING_AUTH / Codex（0.1.1 已整合主线、修复文案并复核包；尚未正式发布、外部试用或赛事申报）
+- active_owner: Codex（保存最终主线 CI 与交付证据；正式发布待用户决定）
 - implementation_authorized: YES（本地预检、公开 GitHub 推送、用户明确批准的 Mooncakes 0.1.0 正式发布；不含赛事报名）
-- objective: 先收集一次独立试用并修复真实阻断，再冻结候选，支持参赛负责人在 9 月 30 日前人工完成申报与季度选项
+- objective: 固定 0.1.1 包与主线 CI，等待正式发布决定；支持参赛负责人在 9 月 30 日前人工完成申报与季度选项
 - repo_root: /Users/henryz/Desktop/比赛/moontick
-- branch: release/0.1.1-candidate（main 仍为 44bbc6c）
+- branch: main（从 `release/0.1.1-candidate` 快进整合；原候选分支保留）
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
   T2 被测 SHA `a88af81bf7e9ff07698c63a293111532b022ba75` 已接受；
   T3 被测 SHA `8092ac634a9ff92839ccc862ccd0aaddc670e792` 已接受；
@@ -40,12 +42,13 @@ T7 正在 `release/0.1.1-candidate` 隔离分支准备仅文档与发布元数�
   README/许可证整合提交 `f32c413` 已在主工作树回归验证；
   **远程 CI 权限修复 SHA `e047c4d20db6b83db7e633730b07f9467045201d`（双平台真实运行通过）**；
   **T6 发布候选最终包 SHA `4a9bf78b516cf9cf166455b561a442741e896f4a`；`v0.1.0` 标签指向 `30ea5ec64fc5000c84b7aa526de0d3a7e1ea97cd`，Mooncakes 与独立安装已核实**
+  **T7 0.1.1 修复后的包内容提交 `ed82086f613351b568521d1641a2f138d16a4450`；`def2aec` 只新增复核文档**
 
-## 当前任务：技术版已发布；准备独立试用和正式申报
+## 当前任务：0.1.1 主线候选待正式发布决定
 
-上节的 T7 候选整理正在并行进行；不覆盖本节 T6 原交付记录。T7 只修正 0.1.0
-归档 README 的旧发布状态文案并将包元数据提升至 0.1.1，不改产品行为；主线
-0.1.0 注册表归档和 `v0.1.0` 标签保持不变。未发现需 Claude Code 实现的真实产品
+T7 只修正 0.1.0 归档 README 的旧发布状态文案并将包元数据提升至 0.1.1，
+不改产品行为；0.1.0 注册表归档和 `v0.1.0` 标签保持不变。
+未发现需 Claude Code 实现的真实产品
 问题；如果之后出现，按用户要求提交最小复现与任务卡，由用户本人手动启动 Claude。
 
 2026-09-23 的[交付与优化检查](../docs/evidence/quarter/readiness-2026-09-23.md)
@@ -54,7 +57,9 @@ T7 正在 `release/0.1.1-candidate` 隔离分支准备仅文档与发布元数�
 尚未满足，不为增加功能数量启动。0.1.0 注册表归档里的过时 README 句子将在
 后续版本修正；不把 GitHub 主分支 README 更正说成 0.1.0 包已变化。
 
-`moon.mod` 已写入已验证的 `z2823253773-p/moontick`、公开仓库 URL、MIT 与版本
+## 已完成的 T6 历史记录（0.1.0）
+
+`moon.mod` 当时写入已验证的 `z2823253773-p/moontick`、公开仓库 URL、MIT 与版本
 `0.1.0`。`.moonignore` 将发布包收敛为 29 个文件，含 core/ticks_input/report/CLI、
 README、LICENSE、CHANGELOG、AI_USAGE 和三组各有正常/故障输入的合成示例；
 排除内部规划、测试脚本与原始日志。六个例子实测覆盖、缺口、重复、退出码均符合手算；
