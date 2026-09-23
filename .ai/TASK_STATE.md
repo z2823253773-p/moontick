@@ -3,8 +3,9 @@
 日期：2026-09-23。T1–T4 已按固定 SHA 验收；T5 在 macOS arm64 与 Linux x86_64 的真实 GitHub Actions 上通过。
 T6 的 29 文件包归档已正式发布为 Mooncakes `z2823253773-p/moontick@0.1.0`；
 公开版本页与仓库外安装、core 调用均已验证。赛事报名仍未完成。
-T7 的 0.1.1 候选已从 `release/0.1.1-candidate` 快进整合至 `main`；
-本机门槛及 ZIP 解包通过，未正式发布、未打 v0.1.1 标签。首个候选的干跑
+T7 的 0.1.1 已正式发布；公开版本页、仓库外安装和 core 两项测试已验证，
+`v0.1.1` 标签解引用至 `272580ed53cdbe8493b6547ee2721d9cdffc70e9`。
+完整记录见 [T7 发布与消费者复现](../docs/evidence/T7/release-and-consumer-0.1.1.md)。首个候选的干跑
 255/无服务端响应、变更清单见 [T7 候选证据](../docs/evidence/T7/release-candidate-0.1.1.md)。
 首个候选 `18f7cc3` 经独立复核发现包内 CHANGELOG 仍写“只是候选、尚未发布”，
 已在 `ed82086f613351b568521d1641a2f138d16a4450` 只修 README/CHANGELOG；
@@ -23,11 +24,11 @@ T7 的 0.1.1 候选已从 `release/0.1.1-candidate` 快进整合至 `main`；
 双平台 success。2026-09-23 查询公开仓库 Issues 返回空列表；只表示无 GitHub Issue，
 不等于无人试用。
 
-- task_id: T7-RELEASE-CANDIDATE
-- status: RELEASE_READY_PENDING_AUTH / Codex（0.1.1 已整合主线、修复文案并复核包；尚未正式发布、外部试用或赛事申报）
-- active_owner: Codex（保存最终主线 CI 与交付证据；正式发布待用户决定）
-- implementation_authorized: YES（本地预检、公开 GitHub 推送、用户明确批准的 Mooncakes 0.1.0 正式发布；不含赛事报名）
-- objective: 固定 0.1.1 包与主线 CI，等待正式发布决定；支持参赛负责人在 9 月 30 日前人工完成申报与季度选项
+- task_id: T7-RELEASE-0.1.1
+- status: RELEASED / Codex（0.1.1 已发布且仓库外验证；赛事申报及季度选项未提交）
+- active_owner: Codex（保存发布证据；后续参赛申报由用户本人确认并提交）
+- implementation_authorized: YES（用户明确批准 Mooncakes 0.1.1 正式发布，已完成；不含赛事报名）
+- objective: 保留 0.1.1 发布证据，支持参赛负责人在 9 月 30 日前人工完成申报与季度选项
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main（从 `release/0.1.1-candidate` 快进整合；原候选分支保留）
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
@@ -42,9 +43,9 @@ T7 的 0.1.1 候选已从 `release/0.1.1-candidate` 快进整合至 `main`；
   README/许可证整合提交 `f32c413` 已在主工作树回归验证；
   **远程 CI 权限修复 SHA `e047c4d20db6b83db7e633730b07f9467045201d`（双平台真实运行通过）**；
   **T6 发布候选最终包 SHA `4a9bf78b516cf9cf166455b561a442741e896f4a`；`v0.1.0` 标签指向 `30ea5ec64fc5000c84b7aa526de0d3a7e1ea97cd`，Mooncakes 与独立安装已核实**
-  **T7 0.1.1 修复后的包内容提交 `ed82086f613351b568521d1641a2f138d16a4450`；`def2aec` 只新增复核文档**
+  **T7 0.1.1 修复后的包内容提交 `ed82086f613351b568521d1641a2f138d16a4450`；`v0.1.1` 指向主线 `272580ed53cdbe8493b6547ee2721d9cdffc70e9`，双平台 CI 和公开安装已通过**
 
-## 当前任务：0.1.1 主线候选待正式发布决定
+## 当前任务：0.1.1 已发布，准备赛事申报
 
 T7 只修正 0.1.0 归档 README 的旧发布状态文案并将包元数据提升至 0.1.1，
 不改产品行为；0.1.0 注册表归档和 `v0.1.0` 标签保持不变。
@@ -55,7 +56,7 @@ T7 只修正 0.1.0 归档 README 的旧发布状态文案并将包元数据提�
 列出已证实门槛与剩余工作；[五分钟演示](../docs/demo/five-minute.md)和
 [独立试用步骤](../docs/demo/independent-trial.md)用于让他人复现。T7 多序列的需求门槛
 尚未满足，不为增加功能数量启动。0.1.0 注册表归档里的过时 README 句子将在
-后续版本修正；不把 GitHub 主分支 README 更正说成 0.1.0 包已变化。
+0.1.1 版本修正；不把 GitHub 主分支 README 更正说成 0.1.0 包已变化。
 
 ## 已完成的 T6 历史记录（0.1.0）
 
@@ -94,7 +95,8 @@ README、LICENSE、CHANGELOG、AI_USAGE 和三组各有正常/故障输入的合
 证据：`docs/evidence/T5/remote-ci-2026-09-22.md`。
 
 官方 core 归档仍无发行方 sidecar；Linux core 只记录观察哈希，**供应链验证未完成**。
-Mooncakes 发布、赛事申报/验收、季度评选资格均未完成或未得到确认。
+以上为 T5 当时的历史状态；Mooncakes 0.1.0 与 0.1.1 此后均已发布，
+赛事申报/验收与季度评选资格仍未得到回执。
 
 Codex 在固定返修 SHA `22ae166` 的独立 worktree 复核矩阵字面量与 GitHub
 上下文规则，并重跑 fmt/check/build/test 77/77、真实 CLI 42/42、独立 oracle 和
