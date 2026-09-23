@@ -4,8 +4,8 @@ name: ci
 # platforms and asserts the running compiler version, so a green job means "this
 # commit passed on this platform under this compiler" and nothing wider.
 #
-# Remote status is NOT_RUN until a remote exists and produces a run for the
-# recorded commit SHA. A local `act`-style replay or a YAML parse is not a run.
+# A local `act`-style replay or YAML parse is not a remote CI result. Record
+# each GitHub Actions run together with its exact commit SHA and platform.
 
 on:
   push:

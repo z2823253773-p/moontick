@@ -1,15 +1,19 @@
 # MoonTick 当前状态
 
-日期：2026-09-22。T1–T4 已按固定 SHA 验收；T5 在 macOS arm64 与 Linux x86_64 的真实 GitHub Actions 上通过。
+日期：2026-09-23。T1–T4 已按固定 SHA 验收；T5 在 macOS arm64 与 Linux x86_64 的真实 GitHub Actions 上通过。
 T6 的 29 文件包归档已正式发布为 Mooncakes `z2823253773-p/moontick@0.1.0`；
 公开版本页与仓库外安装、core 调用均已验证。赛事报名仍未完成。
 用户于 2026-09-22 确认本期 9 月 30 日截止；这不等于报名或验收已提交。
+主分支发布记录提交 `70c5b628103d7281016520eec06ce0dae7c253da` 的
+[run 35750616008](https://github.com/z2823253773-p/moontick/actions/runs/35750616008)
+双平台 success。2026-09-23 查询公开仓库 Issues 返回空列表；只表示无 GitHub Issue，
+不等于无人试用。
 
-- task_id: T6
-- status: PUBLISHED_VERIFIED / Codex（Mooncakes 0.1.0 发布及独立安装复现通过；赛事申报未完成）
-- active_owner: Codex（整理已完成的发布证据和用户人工申报事实清单）
+- task_id: T6-PRE-SUBMISSION
+- status: TECHNICALLY_DELIVERABLE / Codex（技术交付可复现；外部试用、人工申报和官方验收未完成）
+- active_owner: Codex（准备短演示与独立试用说明；Claude Code 由用户在闲时启动）
 - implementation_authorized: YES（本地预检、公开 GitHub 推送、用户明确批准的 Mooncakes 0.1.0 正式发布；不含赛事报名）
-- objective: 保存发布/安装证据，支持参赛负责人在 9 月 30 日前人工完成申报与季度选项
+- objective: 先收集一次独立试用并修复真实阻断，再冻结候选，支持参赛负责人在 9 月 30 日前人工完成申报与季度选项
 - repo_root: /Users/henryz/Desktop/比赛/moontick
 - branch: main
 - tested_commit: T1 实现 `754ff0ea7eae10cc416f6207ce94277395ddb1f3` 已接受；
@@ -25,7 +29,13 @@ T6 的 29 文件包归档已正式发布为 Mooncakes `z2823253773-p/moontick@0.
   **远程 CI 权限修复 SHA `e047c4d20db6b83db7e633730b07f9467045201d`（双平台真实运行通过）**；
   **T6 发布候选最终包 SHA `4a9bf78b516cf9cf166455b561a442741e896f4a`；`v0.1.0` 标签指向 `30ea5ec64fc5000c84b7aa526de0d3a7e1ea97cd`，Mooncakes 与独立安装已核实**
 
-## 当前任务：T6（已发布；正式申报待用户）
+## 当前任务：技术版已发布；准备独立试用和正式申报
+
+2026-09-23 的[交付与优化检查](../docs/evidence/quarter/readiness-2026-09-23.md)
+列出已证实门槛与剩余工作；[五分钟演示](../docs/demo/five-minute.md)和
+[独立试用步骤](../docs/demo/independent-trial.md)用于让他人复现。T7 多序列的需求门槛
+尚未满足，不为增加功能数量启动。0.1.0 注册表归档里的过时 README 句子将在
+后续版本修正；不把 GitHub 主分支 README 更正说成 0.1.0 包已变化。
 
 `moon.mod` 已写入已验证的 `z2823253773-p/moontick`、公开仓库 URL、MIT 与版本
 `0.1.0`。`.moonignore` 将发布包收敛为 29 个文件，含 core/ticks_input/report/CLI、

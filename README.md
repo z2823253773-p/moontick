@@ -4,7 +4,7 @@ MoonTick audits a **declared fixed sampling plan** against observed integer-mill
 
 MoonTick is a MoonBit library and native CLI. [Version 0.1.0 is published on Mooncakes](https://mooncakes.io/docs/z2823253773-p/moontick@0.1.0); competition acceptance has not been claimed.
 
-To use the library from a separate MoonBit project, run `moon add z2823253773-p/moontick@0.1.0`, add `"z2823253773-p/moontick/core"` to that project's `moon.pkg` imports, then call `@core.make_grid` and `@core.audit`. An [independent install check](docs/evidence/T6/release-and-consumer.md) built a fresh project against the registry copy and ran complete and missing-point cases.
+To use the library from a separate MoonBit project, run `moon add z2823253773-p/moontick@0.1.0`, add `"z2823253773-p/moontick/core"` to that project's `moon.pkg` imports, then call `@core.make_grid` and `@core.audit`. An [independent install check](https://github.com/z2823253773-p/moontick/blob/main/docs/evidence/T6/release-and-consumer.md) built a fresh project against the registry copy and ran complete and missing-point cases.
 
 ## Build and try it
 
@@ -21,6 +21,8 @@ moon build --target native
 The last command audits the half-open window `[0,60)` at 15 ms intervals. Its four expected timestamps are `0,15,30,45`; the example covers all four and exits `0`. Replace `complete.ticks` with `duplicate-and-missing.ticks` to see a duplicate that cannot repair a missing point; that audit exits `1`. Omit `--format json` for the default text report.
 
 [Three runnable synthetic examples](examples/README.md) cover minute archives, aggregated bucket starts, and duplicate records. Each has a complete and a failing input, a declared plan, and expected counts. MoonTick does not ingest the source systems directly; callers supply extracted timestamp ticks.
+
+For a short walkthrough, see the [five-minute demo](https://github.com/z2823253773-p/moontick/blob/main/docs/demo/five-minute.md). The [independent trial guide](https://github.com/z2823253773-p/moontick/blob/main/docs/demo/independent-trial.md) gives a new user reproducible steps and a way to report both successful and failed attempts.
 
 The input format is **ticks**: no header, one canonical signed `Int64` millisecond value per line. A zero-byte file is valid and reports the whole plan as missing. Blank lines, BOM, non-ASCII bytes, CSV fields, whitespace around values, and malformed integers are rejected. The declared window and step must form a positive whole number of grid intervals; MoonTick never infers them from the data.
 
