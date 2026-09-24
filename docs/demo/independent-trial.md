@@ -28,8 +28,8 @@
    这些计数位于 JSON 的 `summary` 对象中；缺失区间位于顶层。
 
 4. 可选：在另一个全新 MoonBit 工程运行
-   `moon add z2823253773-p/moontick@0.1.0`，确认包能从 Mooncakes 下载。
-   仓库内的[安装复现记录](../evidence/T6/release-and-consumer.md)提供了
+   `moon add z2823253773-p/moontick@0.1.1`，确认包能从 Mooncakes 下载。
+   仓库内的[安装复现记录](../evidence/T7/release-and-consumer-0.1.1.md)提供了
    公开 `core` API 的两个独立用例。不要使用本地相对路径代替 registry 包。
 
 请把反馈集中在四件事：哪一步无法照做；实际退出码和关键输出；`[start,end)`、

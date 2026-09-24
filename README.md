@@ -2,9 +2,9 @@
 
 MoonTick audits a **declared fixed sampling plan** against observed integer-millisecond timestamps. It reports exact grid coverage, compresses missing points into index ranges, and identifies duplicates, out-of-order records, off-grid timestamps, and out-of-range timestamps. An empty input is a valid observation of a completely missing plan.
 
-MoonTick is a MoonBit library and native CLI. This module is version 0.1.1; [version 0.1.0 is published on Mooncakes](https://mooncakes.io/docs/z2823253773-p/moontick@0.1.0). Competition acceptance has not been claimed.
+MoonTick is a MoonBit library and native CLI. Version [0.1.1 is published on Mooncakes](https://mooncakes.io/docs/z2823253773-p/moontick@0.1.1). Competition acceptance has not been claimed.
 
-The install command for version 0.1.1 is `moon add z2823253773-p/moontick@0.1.1`. In a separate MoonBit project, add `"z2823253773-p/moontick/core"` to `moon.pkg` imports, then call `@core.make_grid` and `@core.audit`. An [independent install check](https://github.com/z2823253773-p/moontick/blob/main/docs/evidence/T6/release-and-consumer.md) built a fresh project against the published 0.1.0 registry copy and ran complete and missing-point cases.
+The install command is `moon add z2823253773-p/moontick@0.1.1`. In a separate MoonBit project, add `"z2823253773-p/moontick/core"` to `moon.pkg` imports, then call `@core.make_grid` and `@core.audit`. An [independent install check](https://github.com/z2823253773-p/moontick/blob/main/docs/evidence/T7/release-and-consumer-0.1.1.md) built a fresh project against the published 0.1.1 registry copy and ran complete and missing-point cases.
 
 ## Build and try it
 
